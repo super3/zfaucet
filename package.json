@@ -1,0 +1,19 @@
+{
+  "name": "ethfaucet",
+  "version": "0.1.0",
+  "description": "Simple ETH faucet built with Node.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/super3/ethfaucet.git"
+  },
+  "author": "Shawn Wilkinson",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/super3/ethfaucet/issues"
+  },
+  "homepage": "https://github.com/super3/ethfaucet#readme"
+}
