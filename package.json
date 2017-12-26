@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/super3/ethfaucet/issues"
   },
-  "homepage": "https://github.com/super3/ethfaucet#readme"
+  "homepage": "https://github.com/super3/ethfaucet#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  }
 }
