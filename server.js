@@ -3,9 +3,11 @@ var express = require('express');
 var path    = require("path");
 var app     = express();
 var port    = process.env.PORT || 8080;
+
+// make the /public folder viewable
 app.use(express.static('public'));
 
-// routes go here
+// index route
 app.get('/',function(req,res){
   res.sendFile(path.join(__dirname+'/public/index.html'));
   //__dirname : It will resolve to your project folder.
