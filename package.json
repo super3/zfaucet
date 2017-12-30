@@ -2,9 +2,16 @@
   "name": "ethfaucet",
   "version": "0.1.0",
   "description": "Simple ETH faucet built with Node.",
-  "main": "app.js",
+  "main": "server.js",
+  "engines": {
+    "node": "8.9.3"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run testsuite && npm run linter",
+    "testsuite": "./node_modules/.bin/mocha test/* --recursive",
+    "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
+    "linter": "./node_modules/.bin/jshint --config .jshintrc ./server.js ./test",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -19,10 +26,14 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "mongoose": "^5.0.0-rc0",
-    "supertest": "^3.0.0"
+    "mongoose": "^5.0.0-rc0"
   },
   "devDependencies": {
-    "mocha": "^4.1.0"
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
+    "istanbul": "^0.4.5",
+    "jshint": "^2.9.5",
+    "mocha": "^4.1.0",
+    "supertest": "^3.0.0"
   }
 }
