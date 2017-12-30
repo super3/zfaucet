@@ -18,6 +18,11 @@
   "homepage": "https://github.com/super3/ethfaucet#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "mongoose": "^5.0.0-rc0",
+    "supertest": "^3.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^4.1.0"
   }
 }

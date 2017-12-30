@@ -13,6 +13,12 @@ app.get('/',function(req,res){
   //__dirname : It will resolve to your project folder.
 });
 
-// start the server
-app.listen(port);
-console.log('Server started! At http://localhost:' + port);
+// start the server, if running this script alone
+if (require.main === module) {
+  /* istanbul ignore next */
+  app.listen(3000, function() {
+    console.log('Server started! At http://localhost:' + port);
+  });
+}
+
+module.exports = app;
