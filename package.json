@@ -4,12 +4,12 @@
   "description": "Simple ETH faucet built with Node.",
   "main": "server.js",
   "engines": {
-    "node": "8.9.3"
+    "node": "8.9.4"
   },
   "scripts": {
     "test": "npm run testsuite && npm run linter",
     "testsuite": "./node_modules/.bin/mocha test/* --recursive --exit",
-    "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
+    "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec --exit",
     "linter": "./node_modules/.bin/jshint --config .jshintrc ./server.js ./test",
     "start": "node server.js"
   },
