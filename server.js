@@ -9,8 +9,7 @@ app.use(express.static('public/css'));
 
 // index route
 app.get('/',function(req,res){
-   res.sendFile(path.join(__dirname+'/public/index.html')); // does this file exist? yes right
-  //res.json({'hello': 'from the other side'}); // please run test..
+   res.sendFile(path.join(__dirname+'/public/index.html'));
   //__dirname : It will resolve to your project folder.
 });
 
@@ -23,4 +22,3 @@ if (require.main === module) {
 }
 
 module.exports = app;
-//can you see this?
