@@ -16,7 +16,7 @@ app.get('/',function(req,res){
 // start the server, if running this script alone
 if (require.main === module) {
   /* istanbul ignore next */
-  app.listen(3000, function() {
+  app.listen(port, function() {
     console.log('Server started! At http://localhost:' + port);
   });
 }
