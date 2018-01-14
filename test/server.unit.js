@@ -2,9 +2,8 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var supertest = require('supertest'); // import problems. hold on
+var supertest = require('supertest');
 var api = supertest('http://localhost:8080');
-var should = require('chai').should(); // see the output below
 
 /* jshint undef: true */
 var app = require('../server.js');
