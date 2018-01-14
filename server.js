@@ -5,11 +5,12 @@ var app     = express();
 var port    = process.env.PORT || 8080;
 
 // make the /public folder viewable
-app.use(express.static('public'));
+app.use(express.static('public/css'));
 
 // index route
 app.get('/',function(req,res){
-  res.sendFile(path.join(__dirname+'/public/index.html'));
+   res.sendFile(path.join(__dirname+'/public/index.html')); // does this file exist? yes right
+  //res.json({'hello': 'from the other side'}); // please run test..
   //__dirname : It will resolve to your project folder.
 });
 
@@ -22,3 +23,4 @@ if (require.main === module) {
 }
 
 module.exports = app;
+//can you see this?
