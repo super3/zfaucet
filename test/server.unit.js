@@ -1,7 +1,6 @@
 /*jslint node: true */
 'use strict';
 
-var mongoose = require('mongoose');
 var supertest = require('supertest');
 var api = supertest('http://localhost:5000');
 
