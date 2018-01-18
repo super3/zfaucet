@@ -13,6 +13,11 @@ app.get('/',function(req,res){
   //__dirname : It will resolve to your project folder.
 });
 
+// add route
+app.post('/api/add', function (req, res) {
+  res.send('Got a POST request');
+});
+
 // start the server, if running this script alone
 /* istanbul ignore next */
 if (require.main === module) {
