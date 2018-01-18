@@ -1,7 +1,7 @@
 {
-  "name": "ethfaucet",
+  "name": "zecfaucet",
   "version": "0.1.0",
-  "description": "Simple ETH faucet built with Node.",
+  "description": "Simple Zcash(ZEC) faucet built with Node.",
   "main": "server.js",
   "engines": {
     "node": "8.9.4"
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/super3/ethfaucet.git"
+    "url": "git+https://github.com/super3/zecfaucet.git"
   },
   "author": "Shawn Wilkinson",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/super3/ethfaucet/issues"
+    "url": "https://github.com/super3/zecfaucet/issues"
   },
-  "homepage": "https://github.com/super3/ethfaucet#readme",
+  "homepage": "https://github.com/super3/zecfaucet#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
