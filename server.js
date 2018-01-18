@@ -8,7 +8,7 @@ var port    = process.env.PORT || 5000;
 app.use(express.static('public/css'));
 
 // index route
-app.get('/',function(req,res){
+app.get('/',function(req, res){
   res.sendFile(path.join(__dirname+'/public/index.html'));
   //__dirname : It will resolve to your project folder.
 });
