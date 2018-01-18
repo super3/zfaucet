@@ -3,6 +3,7 @@ var express = require('express');
 var path    = require("path");
 var app     = express();
 var port    = process.env.PORT || 5000;
+var db = require('./db.js');
 
 // make the css folder viewable
 app.use(express.static('public/css'));
@@ -21,7 +22,9 @@ app.get('/',function(req, res){
 // add route
 app.post('/api/add', function (req, res) {
   if (!req.body) return res.sendStatus(400);
-  res.send('Got a POST request: ' + req.body.inputAddress);
+  db.createDrip(req.body.inputAddress);
+  console.log("Inserted: " + req.body.inputAddress);
+  res.redirect('/');
 });
 
 // start the server, if running this script alone

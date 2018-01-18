@@ -28,5 +28,7 @@ function createDrip(payoutAddress) {
   });
 }
 
+module.exports.createDrip = createDrip;
+
 //setup_table();
-createDrip('0x3c2f77619da4225a56b02eae4f9a1e2873435c5b');
+//createDrip('0x3c2f77619da4225a56b02eae4f9a1e2873435c5b');
