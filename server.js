@@ -4,12 +4,12 @@ var path    = require("path");
 var app     = express();
 var port    = process.env.PORT || 5000;
 
-// make the /public folder viewable
+// make the css folder viewable
 app.use(express.static('public/css'));
 
 // index route
 app.get('/',function(req,res){
-   res.sendFile(path.join(__dirname+'/public/index.html'));
+  res.sendFile(path.join(__dirname+'/public/index.html'));
   //__dirname : It will resolve to your project folder.
 });
 

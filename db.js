@@ -30,3 +30,4 @@ function createDrip(payoutAddress) {
 
 //setup_table();
 createDrip('0x3c2f77619da4225a56b02eae4f9a1e2873435c5b');
+createDrip('0xad358c2398b62b09267d2947c764b7c0f3bc6994');
