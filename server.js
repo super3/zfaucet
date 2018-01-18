@@ -9,7 +9,7 @@ app.use(express.static('public/css'));
 
 // index route
 app.get('/',function(req, res){
-  res.sendFile(path.join(__dirname+'/public/index.html'));
+  res.sendFile(path.join(__dirname + '/public/index.html'));
   //__dirname : It will resolve to your project folder.
 });
 
