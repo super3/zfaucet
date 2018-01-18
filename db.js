@@ -1,36 +1,32 @@
-// get external modules
-var mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+r = require('rethinkdb');
 
-// get internal config
-var config = require('../config.js');
-
-// setup mongo
-mongoose.connect('mongodb://' + config.mongoHost + ':' +
- config.mongoPort + '/' + config.mongoName);
-
-// define image schema
-var dripSchema = new mongoose.Schema({
-  dripId: mongoose.Schema.Types.ObjectId,
-  payoutAddress: String,
-  transactionId: String
-});
-var dripModel = mongoose.model('dripModel', dripSchema);
-module.exports.dripModel = dripModel;
-
-// create thread
-function createDrip(payoutAddress, callback) {
-
-  // create drip
-  var drip  = new imageModel({
-    //imageId: thread.imageId, // fix this
-    payoutAddress: payoutAddress,
-    transactionId: "Pending..."
+function setup_table() {
+  r.connect({ host: 'localhost', port: 28015 }, function(err, conn) {
+    if(err) throw err;
+    r.db('test').tableCreate('payouts').run(conn, function(err, res) {
+      if(err) throw err;
+      console.log(res);
+    });
   });
-
-  // save the drip to the db
-  drip.save(callback);
-
 }
 
-module.exports.createDrip = createDrip;
+function createDrip(payoutAddress) {
+  r.connect({ host: 'localhost', port: 28015 }, function(err, conn) {
+    if(err) throw err;
+
+    // build payout object for database insertion
+    payoutObj = { payoutAddress: payoutAddress,
+       timestamp: new Date(),
+       processed: false,
+       transactionId: ""
+     };
+
+    r.table('payouts').insert(payoutObj).run(conn, function(err, res) {
+      if(err) throw err;
+      console.log(res);
+    });
+  });
+}
+
+//setup_table();
+createDrip('0x3c2f77619da4225a56b02eae4f9a1e2873435c5b');

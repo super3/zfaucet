@@ -3,7 +3,7 @@
 
 var mongoose = require('mongoose');
 var supertest = require('supertest');
-var api = supertest('http://localhost:8080');
+var api = supertest('http://localhost:5000');
 
 /* jshint undef: true */
 var app = require('../server.js');
@@ -11,7 +11,7 @@ var app = require('../server.js');
 describe('App', function() {
 
   before(function(done) {
-     app.listen(8080, done);
+     app.listen(5000, done);
   });
 
   it('index should return a 200 response', function(done) {
