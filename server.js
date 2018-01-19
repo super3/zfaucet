@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 // index route
 app.get('/',function(req, res){
+  db.latestDrips();
   res.sendFile(path.join(__dirname + '/public/index.html'));
   //__dirname : It will resolve to your project folder.
 });
