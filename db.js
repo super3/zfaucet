@@ -10,6 +10,8 @@ function setup_table() {
   });
 }
 
+//setup_table();
+
 function createDrip(payoutAddress) {
   r.connect({ host: 'localhost', port: 28015 }, function(err, conn) {
     if(err) throw err;
@@ -30,5 +32,11 @@ function createDrip(payoutAddress) {
 
 module.exports.createDrip = createDrip;
 
-//setup_table();
 //createDrip('0x3c2f77619da4225a56b02eae4f9a1e2873435c5b');
+
+function latestDrips() {
+  r.connect({ host: 'localhost', port: 28015 }, function(err, conn) {
+    if(err) throw err;
+
+  });
+}
