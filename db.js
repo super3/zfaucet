@@ -1,8 +1,10 @@
 r = require('rethinkdb');
+var connectionConfig = { host: 'localhost', port: 28015 };
 
 function setup_table() {
-  r.connect({ host: 'localhost', port: 28015 }, function(err, conn) {
+  r.connect(connectionConfig, function(err, conn) {
     if(err) throw err;
+
     r.db('test').tableCreate('payouts').run(conn, function(err, res) {
       if(err) throw err;
       console.log(res);
@@ -13,7 +15,7 @@ function setup_table() {
 //setup_table();
 
 function createDrip(payoutAddress) {
-  r.connect({ host: 'localhost', port: 28015 }, function(err, conn) {
+  r.connect(connectionConfig, function(err, conn) {
     if(err) throw err;
 
     // build payout object for database insertion
@@ -35,7 +37,7 @@ module.exports.createDrip = createDrip;
 //createDrip('0x3c2f77619da4225a56b02eae4f9a1e2873435c5b');
 
 function latestDrips() {
-  r.connect({ host: 'localhost', port: 28015 }, function(err, conn) {
+  r.connect(connectionConfig, function(err, conn) {
     if(err) throw err;
 
     r.table('payouts').orderBy({index: r.desc('timestamp')}).limit(10).
@@ -43,7 +45,7 @@ function latestDrips() {
         if (err) throw err;
         cursor.toArray(function(err, result) {
             if (err) throw err;
-            console.log(JSON.stringify(result, null, 2));
+            //console.log(JSON.stringify(result, null, 2));
         });
     });
   });
