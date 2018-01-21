@@ -23,11 +23,14 @@ app.set('view engine', 'ejs');
 app.get('/',function(req, res){
   r.connect(connectionConfig, function(err, conn) {
     if(err) throw err;
+
+    // pass drips to ejs for rendering
     db.latestDrips(conn).then(function(cursor) {
       cursor.toArray(function(err, rows) {
-        res.render('index', { drips: rows});
+        res.render('index', { drips: rows });
       });
     });
+
   });
 });
 
