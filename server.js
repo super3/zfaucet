@@ -2,9 +2,12 @@
 var express = require('express');
 var path    = require("path");
 var app     = express();
+var ejs     = require('ejs');
 
 var port    = process.env.PORT || 5000;
 var db      = require('./lib/db.js');
+var r = require('rethinkdb');
+var connectionConfig = { host: 'localhost', port: 28015 };
 
 // make the css folder viewable
 app.use(express.static('public/css'));
@@ -13,11 +16,19 @@ var bodyParser = require('body-parser'); // create application/json parser
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+// set the view engine to ejs
+app.set('view engine', 'ejs');
+
 // index route
 app.get('/',function(req, res){
-  db.latestDrips(); // TODO: Figure out how to insert into template.
-  res.sendFile(path.join(__dirname + '/public/index.html'));
-  //__dirname : It will resolve to your project folder.
+  r.connect(connectionConfig, function(err, conn) {
+    if(err) throw err;
+    db.latestDrips(conn).then(function(cursor) {
+      cursor.toArray(function(err, rows) {
+        res.render('index', { drips: rows});
+      });
+    });
+  });
 });
 
 // add route
