@@ -43,6 +43,7 @@ app.get('/',function(req, res){
 // add route
 app.post('/api/add', function (req, res) {
   if (!req.body.inputAddress) return res.sendStatus(400);
+
   db.createDrip(req.body.inputAddress);
   res.redirect('/'); // TODO: Figure out how to use AJAX, and remove this.
 });

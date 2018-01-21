@@ -39,6 +39,14 @@ describe('Server Routes', function() {
        .expect(302, done); // 302 because we are redirecting to index route
     });
 
+    // it('invalid address to /api/add', function(done) {
+    //   api.post('/api/add')
+    //    .set("Content-Type", "application/json")
+    //    .type("form")
+    //    .send({'inputAddress': 'notvalidaddress'})
+    //    .expect(400, done); // 302 because we are redirecting to index route
+    // });
+
   });
 
 });
