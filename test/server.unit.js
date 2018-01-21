@@ -13,24 +13,32 @@ describe('Server Routes', function() {
      app.listen(5000, done);
   });
 
-  it('index should return a 200 response', function(done) {
-    api.get('/').expect(200, done);
+  describe('Index Route', function() {
+
+    it('index should return a 200 response', function(done) {
+      api.get('/').expect(200, done);
+    });
+
   });
 
-  it('missing inputAddress in /api/add', function(done) {
-    api.post('/api/add')
-     .set("Content-Type", "application/json")
-     .type("form")
-     .send({'invalidAddress': 'notcorrectforminput'})
-     .expect(400, done);
-  });
+  describe('Add Route', function() {
 
-  it('sample address to /api/add', function(done) {
-    api.post('/api/add')
-     .set("Content-Type", "application/json")
-     .type("form")
-     .send({'inputAddress': '0x3c2f77619da4225a56b02eae4f9a1e2873435c5b'})
-     .expect(302, done); // 302 because we are redirecting to index route
+    it('missing inputAddress in /api/add', function(done) {
+      api.post('/api/add')
+       .set("Content-Type", "application/json")
+       .type("form")
+       .send({'invalidAddress': 'notcorrectforminput'})
+       .expect(400, done);
+    });
+
+    it('sample address to /api/add', function(done) {
+      api.post('/api/add')
+       .set("Content-Type", "application/json")
+       .type("form")
+       .send({'inputAddress': '0x3c2f77619da4225a56b02eae4f9a1e2873435c5b'})
+       .expect(302, done); // 302 because we are redirecting to index route
+    });
+
   });
 
 });

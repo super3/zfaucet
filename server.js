@@ -4,7 +4,7 @@ var path    = require("path");
 var app     = express();
 
 var port    = process.env.PORT || 5000;
-var db      = require('./db.js');
+var db      = require('./lib/db.js');
 
 // make the css folder viewable
 app.use(express.static('public/css'));

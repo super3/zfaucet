@@ -10,7 +10,7 @@
     "test": "npm run testsuite && npm run linter",
     "testsuite": "./node_modules/.bin/mocha test/* --recursive --exit",
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec --exit",
-    "linter": "./node_modules/.bin/jshint --config .jshintrc ./server.js ./test",
+    "linter": "./node_modules/.bin/jshint --config .jshintrc ./server.js ./lib ./test",
     "start": "node server.js"
   },
   "repository": {
