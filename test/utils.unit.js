@@ -15,19 +15,19 @@ describe('Backend Utils', function() {
       var currentTime = new Date();
 
       // current time
-      expect(utils.timeSince(currentTime)).to.equal('0 seconds');
+      expect(utils.timeSince(currentTime)).to.equal('0 seconds ago');
 
       // subtract 10 minutes
       currentTime.subtractMinutes(10);
-      expect(utils.timeSince(currentTime)).to.equal('10 minutes');
+      expect(utils.timeSince(currentTime)).to.equal('10 minutes ago');
 
       // subtract 2 hours
       currentTime.subtractMinutes(120);
-      expect(utils.timeSince(currentTime)).to.equal('2 hours');
+      expect(utils.timeSince(currentTime)).to.equal('2 hours ago');
 
       // subtract 2 days
       currentTime.subtractMinutes(2880);
-      expect(utils.timeSince(currentTime)).to.equal('2 days');
+      expect(utils.timeSince(currentTime)).to.equal('2 days ago');
 
     });
 

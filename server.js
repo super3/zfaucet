@@ -6,6 +6,7 @@ var ejs     = require('ejs');
 
 var port    = process.env.PORT || 5000;
 var db      = require('./lib/db.js');
+var utils      = require('./lib/utils.js');
 var r = require('rethinkdb');
 var connectionConfig = { host: 'localhost', port: 28015 };
 
@@ -27,6 +28,11 @@ app.get('/',function(req, res){
     // pass drips to ejs for rendering
     db.latestDrips(conn).then(function(cursor) {
       cursor.toArray(function(err, rows) {
+        // make human reable in table
+        for (var rowTime in rows) {
+          rows[rowTime].timestamp = utils.timeSince(rows[rowTime].timestamp);
+          if (!rows[rowTime].transactionId) rows[rowTime].transactionId = "Pending...";
+        }
         res.render('index', { drips: rows });
       });
     });

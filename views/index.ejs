@@ -67,7 +67,7 @@
                   <% drips.forEach(function(drip) { %>
                     <tr>
                       <td><%= drip.timestamp %></td>
-                      <td><a href="#"><%= drip.payoutAddress %></a></td>
+                      <td><a href="https://etherscan.io/address/<%= drip.payoutAddress %>"><%= drip.payoutAddress %></a></td>
                       <td><%= drip.transactionId %></td>
                     </tr>
                   <%  }); %>
