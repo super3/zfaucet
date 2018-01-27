@@ -33,4 +33,17 @@ describe('Backend Utils', function() {
 
   });
 
+  describe('isAddress function', function() {
+      it('valid taddress', function () {
+        var validAddress = 't1Zo4ZtTpu7tvdXvZRBZvC23Ue1xXaSBr4e';
+        expect(utils.isAddress(validAddress)).to.equal(true);
+      });
+      it('invalid taddress', function () {
+        expect(utils.isAddress('notvalidaddress')).to.equal(false);
+      });
+      it('wrong length', function () {
+        expect(utils.isAddress('t1Zo4ZtTpu7tvdXvZRBZvC')).to.equal(false);
+      });
+  });
+
 });

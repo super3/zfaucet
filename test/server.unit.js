@@ -35,17 +35,17 @@ describe('Server Routes', function() {
       api.post('/api/add')
        .set("Content-Type", "application/json")
        .type("form")
-       .send({'inputAddress': '0x3c2f77619da4225a56b02eae4f9a1e2873435c5b'})
+       .send({'inputAddress': 't1ZyCGucSRGz8CNLJcrXW8UBzzqRFb2xUMg'})
        .expect(302, done); // 302 because we are redirecting to index route
     });
 
-    // it('invalid address to /api/add', function(done) {
-    //   api.post('/api/add')
-    //    .set("Content-Type", "application/json")
-    //    .type("form")
-    //    .send({'inputAddress': 'notvalidaddress'})
-    //    .expect(400, done); // 302 because we are redirecting to index route
-    // });
+    it('invalid address to /api/add', function(done) {
+      api.post('/api/add')
+       .set("Content-Type", "application/json")
+       .type("form")
+       .send({'inputAddress': 'notvalidaddress'})
+       .expect(400, done); // 302 because we are redirecting to index route
+    });
 
   });
 
