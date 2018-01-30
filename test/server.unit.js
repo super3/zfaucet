@@ -44,7 +44,15 @@ describe('Server Routes', function() {
        .set("Content-Type", "application/json")
        .type("form")
        .send({'inputAddress': 'notvalidaddress'})
-       .expect(400, done); // 302 because we are redirecting to index route
+       .expect(400, done);
+    });
+
+    it('changed address to /api/add', function(done) {
+      api.post('/api/add')
+       .set("Content-Type", "application/json")
+       .type("form")
+       .send({'inputAddress': 't1KjU2TUgNuWmbyXmYh19AJL5niF5EdUsoa'})
+       .expect(400, done);
     });
 
   });

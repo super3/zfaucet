@@ -1,14 +1,17 @@
-// grab the packages we need
+// packages we need
 var express = require('express');
 var path    = require("path");
 var app     = express();
 var ejs     = require('ejs');
+var r       = require('rethinkdb');
 
+// config vars
 var port    = process.env.PORT || 5000;
-var db      = require('./lib/db.js');
-var utils      = require('./lib/utils.js');
-var r = require('rethinkdb');
 var connectionConfig = { host: 'localhost', port: 28015 };
+
+// internal libs
+var db      = require('./lib/db.js');
+var utils   = require('./lib/utils.js');
 
 // make the css folder viewable
 app.use(express.static('public/css'));
@@ -43,9 +46,11 @@ app.get('/',function(req, res){
 
 // add route
 app.post('/api/add', function (req, res) {
+  // validate address
   if (!req.body.inputAddress) return res.sendStatus(400);
   else if (!utils.isAddress(req.body.inputAddress)) return res.sendStatus(400);
 
+  // save to db, and redirect to index
   db.createDrip(req.body.inputAddress);
   res.redirect('/'); // TODO: Figure out how to use AJAX, and remove this.
 });
