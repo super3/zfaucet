@@ -11,13 +11,7 @@ var db = require('../lib/db.js');
 describe('Server Routes', function() {
 
   before(function(done) {
-    console.log('setting up table');
-    db.setupTable().then(function() {
-      console.log('table set up!');
-      //db.createDrip('t1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa');
-      app.listen(5000, done);
-    });
-
+    app.listen(5000, done);
   });
 
   describe('Index Route', function() {
