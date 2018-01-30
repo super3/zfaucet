@@ -45,8 +45,14 @@ describe('Backend Utils', function() {
         expect(utils.isAddress('t1Zo4ZtTpu7tvdXvZRBZvC')).to.equal(false);
       });
       it('changed address', function () {
-        expect(utils.isAddress('t1KjU2TUgNuWmbyEmYh19zJL5iiF5XdUsoa')).to.equal(false);
+        var changedAddress = 't1KjU2TUgNuWmbyEmYh19zJL5iiF5XdUsoa';
+        expect(utils.isAddress(changedAddress)).to.equal(false);
       });
+      it('changed address', function () {
+        var bitcoinAddress = '1mayif3H2JDC62S4N3rLNtBNRAiUUP99k';
+        expect(utils.isAddress(bitcoinAddress)).to.equal(false);
+      });
+
   });
 
 });
