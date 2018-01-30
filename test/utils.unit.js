@@ -35,7 +35,7 @@ describe('Backend Utils', function() {
 
   describe('isAddress function', function() {
       it('valid taddress', function () {
-        var validAddress = 't1Zo4ZtTpu7tvdXvZRBZvC23Ue1xXaSBr4e';
+        var validAddress = 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa';
         expect(utils.isAddress(validAddress)).to.equal(true);
       });
       it('invalid taddress', function () {
@@ -43,6 +43,9 @@ describe('Backend Utils', function() {
       });
       it('wrong length', function () {
         expect(utils.isAddress('t1Zo4ZtTpu7tvdXvZRBZvC')).to.equal(false);
+      });
+      it('changed address', function () {
+        expect(utils.isAddress('t1KjU2TUgNuWmbyEmYh19zJL5iiF5XdUsoa')).to.equal(false);
       });
   });
 

@@ -35,7 +35,7 @@ describe('Server Routes', function() {
       api.post('/api/add')
        .set("Content-Type", "application/json")
        .type("form")
-       .send({'inputAddress': 't1ZyCGucSRGz8CNLJcrXW8UBzzqRFb2xUMg'})
+       .send({'inputAddress': 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa'})
        .expect(302, done); // 302 because we are redirecting to index route
     });
 
