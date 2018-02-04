@@ -3,6 +3,8 @@ node_js:
   - "8.9.4"
 addons:
   rethinkdb: '2.3.6'
+script:
+    - sudo npm install -g recli
 after_script:
   - npm run coverage
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
