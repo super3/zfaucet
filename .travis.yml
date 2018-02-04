@@ -3,9 +3,8 @@ node_js:
   - "8.9.4"
 addons:
   rethinkdb: '2.3.6'
-script:
-    - "npm install -g recli"
-    - "recli 'r.table("bikes")'"
+before_install:
+  - "npm install -g recli"
 after_script:
   - npm run coverage
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
