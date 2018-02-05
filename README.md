@@ -10,6 +10,13 @@ Simple Zcash(ZEC) faucet built with Node.
 npm install
 ```
 
+### DB Setup
+```
+npm install -g recli
+recli 'r.db("test").tableCreate("payouts")'
+recli 'r.table("payouts").indexCreate("timestamp")'
+```
+
 ### Running
 Start RethinkDB (Windows):
 ```
