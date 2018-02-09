@@ -28,7 +28,8 @@
     "body-parser": "^1.18.2",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
-    "rethinkdb": "^2.3.3"
+    "rethinkdb": "^2.3.3",
+    "shelljs": "^0.8.1"
   },
   "devDependencies": {
     "chai": "^4.1.2",
