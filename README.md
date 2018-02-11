@@ -26,9 +26,9 @@ recli 'r.table("payouts").indexCreate("timestamp")'
 ```
 
 ### Running
-Start RethinkDB (Windows):
+Start RethinkDB:
 ```
-rethinkdb.exe
+rethinkdb
 ```
 
 Start the app:
@@ -38,7 +38,7 @@ npm start
 
 ### Testing
 ```
-mocha
+npm run test
 ```
 
 ### Coverage
