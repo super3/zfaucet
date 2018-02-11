@@ -19,10 +19,10 @@ r.connect(config.connectionConfig, function(err, conn) {
 });
 
 // Check for zcash install
-// if (!shell.which('zcash-cli')) {
-//   shell.echo('Sorry, this script requires zcash-cli');
-//   shell.exit(1);
-// }
+if (!shell.which('zcash-cli')) {
+  shell.echo('Sorry, this script requires zcash-cli');
+  shell.exit(1);
+}
 
 // // Run external tool synchronously
 // if (shell.exec('git commit -am "Auto-commit"').code !== 0) {
