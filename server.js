@@ -7,7 +7,7 @@ var r       = require('rethinkdb');
 
 // config vars
 var port    = process.env.PORT || 5000;
-var connectionConfig = { host: 'localhost', port: 28015 };
+var config = require('../config.js');
 
 // internal libs
 var db      = require('./lib/db.js');
@@ -25,7 +25,7 @@ app.set('view engine', 'ejs');
 
 // index route
 app.get('/',function(req, res){
-  r.connect(connectionConfig, function(err, conn) {
+  r.connect(config.connectionConfig, function(err, conn) {
     if(err) throw err;
 
     // pass drips to ejs for rendering
@@ -58,8 +58,8 @@ app.post('/api/add', function (req, res) {
 // start the server, if running this script alone
 /* istanbul ignore next */
 if (require.main === module) {
-  app.listen(port, function() {
-    console.log('Server started! At http://localhost:' + port);
+  app.listen(config.port, function() {
+    console.log('Server started! At http://localhost:' + config.port);
   });
 }
 

@@ -1,17 +1,13 @@
-var shell = require('shelljs');
-var r     = require('rethinkdb');
+var shell  = require('shelljs');
+var r      = require('rethinkdb');
 
 // internal libs
-var db    = require('./lib/db.js');
-
-// vars
-var connectionConfig = { host: 'localhost', port: 28015 };
-var sendingAddress = 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa'; // change this
-var sendingAmount = 0.0001;
+var db     = require('./lib/db.js');
+var config = require('./config.js');
 
 // $ ./src/zcash-cli z_sendmany "$ZADDR" "[{\"amount\": 0.8, \"address\": \"$FRIEND\"}]"
 
-r.connect(connectionConfig, function(err, conn) {
+r.connect(config.connectionConfig, function(err, conn) {
   if(err) throw err;
 
   db.pendingDrips(conn).then(function(cursor) {
