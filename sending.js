@@ -18,15 +18,26 @@ r.connect(config.connectionConfig, function(err, conn) {
 
   db.pendingDrips(conn).then(function(cursor) {
     cursor.toArray(function(err, rows) {
-      var command = 'zcash-cli z_sendmany "' + config.sendingAddress +
-       '" [{\"amount\": ' + config.sendingAmount + ', \"address\": \"' +
-        rows[0].payoutAddress + '\"}]"';
-       console.log(command);
+      var cmd = createCmd(config.sendingAddress, config.sendingAmount,
+         rows[0].payoutAddress);
+    //  console.log(cmd);
+      sendDrip(cmd);
     });
   });
 
 });
 
+function createCmd(sendAddress, sendAmount, payAddress) {
+  var str = `zcash-cli z_sendmany "${sendAddress}" `;
+  str += `"[{\\"amount\\": ${sendAmount},`;
+  str += `\\"address\\": \\"${payAddress}\\"}]"`;
+  return str;
+}
+
+function sendDrip(cmd) {
+  var res = shell.exec(cmd);
+  console.log(res);
+}
 // // Run external tool synchronously
 // if (shell.exec('git commit -am "Auto-commit"').code !== 0) {
 //   shell.echo('Error: Git commit failed');

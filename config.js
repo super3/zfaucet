@@ -1,5 +1,5 @@
 module.exports = {
   connectionConfig: { host: 'localhost', port: 28015 },
-  sendingAddress: 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa', // change this
+  sendingAddress: 't1XrQPUbT9HTsueD5xusdK8tjEySTMfJueF', // change this
   sendingAmount: 0.0001
 };
