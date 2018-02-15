@@ -14,14 +14,15 @@ var config = require('./config.js');
 // }
 
 r.connect(config.connectionConfig, function(err, conn) {
+  this.conn = conn;
   if(err) throw err;
 
   doWork(conn).then(function() {
     console.log('drips and update txids done');
   });
 
-}).then(function() {
-  conn.close();
+}).finally(function() {
+  this.conn.close();
 });
 
 
