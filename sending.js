@@ -16,31 +16,44 @@ var config = require('./config.js');
 r.connect(config.connectionConfig, function(err, conn) {
   if(err) throw err;
 
-  db.pendingDrips(conn).then(function(cursor) {
-    cursor.toArray(function(err, rows) {
-      if(err) return;
-      doDrips(conn, rows);
-    });
+  doWork(conn).then(function() {
+    conn.close();
   });
-
-  updateTransactionIds(conn);
-  conn.close();
 
 });
 
+function doWork(conn) {
+  return new Promise(function(resolve, reject) {
+    doDrips();
+    updateTransactionIds(conn);
+    resolve();
+  });
+}
+
 function doDrips(conn, rows) {
-  if(rows.length === 0) return;
+  return new Promise(function(resolve, reject) {
+    db.pendingDrips(conn).then(function(cursor) {
+      cursor.toArray(function(err, rows) {
+        if(err) return;
+        if(rows.length === 0) return;
 
-  var cmd = createCmd(config.sendingAddress, config.sendingAmount,
-     rows[0].payoutAddress);
+        var cmd = createCmd(config.sendingAddress, config.sendingAmount,
+           rows[0].payoutAddress);
 
-  // run and check output
-  var res = shell.exec(cmd);
-  if (res.code !== 0) return console.log("FAILED! " + res);
+        // run and check output
+        var res = shell.exec(cmd);
+        if (res.code !== 0) reject(function() {
+          console.log("FAILED! " + res);
+        });
 
-  // update drip
-  r.table('payouts').get(rows[0].id).update({processed: true,
-     operationId: res.stdout}).run(conn);
+        // update drip
+        r.table('payouts').get(rows[0].id).update({processed: true,
+           operationId: res.stdout}).run(conn);
+      });
+    });
+    resolve();
+  });
+
 }
 
 function createCmd(sendAddress, sendAmount, payAddress) {
@@ -51,9 +64,14 @@ function createCmd(sendAddress, sendAmount, payAddress) {
 }
 
 function updateTransactionIds(conn) {
-  // Run external tool synchronously
-  res = shell.exec('zcash-cli z_getoperationresult');
-  sendList = res.stdout;
-  console.log(sendList);
-  if (res.code !== 0) return console.log("FAILED! " + res);
+  return new Promise(function(resolve, reject) {
+    // Run external tool synchronously
+    res = shell.exec('zcash-cli z_getoperationresult');
+    sendList = res.stdout;
+    console.log(sendList);
+    if (res.code !== 0) reject(function() {
+      console.log("FAILED! " + res);
+    });
+    resolve();
+  });
 }
