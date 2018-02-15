@@ -24,9 +24,11 @@ r.connect(config.connectionConfig, function(err, conn) {
 
 function doWork(conn) {
   return new Promise(function(resolve, reject) {
-    doDrips(conn);
-    updateTransactionIds(conn);
-    resolve();
+    doDrips(conn).then(function() {
+      updateTransactionIds(conn).then(function() {
+        resolve();
+      });
+    });
   });
 }
 
