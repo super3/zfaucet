@@ -45,5 +45,6 @@ function createCmd(sendAddress, sendAmount, payAddress) {
 
 // Run external tool synchronously
 res2 = shell.exec('zcash-cli z_getoperationresult');
-console.log(res2.stdout);
+sendList = res2.stdout;
+console.log(sendList[0].id);
 if (res2.code !== 0) return console.log("FAILED! " + res);
