@@ -53,7 +53,7 @@ function doDrips(conn) {
 
         // update drip
         r.table('payouts').get(rows[0].id).update({processed: true,
-           operationId: res.stdout}).run(conn);
+           operationId: res.stdout.trim()}).run(conn);
         resolve();
       });
     });
