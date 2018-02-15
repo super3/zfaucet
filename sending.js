@@ -34,6 +34,8 @@ r.connect(config.connectionConfig, function(err, conn) {
     });
   });
 
+  updateTransactionIds(conn);
+
 });
 
 function createCmd(sendAddress, sendAmount, payAddress) {
@@ -43,8 +45,10 @@ function createCmd(sendAddress, sendAmount, payAddress) {
   return str;
 }
 
-// Run external tool synchronously
-res2 = shell.exec('zcash-cli z_getoperationresult');
-sendList = res2.stdout;
-console.log(sendList[0].id);
-if (res2.code !== 0) return console.log("FAILED! " + res);
+function updateTransactionIds(conn) {
+  // Run external tool synchronously
+  res = shell.exec('zcash-cli z_getoperationresult');
+  sendList = res.stdout;
+  console.log(sendList);
+  if (res.code !== 0) return console.log("FAILED! " + res);
+}
