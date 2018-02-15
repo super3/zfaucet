@@ -73,7 +73,7 @@ function updateTransactionIds(conn) {
     // Run external tool synchronously
     res = shell.exec('zcash-cli z_getoperationresult');
     sendList = res.stdout;
-    console.log(sendList);
+    //console.log(sendList);
     if (res.code !== 0) reject(function() {
       console.log("FAILED! " + res);
     });
