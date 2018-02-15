@@ -18,13 +18,19 @@ r.connect(config.connectionConfig, function(err, conn) {
 
   db.pendingDrips(conn).then(function(cursor) {
     cursor.toArray(function(err, rows) {
+
+      // create command string
       var cmd = createCmd(config.sendingAddress, config.sendingAmount,
          rows[0].payoutAddress);
-    //  console.log(cmd);
+      console.log(cmd);
+
+      // run and check output
       var res = shell.exec(cmd);
       if (res.code !== 0) return console.log("FAILED! " + res);
+
+      // update drip
       r.table('payouts').get(rows[0].id).update({processed: true,
-         transactionId: res.stdout}).run(conn);
+         operationId: res.stdout}).run(conn);
     });
   });
 
@@ -37,8 +43,7 @@ function createCmd(sendAddress, sendAmount, payAddress) {
   return str;
 }
 
-// // Run external tool synchronously
-// if (shell.exec('git commit -am "Auto-commit"').code !== 0) {
-//   shell.echo('Error: Git commit failed');
-//   shell.exit(1);
-// }
+// Run external tool synchronously
+res2 = shell.exec('zcash-cli z_getoperationresult');
+console.log(res2.stdout);
+if (res2.code !== 0) return console.log("FAILED! " + res);
