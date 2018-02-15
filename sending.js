@@ -17,6 +17,7 @@ r.connect(config.connectionConfig, function(err, conn) {
   if(err) throw err;
 
   doWork(conn).then(function() {
+    console.log('drips and update txids done');
     conn.close();
   });
 
@@ -25,7 +26,9 @@ r.connect(config.connectionConfig, function(err, conn) {
 function doWork(conn) {
   return new Promise(function(resolve, reject) {
     doDrips(conn).then(function() {
+      console.log('drips done');
       updateTransactionIds(conn).then(function() {
+        console.log('update txids done');
         resolve();
       });
     });
