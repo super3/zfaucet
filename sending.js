@@ -76,7 +76,8 @@ function updateTransactionIds(conn) {
     sendList.forEach(function(transaction) {
       if(!transaction.hasOwnProperty('result')) return;
       console.log('updating txid ' + transaction.id);
-      var record = r.table('payouts').get({operationId: transaction.id});
+      var record = r.table('payouts').filter({operationId: transaction.id})[0];
+      console.log(record);
       record.update({transactionId: transaction.result.txid}).run(conn);
       console.log('updated txid with ' + transaction.result.txid);
     });
