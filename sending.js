@@ -18,7 +18,7 @@ r.connect(config.connectionConfig, function(err, conn) {
 
   doWork(conn).then(function() {
     console.log('drips and update txids done');
-    conn.close(function(err) { if (err) throw err; });
+    //conn.close(function(err) { if (err) throw err; });
   });
 
 });
