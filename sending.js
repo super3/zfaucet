@@ -47,9 +47,9 @@ function doDrips(conn) {
 
         // run and check output
         var res = shell.exec(cmd);
-        if (res.code !== 0) reject(function() {
-          console.log("FAILED! " + res);
-        });
+        // if (res.code !== 0) reject(function() {
+        //   console.log("FAILED! " + res);
+        // });
 
         // update drip
         r.table('payouts').get(rows[0].id).update({processed: true,
