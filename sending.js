@@ -18,7 +18,8 @@ r.connect(config.connectionConfig, function(err, conn) {
 
   db.pendingDrips(conn).then(function(cursor) {
     cursor.toArray(function(err, rows) {
-      doDrips(rows);
+      if(err) return;
+      doDrips(conn, rows);
     });
   });
 
@@ -27,7 +28,7 @@ r.connect(config.connectionConfig, function(err, conn) {
 
 });
 
-function doDrips(rows) {
+function doDrips(conn, rows) {
   if(rows.length === 0) return;
 
   var cmd = createCmd(config.sendingAddress, config.sendingAmount,
