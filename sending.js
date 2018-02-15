@@ -24,13 +24,13 @@ r.connect(config.connectionConfig, function(err, conn) {
 
 function doWork(conn) {
   return new Promise(function(resolve, reject) {
-    doDrips();
+    doDrips(conn);
     updateTransactionIds(conn);
     resolve();
   });
 }
 
-function doDrips(conn, rows) {
+function doDrips(conn) {
   return new Promise(function(resolve, reject) {
     db.pendingDrips(conn).then(function(cursor) {
       cursor.toArray(function(err, rows) {
