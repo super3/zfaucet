@@ -18,25 +18,28 @@ r.connect(config.connectionConfig, function(err, conn) {
 
   db.pendingDrips(conn).then(function(cursor) {
     cursor.toArray(function(err, rows) {
-
-      // create command string
-      var cmd = createCmd(config.sendingAddress, config.sendingAmount,
-         rows[0].payoutAddress);
-      console.log(cmd);
-
-      // run and check output
-      var res = shell.exec(cmd);
-      if (res.code !== 0) return console.log("FAILED! " + res);
-
-      // update drip
-      r.table('payouts').get(rows[0].id).update({processed: true,
-         operationId: res.stdout}).run(conn);
+      doDrips(rows);
     });
   });
 
   updateTransactionIds(conn);
 
 });
+
+function doDrips(rows) {
+  if(rows.length === 0) return;
+
+  var cmd = createCmd(config.sendingAddress, config.sendingAmount,
+     rows[0].payoutAddress);
+
+  // run and check output
+  var res = shell.exec(cmd);
+  if (res.code !== 0) return console.log("FAILED! " + res);
+
+  // update drip
+  r.table('payouts').get(rows[0].id).update({processed: true,
+     operationId: res.stdout}).run(conn);
+}
 
 function createCmd(sendAddress, sendAmount, payAddress) {
   var str = `zcash-cli z_sendmany "${sendAddress}" `;
