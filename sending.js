@@ -23,6 +23,7 @@ r.connect(config.connectionConfig, function(err, conn) {
   });
 
   updateTransactionIds(conn);
+  conn.close();
 
 });
 
