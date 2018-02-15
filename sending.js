@@ -74,6 +74,7 @@ function updateTransactionIds(conn) {
     res = shell.exec('zcash-cli z_getoperationresult');
     sendList = JSON.parse(res.stdout);
     sendList.forEach(function(transaction) {
+      if(!transaction.hasOwnProperty('result')) return;
       console.log(transaction.result);
     });
     //console.log(sendList);
