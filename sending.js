@@ -13,17 +13,16 @@ var config = require('./config.js');
 //   shell.exit(1);
 // }
 
-var rdbConn;
 r.connect(config.connectionConfig, function(err, conn) {
   if(err) throw err;
-  rdbConn = conn;
 
   doWork(conn).then(function() {
     console.log('drips and update txids done');
+    exit(0);
   });
 
 });
-rdbConn.close();
+
 
 function doWork(conn) {
   return new Promise(function(resolve, reject) {
