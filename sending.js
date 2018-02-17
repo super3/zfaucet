@@ -32,8 +32,9 @@ function doWork(conn) {
         console.log('update txids done');
         resolve();
 
+        // close up - errors...
         conn.close();
-        //process.exit();
+        process.exit();
       });
     });
   });
