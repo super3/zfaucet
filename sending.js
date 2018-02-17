@@ -23,7 +23,6 @@ r.connect(config.connectionConfig, function(err, conn) {
 
 }).finally(function() {
   //this.conn.close();
-  //process.exit();
 });
 
 
@@ -34,6 +33,7 @@ function doWork(conn) {
       updateTransactionIds(conn).then(function() {
         console.log('update txids done');
         resolve();
+        process.exit();
       });
     });
   });
