@@ -23,7 +23,7 @@ r.connect(config.connectionConfig, function(err, conn) {
 
 }).finally(function() {
   //this.conn.close();
-  process.exit();
+  //process.exit();
 });
 
 
