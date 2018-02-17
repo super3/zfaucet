@@ -33,9 +33,7 @@ app.get('/',function(req, res){
       cursor.toArray(function(err, rows) {
         // make human reable in table
         for (var rowTime in rows) {
-          var text = "Pending...";
           rows[rowTime].timestamp = utils.timeSince(rows[rowTime].timestamp);
-          if (!rows[rowTime].transactionId) rows[rowTime].transactionId = text;
         }
         res.render('index', { drips: rows });
       });

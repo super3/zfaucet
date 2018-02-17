@@ -58,7 +58,7 @@
                     <tr>
                       <td><%= drip.timestamp %></td>
                       <td><a href="https://explorer.zcha.in/accounts/<%= drip.payoutAddress %>"><%= drip.payoutAddress %></a></td>
-                      <% if (drip.transactionId != "Pending...") { %>
+                      <% if (drip.transactionId) { %>
                       <td><a href="https://zcash.blockexplorer.com/tx/<%= drip.transactionId %>">View Transaction</a></td>
                       <% } else { %>
                       <td>Pending...</td>
