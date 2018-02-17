@@ -7,7 +7,7 @@ var r       = require('rethinkdb');
 
 // config vars
 var port    = process.env.PORT || 5000;
-var config = require('./config.js');
+var config  = require('./config.js');
 
 // internal libs
 var db      = require('./lib/db.js');
