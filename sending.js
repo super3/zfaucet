@@ -22,7 +22,8 @@ r.connect(config.connectionConfig, function(err, conn) {
   });
 
 }).finally(function() {
-  this.conn.close();
+  //this.conn.close();
+  process.exit();
 });
 
 
