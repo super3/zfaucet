@@ -31,7 +31,7 @@ app.get('/',function(req, res){
     // pass drips to ejs for rendering
     db.latestDrips(conn).then(function(cursor) {
       cursor.toArray(function(err, rows) {
-        // make human reable in table
+        // make time human reable in table
         for (var rowTime in rows) {
           rows[rowTime].timestamp = utils.timeSince(rows[rowTime].timestamp);
         }

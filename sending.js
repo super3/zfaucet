@@ -21,8 +21,6 @@ r.connect(config.connectionConfig, function(err, conn) {
     console.log('drips and update txids done');
   });
 
-}).finally(function() {
-  //this.conn.close();
 });
 
 
@@ -33,7 +31,9 @@ function doWork(conn) {
       updateTransactionIds(conn).then(function() {
         console.log('update txids done');
         resolve();
-        process.exit();
+
+        conn.close();
+        //process.exit();
       });
     });
   });
