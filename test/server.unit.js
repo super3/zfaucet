@@ -2,16 +2,17 @@
 'use strict';
 
 var supertest = require('supertest');
-var api = supertest('http://localhost:5000');
+var api = supertest('http://localhost');
 
 /* jshint undef: true */
-var app = require('../server.js');
-var db = require('../lib/db.js');
+var app     = require('../server.js');
+var db      = require('../lib/db.js');
+var port    = process.env.PORT || 80;
 
 describe('Server Routes', function() {
 
   before(function(done) {
-    app.listen(5000, done);
+    app.listen(port, done);
   });
 
   describe('Index Route', function() {
