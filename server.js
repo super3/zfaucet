@@ -31,11 +31,8 @@ app.get('/',function(req, res){
     // pass drips to ejs for rendering
     db.latestDrips(conn).then(function(cursor) {
       cursor.toArray(function(err, rows) {
-        // make time human reable in table
-        for (var rowTime in rows) {
-          rows[rowTime].timestamp = utils.timeSince(rows[rowTime].timestamp);
-        }
-        res.render('index', { drips: rows });
+        // make time in rows human readable, and then send to template
+        res.render('index', { drips: utils.readableTime(rows) });
       });
     });
 
@@ -44,7 +41,7 @@ app.get('/',function(req, res){
 
 // add route
 app.post('/api/add', function (req, res) {
-  // validate address
+  // check empty input, then check valid zcash address
   if (!req.body.inputAddress) return res.sendStatus(400);
   else if (!utils.isAddress(req.body.inputAddress)) return res.sendStatus(400);
 
