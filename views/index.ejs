@@ -24,6 +24,10 @@
 
       gtag('config', 'UA-114304012-1');
     </script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
   </head>
 
   <body>
@@ -47,10 +51,22 @@
             <div class="form-group">
               <input type="text" class="form-control" name="inputAddress" id="inputAddress"
                placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)">
+               <div class='address-not-entered hidden'>
+                 You need to supply a zCash  T Address!
+               </div>
               <small id="emailHelp" class="form-text text-muted">Don't have one?
                 <a href="https://www.zcashcommunity.com/wallets/">Here is a list</a> of good wallets to use. </small>
+              <script src="https://authedmine.com/lib/captcha.min.js" async></script>
+
+              <div class="coinhive-captcha" data-hashes="256" data-key="BTANZD3wGHbrS1NcDHYG8LxKUt86CMm4">
+                <em>Loading Captcha...<br>
+                If it doesn't load, please disable Adblock!</em>
+              </div>
             </div>
-            <button type="submit" class="btn btn-lg btn-success">Give Me Free Zcash!</button>
+            <div class='captcha-not-completed hidden'>
+              You have to first let the captcha finish
+            </div>
+            <button type="submit" id="submit" class="btn btn-lg btn-success">Give Me Free Zcash!</button>
           </form>
         </div>
 
@@ -90,5 +106,28 @@
       </footer>
 
     </div> <!-- /container -->
+
+    <style>.hidden { display: none; }</style>
+    <script>
+    $(document).ready(function() {
+
+      $('#submit').on('click', function(e) {
+        var token = $('input[type=hidden]')[0]
+        var address = $('input#inputAddress')[0]
+
+        if (!token || token.value.length === 0) {
+          e.preventDefault()
+          $('div.captcha-not-completed').removeClass('hidden')
+        } else { $('div.captcha-not-completed').addClass('hidden') }
+
+        if(address.value.length < 34) {
+          e.preventDefault()
+          $('div.address-not-entered').removeClass('hidden')
+        } else { $('div.address-not-entered').addClass('hidden') }
+
+      })
+    })
+
+    </script>
   </body>
 </html>

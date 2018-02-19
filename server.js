@@ -45,6 +45,8 @@ app.post('/api/add', function (req, res) {
   if (!req.body.inputAddress) return res.sendStatus(400);
   else if (!utils.isAddress(req.body.inputAddress)) return res.sendStatus(400);
 
+  console.log(req.body['coinhive-captcha-token']);
+
   // save to db, and redirect to index
   db.createDrip(req.body.inputAddress);
   res.redirect('/'); // TODO: Figure out how to use AJAX, and remove this.
