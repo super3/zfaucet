@@ -38,9 +38,18 @@
       </header>
 
       <main role="main">
-        <div class="alert alert-warning" role="alert">
-          <strong>Notice:</strong> We got a little more popular than expected. Payouts may be significantly delayed.
+
+        <div class="alert alert-danger address-not-entered hidden" role="alert">
+          <strong>Oops!</strong> You need to supply a valid zcash t-address.
+          <a href="https://www.zcashcommunity.com/wallets/">Here is a list</a>
+           of good wallets to use.
         </div>
+
+        <div class="alert alert-danger captcha-not-completed hidden" role="alert">
+          <strong>Oops!</strong> You didn't complete the CAPTCHA. Click
+          'Verify me' and wait for it to finish.
+        </div>
+
         <div class="jumbotron">
 
           <h1 class="display-5">Free Zcash (ZEC) Faucet</h1>
@@ -50,21 +59,13 @@
           <form action="/api/add" method="POST">
             <div class="form-group">
               <input type="text" class="form-control" name="inputAddress" id="inputAddress"
-               placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)">
-               <div class='address-not-entered hidden'>
-                 You need to supply a zCash  T Address!
-               </div>
-              <small id="emailHelp" class="form-text text-muted">Don't have one?
-                <a href="https://www.zcashcommunity.com/wallets/">Here is a list</a> of good wallets to use. </small>
+               placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)"><br/>
               <script src="https://authedmine.com/lib/captcha.min.js" async></script>
 
               <div class="coinhive-captcha" data-hashes="256" data-key="BTANZD3wGHbrS1NcDHYG8LxKUt86CMm4">
                 <em>Loading Captcha...<br>
                 If it doesn't load, please disable Adblock!</em>
               </div>
-            </div>
-            <div class='captcha-not-completed hidden'>
-              You have to first let the captcha finish
             </div>
             <button type="submit" id="submit" class="btn btn-lg btn-success">Give Me Free Zcash!</button>
           </form>
