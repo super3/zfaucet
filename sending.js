@@ -35,7 +35,7 @@ function doDrips(conn) {
         if(rows.length === 0) return;
 
         var cmd = createCmd(config.sendingAddress, config.sendingAmount,
-           rows[0].payoutAddress);
+           rows[0].payoutAddress, config.sendingFee);
 
         // run and check output
         var res = shell.exec(cmd);
@@ -56,10 +56,10 @@ function doDrips(conn) {
 }
 
 // $ ./src/zcash-cli z_sendmany "$ZADDR" "[{\"amount\": 0.8, \"address\": \"$FRIEND\"}]"
-function createCmd(sendAddress, sendAmount, payAddress) {
+function createCmd(sendAddress, sendAmount, payAddress, fee) {
   var str = `zcash-cli z_sendmany "${sendAddress}" `;
   str += `"[{\\"amount\\": ${sendAmount},`;
-  str += `\\"address\\": \\"${payAddress}\\"}]" 1 0.000001`;
+  str += `\\"address\\": \\"${payAddress}\\"}]" 1 ${fee}`;
   return str;
 }
 

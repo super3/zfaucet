@@ -9,7 +9,8 @@ describe('Sending Script', function() {
     expOut += `\\"t1gLDWRtoY8xCyyMwQWoUCkm8fjiUJooUY7\\"}]" 1 0.000001`;
 
     expect(sending.createCmd('t1gLDWRtoY8xCyyMwQWoUCkm8fjiUJooUY7',
-       0.000001, 't1gLDWRtoY8xCyyMwQWoUCkm8fjiUJooUY7')).to.equal(expOut);
+       0.000001, 't1gLDWRtoY8xCyyMwQWoUCkm8fjiUJooUY7', 0.000001)).
+       to.equal(expOut);
   });
 
 });

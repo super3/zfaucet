@@ -44,7 +44,7 @@ app.post('/api/add', function (req, res) {
   // empty input, valid zcash address, then empty captcha
   if (!req.body.inputAddress) return res.sendStatus(400);
   else if (!utils.isAddress(req.body.inputAddress)) return res.sendStatus(400);
-  else if(!req.body['coinhive-captcha-token']) return res.sendStatus(400);
+  //else if(!req.body['coinhive-captcha-token']) return res.sendStatus(400);
 
   // check if captcha is valid
   console.log(req.body['coinhive-captcha-token']);
