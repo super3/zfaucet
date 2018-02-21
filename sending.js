@@ -59,7 +59,7 @@ function doDrips(conn) {
 function createCmd(sendAddress, sendAmount, payAddress) {
   var str = `zcash-cli z_sendmany "${sendAddress}" `;
   str += `"[{\\"amount\\": ${sendAmount},`;
-  str += `\\"address\\": \\"${payAddress}\\"}]" 1 0.00001`;
+  str += `\\"address\\": \\"${payAddress}\\"}]" 1 0.000001`;
   return str;
 }
 
