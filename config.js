@@ -3,5 +3,5 @@ module.exports = {
   sendingAddress: 't1YtcRXgoDsVj6sDhGA71sgdDLoR9Q1QcnL',
   sendingAmount: 0.000001,
   sendingFee: 0.000001,
-  hashes: 256  
+  hashes: 256,
 };

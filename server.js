@@ -4,6 +4,8 @@ var path    = require("path");
 var app     = express();
 var ejs     = require('ejs');
 var r       = require('rethinkdb');
+var rp      = require('request-promise');
+require('dotenv').config();
 
 // config vars
 var port    = process.env.PORT || 80;
@@ -39,6 +41,24 @@ app.get('/',function(req, res){
   });
 });
 
+function validateCaptcha(captchaToken) {
+
+  const body =  {
+    'secret': process.env.captchaApiKey,
+    'token': captchaToken,
+    'hashes': config.hashes,
+  };
+  console.log(body);
+
+  const options = {
+    method: 'POST',
+    uri: 'https://api.coinhive.com/token/verify',
+    form: body,
+  };
+
+  return rp(options);
+}
+
 // add route
 app.post('/api/add', function (req, res) {
   // empty input, valid zcash address, then empty captcha
@@ -48,10 +68,14 @@ app.post('/api/add', function (req, res) {
 
   // check if captcha is valid
   console.log(req.body['coinhive-captcha-token']);
+  validateCaptcha(req.body['coinhive-captcha-token'])
+    .then(response => {
+      if (JSON.parse(response).success === false) return res.sendStatus(400);
+      // save to db, and redirect to index
+      db.createDrip(req.body.inputAddress);
+      res.redirect('/'); // TODO: Figure out how to use AJAX, and remove this.
+    });
 
-  // save to db, and redirect to index
-  db.createDrip(req.body.inputAddress);
-  res.redirect('/'); // TODO: Figure out how to use AJAX, and remove this.
 });
 
 // start the server, if running this script alone
