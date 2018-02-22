@@ -44,9 +44,6 @@ app.get('/',function(req, res){
 // add route
 app.post('/api/add', function (req, res) {
   // empty input, valid zcash address, then empty captcha
-  console.log('got here');
-  console.log(process.env.production);
-
   if (!req.body.inputAddress) return res.sendStatus(400);
   else if (!utils.isAddress(req.body.inputAddress)) return res.sendStatus(400);
   else if(!req.body['coinhive-captcha-token'] && process.env.production) {
@@ -57,8 +54,6 @@ app.post('/api/add', function (req, res) {
   // check if captcha is valid
   utils.validateCaptcha(req.body['coinhive-captcha-token'])
     .then(response => {
-      console.log(response);
-      console.log(process.env.production);
       if (JSON.parse(response).success === false && process.env.production) {
         return res.sendStatus(400);
       }
