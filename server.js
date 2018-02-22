@@ -57,6 +57,8 @@ app.post('/api/add', function (req, res) {
   // check if captcha is valid
   utils.validateCaptcha(req.body['coinhive-captcha-token'])
     .then(response => {
+      console.log(response);
+      console.log(process.env.production);
       if (JSON.parse(response).success === false && process.env.production) {
         return res.sendStatus(400);
       }
