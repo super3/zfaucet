@@ -1,19 +1,19 @@
-// packages we need
-var express = require('express');
-var path    = require("path");
-var app     = express();
-var ejs     = require('ejs');
-var r       = require('rethinkdb');
-var rp      = require('request-promise');
-require('dotenv').config();
+var ejs       = require('ejs');
+var path      = require("path");
+var express   = require('express');
+var r         = require('rethinkdb');
+
+// create app
+var app       = express();
 
 // config vars
-var port    = process.env.PORT || 80;
-var config  = require('./config.js');
+require('dotenv').config();
+const port    = process.env.PORT || 80;
+const config  = require('./config.js');
 
 // internal libs
-var db      = require('./lib/db.js');
-var utils   = require('./lib/utils.js');
+var db        = require('./lib/db.js');
+var utils     = require('./lib/utils.js');
 
 // make the css folder viewable
 app.use(express.static('public/css'));
@@ -41,36 +41,26 @@ app.get('/',function(req, res){
   });
 });
 
-function validateCaptcha(captchaToken) {
-
-  const body =  {
-    'secret': process.env.captchaApiKey,
-    'token': captchaToken,
-    'hashes': config.hashes,
-  };
-  console.log(body);
-
-  const options = {
-    method: 'POST',
-    uri: 'https://api.coinhive.com/token/verify',
-    form: body,
-  };
-
-  return rp(options);
-}
-
 // add route
 app.post('/api/add', function (req, res) {
   // empty input, valid zcash address, then empty captcha
+  console.log('got here');
+  console.log(process.env.production);
+
   if (!req.body.inputAddress) return res.sendStatus(400);
   else if (!utils.isAddress(req.body.inputAddress)) return res.sendStatus(400);
-  //else if(!req.body['coinhive-captcha-token']) return res.sendStatus(400);
+  else if(!req.body['coinhive-captcha-token'] && process.env.production) {
+    return res.sendStatus(400);
+  }
+
 
   // check if captcha is valid
-  console.log(req.body['coinhive-captcha-token']);
-  validateCaptcha(req.body['coinhive-captcha-token'])
+  utils.validateCaptcha(req.body['coinhive-captcha-token'])
     .then(response => {
-      if (JSON.parse(response).success === false) return res.sendStatus(400);
+      if (JSON.parse(response).success === false && process.env.production) {
+        return res.sendStatus(400);
+      }
+
       // save to db, and redirect to index
       db.createDrip(req.body.inputAddress);
       res.redirect('/'); // TODO: Figure out how to use AJAX, and remove this.
