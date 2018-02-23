@@ -15,6 +15,8 @@ const config  = require('./config.js');
 var db        = require('./lib/db.js');
 var utils     = require('./lib/utils.js');
 
+require('./lib/captcha.js');
+
 // make the css folder viewable
 app.use(express.static('public/css'));
 
@@ -46,17 +48,13 @@ app.post('/api/add', function (req, res) {
   // empty input, valid zcash address, then empty captcha
   if (!req.body.inputAddress) return res.sendStatus(400);
   else if (!utils.isAddress(req.body.inputAddress)) return res.sendStatus(400);
-  else if(!req.body['coinhive-captcha-token'] && process.env.production) {
-    return res.sendStatus(400);
-  }
-
+  else if (!req.body['coinhive-captcha-token']) return res.sendStatus(400);
 
   // check if captcha is valid
-  utils.validateCaptcha(req.body['coinhive-captcha-token'])
+  global.validateCaptcha(req.body['coinhive-captcha-token'])
     .then(response => {
-      if (JSON.parse(response).success === false && process.env.production) {
-        return res.sendStatus(400);
-      }
+      // check success response
+      if (JSON.parse(response).success === false) return res.sendStatus(400);
 
       // save to db, and redirect to index
       db.createDrip(req.body.inputAddress);

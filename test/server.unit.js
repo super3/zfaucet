@@ -9,6 +9,8 @@ var app     = require('../server.js');
 var db      = require('../lib/db.js');
 var port    = process.env.PORT || 80;
 
+require('./testHelper');
+
 describe('Server Routes', function() {
 
   before(function(done) {
@@ -29,7 +31,8 @@ describe('Server Routes', function() {
       api.post('/api/add')
        .set("Content-Type", "application/json")
        .type("form")
-       .send({'invalidAddress': 'notcorrectforminput'})
+       .send({'inputAddress': 'notcorrectforminput',
+              'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
        .expect(400, done);
     });
 
@@ -37,7 +40,8 @@ describe('Server Routes', function() {
       api.post('/api/add')
        .set("Content-Type", "application/json")
        .type("form")
-       .send({'inputAddress': 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa'})
+       .send({'inputAddress': 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa',
+              'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
        .expect(302, done); // 302 because we are redirecting to index route
     });
 
@@ -45,7 +49,8 @@ describe('Server Routes', function() {
       api.post('/api/add')
        .set("Content-Type", "application/json")
        .type("form")
-       .send({'inputAddress': 'notvalidaddress'})
+       .send({'inputAddress': 'notvalidaddress',
+              'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
        .expect(400, done);
     });
 
@@ -53,7 +58,25 @@ describe('Server Routes', function() {
       api.post('/api/add')
        .set("Content-Type", "application/json")
        .type("form")
-       .send({'inputAddress': 't1KjU2TUgNuWmbyXmYh19AJL5niF5EdUsoa'})
+       .send({'inputAddress': 't1KjU2TUgNuWmbyXmYh19AJL5niF5EdUsoa',
+              'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
+       .expect(400, done);
+    });
+
+    it('empty captcha token on /api/add', function(done) {
+      api.post('/api/add')
+       .set("Content-Type", "application/json")
+       .type("form")
+       .send({'inputAddress': 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa'})
+       .expect(400, done);
+    });
+
+    it('invalid captcha token on /api/add', function(done) {
+      api.post('/api/add')
+       .set("Content-Type", "application/json")
+       .type("form")
+       .send({'inputAddress': 't1KjU2TUgNuWmbyXmYh19AJL5niF5EdUsoa',
+              'coinhive-captcha-token': 'invalidcaptcha'})
        .expect(400, done);
     });
 
