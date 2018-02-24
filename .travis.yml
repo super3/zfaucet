@@ -10,3 +10,5 @@ before_install:
 after_script:
   - npm run coverage
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+env:
+  - PORT=5000
