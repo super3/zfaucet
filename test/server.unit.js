@@ -1,18 +1,16 @@
 var app     = require('../server.js');
 var db      = require('../lib/db.js');
-require('dotenv').config();
-var port    = process.env.PORT || 80;
-console.log(port);
+const config  = require('../config.js');
 
 var supertest = require('supertest');
-var api = supertest('http://localhost:'+port);
+var api = supertest('http://localhost:'+ config.port);
 
 require('./testHelper');
 
 describe('Server Routes', function() {
 
   before(function(done) {
-    app.listen(port, done);
+    app.listen(config.port, done);
   });
 
   describe('Index Route', function() {
@@ -31,6 +29,14 @@ describe('Server Routes', function() {
        .type("form")
        .send({'inputAddress': 'notcorrectforminput',
               'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
+       .expect(400, done);
+    });
+
+    it('no inputAddress in /api/add', function(done) {
+      api.post('/api/add')
+       .set("Content-Type", "application/json")
+       .type("form")
+       .send({'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
        .expect(400, done);
     });
 
