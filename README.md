@@ -5,11 +5,6 @@ Simple Zcash(ZEC) faucet built with Node.
 [![Coverage Status](https://coveralls.io/repos/github/super3/zfaucet/badge.svg?branch=master)](https://coveralls.io/github/super3/zfaucet?branch=master)
 [![License](https://img.shields.io/badge/license-AGPLv3-blue.svg?label=license)](https://github.com/Storj/super3/zfaucet/blob/master/LICENSE)
 
-### Install
-```
-npm install
-```
-
 #### DB Setup - Install on Linux
 ```
 source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
@@ -23,6 +18,15 @@ sudo apt-get install rethinkdb
 npm install -g recli
 recli 'r.db("test").tableCreate("payouts")'
 recli 'r.table("payouts").indexCreate("timestamp")'
+```
+
+### Install & Run
+```
+git clone https://github.com/super3/zfaucet
+cd ~/zfaucet
+npm install
+npm install -g nodemon
+nodemon server.js
 ```
 
 #### Sending Script
