@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+/* istanbul ignore next */
 module.exports = {
   connectionConfig: { host: 'localhost', port: 28015 },
   sendingAddress: 't1YtcRXgoDsVj6sDhGA71sgdDLoR9Q1QcnL',
