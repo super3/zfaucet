@@ -25,7 +25,7 @@ recli 'r.table("payouts").indexCreate("timestamp")'
 Use the [Zcash Debian binary packages](https://github.com/zcash/zcash/wiki/Debian-binary-packages) install guide. The [Zcash 1.0 User Guide](https://github.com/zcash/zcash/wiki/1.0-User-Guide) has additional information if needed. Will have to fully sync before you can send any payments. 
 
 ### Install & Run
-```
+```bash
 git clone https://github.com/super3/zfaucet
 cd ~/zfaucet
 npm install
