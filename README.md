@@ -5,20 +5,24 @@ Simple Zcash(ZEC) faucet built with Node.
 [![Coverage Status](https://coveralls.io/repos/github/super3/zfaucet/badge.svg?branch=master)](https://coveralls.io/github/super3/zfaucet?branch=master)
 [![License](https://img.shields.io/badge/license-AGPLv3-blue.svg?label=license)](https://github.com/Storj/super3/zfaucet/blob/master/LICENSE)
 
-#### DB Setup - Install on Linux
-```
+## DB and Zcash Setup
+#### Download and Install RethinkDB
+```bash
 source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
 wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
 sudo apt-get update
 sudo apt-get install rethinkdb
 ```
 
-#### DB Setup - Create Index for Timestamp
-```
+#### Create Index for Timestamp
+```bash
 npm install -g recli
 recli 'r.db("test").tableCreate("payouts")'
 recli 'r.table("payouts").indexCreate("timestamp")'
 ```
+
+### Install Zcash
+Use the [Zcash Debian binary packages](https://github.com/zcash/zcash/wiki/Debian-binary-packages) install guide. The [Zcash 1.0 User Guide](https://github.com/zcash/zcash/wiki/1.0-User-Guide) has additional information if needed. Will have to fully sync before you can send any payments. 
 
 ### Install & Run
 ```
