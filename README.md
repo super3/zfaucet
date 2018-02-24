@@ -25,6 +25,16 @@ recli 'r.db("test").tableCreate("payouts")'
 recli 'r.table("payouts").indexCreate("timestamp")'
 ```
 
+#### Sending Script
+We run this as a crontab ```*/5 * * * * ~/script.sh >> ~/zlog.log``` every 5 minutes.
+```bash
+#!/usr/bin/env sh
+cd ~/zfaucet
+git fetch && git reset --hard origin/master
+echo "captchaApiKey=[Coinhive API KEY]" > ~/zfaucet/.env
+/root/.nvm/versions/node/v8.9.4/bin/node ~/zfaucet/sending.js
+```
+
 ### Running
 Start RethinkDB:
 ```
