@@ -3,16 +3,13 @@ var path      = require("path");
 var express   = require('express');
 var r         = require('rethinkdb');
 
-// create app
+// create app and config vars
 var app       = express();
-
-// config vars
 const config  = require('./config.js');
 
 // internal libs
 var db        = require('./lib/db.js');
 var utils     = require('./lib/utils.js');
-
 require('./lib/captcha.js');
 
 // make the css folder viewable
