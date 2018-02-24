@@ -38,29 +38,3 @@ git fetch && git reset --hard origin/master
 echo "captchaApiKey=[Coinhive API KEY]" > ~/zfaucet/.env
 /root/.nvm/versions/node/v8.9.4/bin/node ~/zfaucet/sending.js
 ```
-
-### Running
-Start RethinkDB:
-```
-rethinkdb
-```
-
-Start the app:
-```
-npm start
-```
-
-### Testing
-```
-npm run test
-```
-
-### Coverage
-```
-npm run coverage
-```
-
-### Linting
-```
-npm run linter
-```
