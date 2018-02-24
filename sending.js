@@ -5,24 +5,11 @@ var r      = require('rethinkdb');
 var db     = require('./lib/db.js');
 var config = require('./config.js');
 
-// $ ./src/zcash-cli z_sendmany "$ZADDR" "[{\"amount\": 0.8, \"address\": \"$FRIEND\"}]"
-
 // Check for zcash install
 // if (!shell.which('zcash-cli')) {
 //   shell.echo('Sorry, this script requires zcash-cli');
 //   shell.exit(1);
 // }
-
-r.connect(config.connectionConfig, function(err, conn) {
-  this.conn = conn;
-  if(err) throw err;
-
-  doWork(conn).then(function() {
-    console.log('drips and update txids done');
-  });
-
-});
-
 
 function doWork(conn) {
   return new Promise(function(resolve, reject) {
@@ -48,7 +35,7 @@ function doDrips(conn) {
         if(rows.length === 0) return;
 
         var cmd = createCmd(config.sendingAddress, config.sendingAmount,
-           rows[0].payoutAddress);
+           rows[0].payoutAddress, config.sendingFee);
 
         // run and check output
         var res = shell.exec(cmd);
@@ -68,12 +55,15 @@ function doDrips(conn) {
 
 }
 
-function createCmd(sendAddress, sendAmount, payAddress) {
+// $ ./src/zcash-cli z_sendmany "$ZADDR" "[{\"amount\": 0.8, \"address\": \"$FRIEND\"}]"
+function createCmd(sendAddress, sendAmount, payAddress, fee) {
   var str = `zcash-cli z_sendmany "${sendAddress}" `;
   str += `"[{\\"amount\\": ${sendAmount},`;
-  str += `\\"address\\": \\"${payAddress}\\"}]"`;
+  str += `\\"address\\": \\"${payAddress}\\"}]" 1 ${fee}`;
   return str;
 }
+
+module.exports.createCmd = createCmd;
 
 function updateTransactionIds(conn) {
   return new Promise(function(resolve, reject) {
@@ -92,5 +82,19 @@ function updateTransactionIds(conn) {
       console.log("FAILED! " + res);
     });
     resolve();
+  });
+}
+
+// start the server, if running this script alone
+/* istanbul ignore next */
+if (require.main === module) {
+  r.connect(config.connectionConfig, function(err, conn) {
+    this.conn = conn;
+    if(err) throw err;
+
+    doWork(conn).then(function() {
+      console.log('drips and update txids done');
+    });
+
   });
 }

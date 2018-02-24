@@ -12,7 +12,7 @@ describe('Backend Utils', function() {
     };
 
     it('check timeSince function', function() {
-      var currentTime = new Date();
+      let currentTime = new Date();
 
       // current time
       expect(utils.timeSince(currentTime)).to.equal('0 seconds ago');
@@ -35,7 +35,7 @@ describe('Backend Utils', function() {
 
   describe('isAddress function', function() {
       it('valid taddress', function () {
-        var validAddress = 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa';
+        let validAddress = 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa';
         expect(utils.isAddress(validAddress)).to.equal(true);
       });
       it('invalid taddress', function () {
@@ -45,11 +45,11 @@ describe('Backend Utils', function() {
         expect(utils.isAddress('t1Zo4ZtTpu7tvdXvZRBZvC')).to.equal(false);
       });
       it('changed address', function () {
-        var changedAddress = 't1KjU2TUgNuWmbyEmYh19zJL5iiF5XdUsoa';
+        let changedAddress = 't1KjU2TUgNuWmbyEmYh19zJL5iiF5XdUsoa';
         expect(utils.isAddress(changedAddress)).to.equal(false);
       });
       it('bitcoin address', function () {
-        var bitcoinAddress = '1mayif3H2JDC62S4N3rLNtBNRAiUUP99k';
+        let bitcoinAddress = '1mayif3H2JDC62S4N3rLNtBNRAiUUP99k';
         expect(utils.isAddress(bitcoinAddress)).to.equal(false);
       });
 

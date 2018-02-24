@@ -7,26 +7,44 @@
     <meta name="author" content="">
     <link rel="icon" href="../../../../favicon.ico">
 
-    <title>zecFaucet</title>
+    <title>zFaucet - Free Zcash (ZEC) Faucet</title>
 
     <!-- Bootstrap core CSS -->
     <link href="bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="narrow-jumbotron.css" rel="stylesheet">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114304012-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-114304012-1');
+    </script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
   </head>
 
   <body>
 
     <div class="container">
       <header class="header clearfix">
-        <h3 class="text-muted">zecFaucet</h3>
+        <h3 class="text-muted">zFaucet</h3>
       </header>
 
       <main role="main">
-        <div class="alert alert-warning" role="alert">
-          <strong>Notice:</strong> We got a little more popular than expected. Payouts may be significantly delayed.
+
+        <div class="alert alert-danger address-not-entered hidden" role="alert">
+          <strong>Oops!</strong> You need to supply a valid zcash t-address.
+          <a href="https://www.zcashcommunity.com/wallets/">Here is a list</a>
+           of good wallets to use.
         </div>
+
         <div class="jumbotron">
 
           <h1 class="display-5">Free Zcash (ZEC) Faucet</h1>
@@ -36,11 +54,19 @@
           <form action="/api/add" method="POST">
             <div class="form-group">
               <input type="text" class="form-control" name="inputAddress" id="inputAddress"
-               placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)">
-              <small id="emailHelp" class="form-text text-muted">Don't have one?
-                <a href="https://www.zcashcommunity.com/wallets/">Here is a list</a> of good wallets to use. </small>
+               placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)"><br/>
+              <script src="https://authedmine.com/lib/captcha.min.js" async></script>
+              <div class="coinhive-captcha"
+                data-hashes="256"
+                data-key="BTANZD3wGHbrS1NcDHYG8LxKUt86CMm4"
+                data-disable-elements="button[type=submit]"
+                data-callback="myCaptchaCallback"
+              >
+                <em>Loading Captcha...<br>
+                If it doesn't load, please disable Adblock!</em>
+              </div>
             </div>
-            <button type="submit" class="btn btn-lg btn-success">Give Me Free Zcash!</button>
+            <button type="submit" id="submit" class="btn btn-lg btn-success">Give Me Free Zcash!</button>
           </form>
         </div>
 
@@ -63,6 +89,8 @@
                       <td><a href="https://explorer.zcha.in/accounts/<%= drip.payoutAddress %>"><%= drip.payoutAddress %></a></td>
                       <% if (drip.transactionId) { %>
                       <td><a href="https://zcash.blockexplorer.com/tx/<%= drip.transactionId %>">View Transaction</a></td>
+                      <% } else if (drip.processed) { %>
+                      <td>Errored.</td>
                       <% } else { %>
                       <td>Pending...</td>
                       <% } %>
@@ -80,5 +108,22 @@
       </footer>
 
     </div> <!-- /container -->
+
+    <style>.hidden { display: none; }</style>
+    <script>
+    $(document).ready(function() {
+
+      $('#submit').on('click', function(e) {
+        var address = $('input#inputAddress')[0]
+
+        if(address.value.length < 34) {
+          e.preventDefault()
+          $('div.address-not-entered').removeClass('hidden')
+        } else { $('div.address-not-entered').addClass('hidden') }
+
+      })
+    })
+
+    </script>
   </body>
 </html>
