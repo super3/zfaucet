@@ -1,13 +1,11 @@
-/*jslint node: true */
-'use strict';
-
-var supertest = require('supertest');
-var api = supertest('http://localhost');
-
-/* jshint undef: true */
 var app     = require('../server.js');
 var db      = require('../lib/db.js');
+require('dotenv').config();
 var port    = process.env.PORT || 80;
+console.log(port);
+
+var supertest = require('supertest');
+var api = supertest('http://localhost:'+port);
 
 require('./testHelper');
 
