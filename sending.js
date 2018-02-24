@@ -86,7 +86,6 @@ function updateTransactionIds(conn) {
 }
 
 // start the server, if running this script alone
-/* istanbul ignore next */
 if (require.main === module) {
   r.connect(config.connectionConfig, function(err, conn) {
     this.conn = conn;
