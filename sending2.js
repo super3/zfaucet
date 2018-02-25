@@ -20,10 +20,10 @@ async function findInputs() {
 
   var inputs = await rpc.listunspent();
   if (inputs.length) {
-    console.log(`Number of Inputs: ${inputs.length}`);
+    console.log(`Number of Inputs: ${inputs.length}\n`);
 
     console.log(`First Input Amount: ${inputs[0].amount}`);
-    console.log(`First Input Address: ${inputs[0].address}`);
+    console.log(`First Input Address: ${inputs[0].address}\n`);
 
     return inputs[0].address;
   }
@@ -38,5 +38,5 @@ async function findInputs() {
 }
 
 findInputs().then(sendingAddress => {
-  console.log('sendAddress');
+  console.log(sendingAddress);
 });
