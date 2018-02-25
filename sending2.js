@@ -8,8 +8,8 @@ var config = require('./config.js');
 const rpc = stdrpc("http://localhost:8232", {
         req: {
                 auth: {
-                        username: "a",
-                        password: "b"
+                        username: config.rpcuser,
+                        password: config.rpcpass
                 }
         }
 });
