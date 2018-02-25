@@ -14,9 +14,9 @@ var config = require('./config.js');
 function doWork(conn) {
   return new Promise(function(resolve, reject) {
     doDrips(conn).then(function() {
-      console.log('drips done');
+      console.log('Drips done');
       updateTransactionIds(conn).then(function() {
-        console.log('update txids done');
+        console.log('Update txids done');
         resolve();
 
         // close up - errors...
@@ -43,7 +43,7 @@ function doDrips(conn) {
           console.log("FAILED! " + res);
         });
 
-        // update drip
+        // change drip to processed
         r.table('payouts').get(rows[0].id).update({processed: true,
            operationId: res.stdout.trim()}).run(conn);
 
@@ -67,19 +67,22 @@ module.exports.createCmd = createCmd;
 
 function updateTransactionIds(conn) {
   return new Promise(function(resolve, reject) {
-    // Run external tool synchronously
     res = shell.exec('zcash-cli z_getoperationresult');
     sendList = JSON.parse(res.stdout);
+
+    // update the TXID for each operation result
     sendList.forEach(function(transaction) {
       if(!transaction.hasOwnProperty('result')) return;
-      console.log('updating txid ' + transaction.id);
-      var record = r.table('payouts').filter({operationId: transaction.id})
-                    .update({transactionId: transaction.result.txid}).run(conn);
-      console.log('updated txid with ' + transaction.result.txid);
+
+      // update drips
+      console.log('Updating TXID for operation id: ' + transaction.id);
+      r.table('payouts').filter({operationId: transaction.id})
+        .update({transactionId: transaction.result.txid}).run(conn);
+      console.log(`Updated TXID with ${transaction.result.txid}`);
     });
-    //console.log(sendList);
+
     if (res.code !== 0) reject(function() {
-      console.log("FAILED! " + res);
+      console.log("Update transaction failed... " + res);
     });
     resolve();
   });
@@ -92,7 +95,7 @@ if (require.main === module) {
     if(err) throw err;
 
     doWork(conn).then(function() {
-      console.log('drips and update txids done');
+      console.log('Drips and update txids done');
     });
 
   });
