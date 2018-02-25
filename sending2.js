@@ -16,6 +16,7 @@ const rpc = stdrpc("http://localhost:8232", {
 
 async function doSend(sendingAddress) {
   console.log(sendAddress);
+  return
 }
 
 async function main() {
