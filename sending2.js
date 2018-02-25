@@ -14,7 +14,7 @@ const rpc = stdrpc("http://localhost:8232", {
         }
 });
 
-async function main() {
+async function findInputs() {
   var info = await rpc.getinfo();
   console.log(`Current Balance: ${info.balance}`);
 
@@ -37,4 +37,6 @@ async function main() {
 
 }
 
-main();
+findInputs().then(sendingAddress => {
+  console.log('sendAddress');
+});
