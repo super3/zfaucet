@@ -14,18 +14,31 @@ const rpc = stdrpc("http://localhost:8232", {
         }
 });
 
+async function doSend(sendingAddress) {
+  console.log(sendAddress);
+}
+
 async function main() {
   var info = await rpc.getinfo();
   console.log(`Current Balance: ${info.balance}`);
 
   var inputs = await rpc.listunspent();
-  if (inputs.length)
+  if (inputs.length) {
     console.log(`Number of Inputs: ${inputs.length}`);
-  else
+
+    console.log(`First Input Balance: ${inputs[0].balance}`);
+    console.log(`First Input Address: ${inputs[0].address}`);
+
+    doSend(inputs[0].address);
+  }
+  else {
     console.log(`Number of Inputs: 0`);
+    console.log(`Exiting...`);
+    process.exit();
+  }
 
   console.log(inputs);
 
-};
+}
 
 main();
