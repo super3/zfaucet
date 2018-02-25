@@ -15,7 +15,17 @@ const rpc = stdrpc("http://localhost:8232", {
 });
 
 async function main() {
-  console.log(await rpc.getinfo());
+  var info = await rpc.getinfo();
+  console.log(`Current Balance: ${info.balance}`);
+
+  var inputs = await rpc.listunspent();
+  if (inputs.length)
+    console.log(`Number of Inputs: []`);
+  else
+    console.log(`Number of Inputs: ${inputs.length}`);
+
+  console.log(inputs);
+
 };
 
 main();
