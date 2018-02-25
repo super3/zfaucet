@@ -26,10 +26,10 @@ async function main() {
   if (inputs.length) {
     console.log(`Number of Inputs: ${inputs.length}`);
 
-    console.log(`First Input Balance: ${inputs[0].balance}`);
+    console.log(`First Input Amount: ${inputs[0].amount}`);
     console.log(`First Input Address: ${inputs[0].address}`);
 
-    doSend(inputs[0].address);
+    await doSend(inputs[0].address);
   }
   else {
     console.log(`Number of Inputs: 0`);
