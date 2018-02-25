@@ -14,11 +14,6 @@ const rpc = stdrpc("http://localhost:8232", {
         }
 });
 
-async function doSend(sendingAddress) {
-  console.log(sendAddress);
-  return
-}
-
 async function main() {
   var info = await rpc.getinfo();
   console.log(`Current Balance: ${info.balance}`);
@@ -30,7 +25,7 @@ async function main() {
     console.log(`First Input Amount: ${inputs[0].amount}`);
     console.log(`First Input Address: ${inputs[0].address}`);
 
-    await doSend(inputs[0].address);
+    return inputs[0].address;
   }
   else {
     console.log(`Number of Inputs: 0`);
