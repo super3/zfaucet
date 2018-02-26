@@ -33,16 +33,18 @@ function indexOfMax(arr) {
     return maxIndex;
 }
 
-async function testBalance() {
-  var info = await rpc.getinfo();
-  return info.balance;
+async function testBalance(rpc) {
+  var balance = await rpc.getbalance();
+
+  if (balance === 0)
+    throw new Error('Balance is Zero.');
 }
 
 module.exports.testBalance = testBalance;
 
 async function findInputs(conn) {
-  var info = await rpc.getinfo();
-  console.log(`Current Balance: ${info.balance}`);
+  var balance = await rpc.getbalance();
+  console.log(`Current Balance: ${balance}`);
 
   var inputs = await rpc.listunspent();
   if (inputs.length) {
