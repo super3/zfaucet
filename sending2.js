@@ -83,15 +83,17 @@ async function sendDrip(conn, sendingAddress) {
 
 async function updateDrips(conn) {
   var operations = await rpc.zGetoperationresult();
-  operations.forEach(function(transaction) {
+  await operations.forEach(async function(transaction) {
     if(!transaction.hasOwnProperty('result')) return;
 
     // update drips
     console.log('Updating TXID for operation id: ' + transaction.id);
-    r.table('payouts').filter({operationId: transaction.id})
+    await r.table('payouts').filter({operationId: transaction.id})
       .update({transactionId: transaction.result.txid}).run(conn);
     console.log(`Updated TXID with ${transaction.result.txid}`);
   });
+
+  return conn;
 }
 
 // start the server, if running this script alone
@@ -102,7 +104,12 @@ if (require.main === module) {
 
     findInputs(conn).then(sendingAddress => {
       sendDrip(conn, sendingAddress).then(opid => {
-        updateDrips(conn);
+        updateDrips(conn).then(conn => {
+          // close up - errors...
+          // conn.close();
+          // process.exit();
+          console.log('close');
+        });
       });
     });
 
