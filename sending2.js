@@ -74,6 +74,8 @@ async function sendDrip(conn, sendingAddress) {
       r.table('payouts').get(rows[0].id).update({processed: true,
          operationId: opid}).run(conn);
 
+      console.log(`Send Was: ${opid}\n`);
+
     });
 
   });
