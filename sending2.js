@@ -67,13 +67,12 @@ async function sendDrip(sendingAddress) {
 }
 
 async function updateDrips() {
-  console.log('got here');
   var operations = await rpc.zGetoperationresult();
   operations.forEach(function(transaction) {
     if(!transaction.hasOwnProperty('result')) return;
 
-    console.log(transction.id);
-    console.log(transction.result.txid);
+    console.log(transaction.id);
+    console.log(transaction.result.txid);
   });
 }
 
