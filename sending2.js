@@ -83,15 +83,16 @@ async function sendDrip(conn, sendingAddress) {
 
 async function updateDrips(conn) {
   var operations = await rpc.zGetoperationresult();
-  await operations.forEach(async function(transaction) {
-    if(!transaction.hasOwnProperty('result')) return;
+  for(let transaction of operations) {
+    if(!transaction.hasOwnProperty('result')) continue;
 
     // update drips
     console.log('Updating TXID for operation id: ' + transaction.id);
     await r.table('payouts').filter({operationId: transaction.id})
-      .update({transactionId: transaction.result.txid}).run(conn);
+  .update({transactionId: transaction.result.txid}).run(conn);
     console.log(`Updated TXID with ${transaction.result.txid}`);
-  });
+  }
+
 
   return conn;
 }
@@ -108,7 +109,7 @@ if (require.main === module) {
           // close up - errors...
           // conn.close();
           // process.exit();
-          console.log('close');
+          console.log('Closing...');
         });
       });
     });
