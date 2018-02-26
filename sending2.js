@@ -11,7 +11,8 @@ const rpc = stdrpc("http://localhost:8232", {
                         username: config.rpcuser,
                         password: config.rpcpass
                 }
-        }
+        },
+        methodTransform: require("decamelize")
 });
 
 async function findInputs() {
@@ -28,8 +29,7 @@ async function findInputs() {
     return inputs[0].address;
   }
   else {
-    console.log(`Number of Inputs: 0`);
-    console.log(`Exiting...`);
+    console.log(`No Inputs. Exiting...`);
     process.exit();
   }
 
@@ -39,4 +39,11 @@ async function findInputs() {
 
 findInputs().then(sendingAddress => {
   console.log(sendingAddress);
+  var output = await rpc.zSendmany(sendingAddress, [
+  	{
+  			address: sendingAddress,
+  			amount: 0.000001,
+  	},
+  ], 1, 0.000001);
+
 });
