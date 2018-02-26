@@ -83,7 +83,8 @@ async function sendDrip(conn, sendingAddress) {
 
 async function updateDrips(conn) {
   var operations = await rpc.zGetoperationresult();
-  await operations.forEach(async function(transaction) {
+
+  await Promise.all(operations.map(async transaction => {
     if(!transaction.hasOwnProperty('result')) return;
 
     // update drips
@@ -91,7 +92,7 @@ async function updateDrips(conn) {
     await r.table('payouts').filter({operationId: transaction.id})
       .update({transactionId: transaction.result.txid}).run(conn);
     console.log(`Updated TXID with ${transaction.result.txid}`);
-  });
+  }));
 
   return conn;
 }
