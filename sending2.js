@@ -33,7 +33,7 @@ function indexOfMax(arr) {
     return maxIndex;
 }
 
-async function findInputs() {
+async function findInputs(conn) {
   var info = await rpc.getinfo();
   console.log(`Current Balance: ${info.balance}`);
 
@@ -56,29 +56,53 @@ async function findInputs() {
 
 }
 
-async function sendDrip(sendingAddress) {
-  var opid = await rpc.zSendmany(sendingAddress, [
-  	{
-  			address: 't1eMCcdpDXaSgRR7HTHKhGARTGacgPUddVt',
-  			amount: 0.000001,
-  	},
-  ], 1, 0.000001);
-  return opid;
+async function sendDrip(conn, sendingAddress) {
+
+  db.pendingDrips(conn).then(function(cursor) {
+    cursor.toArray(async function(err, rows) {
+      if(err) return;
+      if(rows.length === 0) return;
+
+      var opid = await rpc.zSendmany(sendingAddress, [
+      	{
+      			address: rows[0].payoutAddress,
+      			amount: config.sendingAmount,
+      	},
+      ], 1, config.sendingFee);
+
+      // change drip to processed
+      r.table('payouts').get(rows[0].id).update({processed: true,
+         operationId: opid}).run(conn);
+
+    });
+
+  });
 }
 
-async function updateDrips() {
+async function updateDrips(conn) {
   var operations = await rpc.zGetoperationresult();
   operations.forEach(function(transaction) {
     if(!transaction.hasOwnProperty('result')) return;
 
-    console.log(transaction.id);
-    console.log(transaction.result.txid);
+    // update drips
+    console.log('Updating TXID for operation id: ' + transaction.id);
+    r.table('payouts').filter({operationId: transaction.id})
+      .update({transactionId: transaction.result.txid}).run(conn);
+    console.log(`Updated TXID with ${transaction.result.txid}`);
   });
 }
 
-findInputs().then(sendingAddress => {
-  sendDrip(sendingAddress).then(opid => {
-    console.log(opid);
-    updateDrips();
+// start the server, if running this script alone
+if (require.main === module) {
+  r.connect(config.connectionConfig, function(err, conn) {
+    this.conn = conn;
+    if(err) throw err;
+
+    findInputs(conn).then(sendingAddress => {
+      sendDrip(conn, sendingAddress).then(opid => {
+        updateDrips(conn);
+      });
+    });
+
   });
-});
+}
