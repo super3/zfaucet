@@ -1,5 +1,5 @@
 //var expect = require('chai').expect;
-var sending = require('../sending2.js');
+var sending = require('../sending.js');
 const assert = require("assert");
 
 describe('Sending Script', function() {

@@ -1,91 +1,103 @@
-var shell  = require('shelljs');
 var r      = require('rethinkdb');
+var stdrpc = require('stdrpc');
 
 // internal libs
 var db     = require('./lib/db.js');
 var config = require('./config.js');
 
-// Check for zcash install
-// if (!shell.which('zcash-cli')) {
-//   shell.echo('Sorry, this script requires zcash-cli');
-//   shell.exit(1);
-// }
+const rpc = stdrpc("http://localhost:8232", {
+        req: {
+                auth: {
+                        username: config.rpcuser,
+                        password: config.rpcpass
+                }
+        },
+        methodTransform: require("decamelize")
+});
 
-function doWork(conn) {
-  return new Promise(function(resolve, reject) {
-    doDrips(conn).then(function() {
-      console.log('Drips done');
-      updateTransactionIds(conn).then(function() {
-        console.log('Update txids done');
-        resolve();
+function indexOfMax(arr) {
+    if (arr.length === 0) {
+        return -1;
+    }
 
-        // close up - errors...
-        conn.close();
-        process.exit();
-      });
-    });
-  });
+    var max = arr[0].amount;
+    var maxIndex = 0;
+
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i].amount > max) {
+            maxIndex = i;
+            max = arr[i].amount;
+        }
+    }
+
+    return maxIndex;
 }
 
-function doDrips(conn) {
-  return new Promise(function(resolve, reject) {
-    db.pendingDrips(conn).then(function(cursor) {
-      cursor.toArray(function(err, rows) {
-        if(err) return;
-        if(rows.length === 0) return;
+async function testBalance(rpc) {
+  var balance = await rpc.getbalance();
 
-        var cmd = createCmd(config.sendingAddress, config.sendingAmount,
-           rows[0].payoutAddress, config.sendingFee);
+  if (balance === 0)
+    throw new Error('Balance is Zero.');
+}
 
-        // run and check output
-        var res = shell.exec(cmd);
-        if (res.code !== 0) reject(function() {
-          console.log("FAILED! " + res);
-        });
+module.exports.testBalance = testBalance;
 
-        // change drip to processed
-        r.table('payouts').get(rows[0].id).update({processed: true,
-           operationId: res.stdout.trim()}).run(conn);
+async function findInputs(conn) {
+  var balance = await rpc.getbalance();
+  console.log(`Current Balance: ${balance}`);
 
-      });
+  var inputs = await rpc.listunspent();
+  if (inputs.length) {
+    console.log(`Number of Inputs: ${inputs.length}\n`);
 
-      resolve();
-    });
-  });
+    const large = indexOfMax(inputs);
+    console.log(`Largest Input Amount: ${inputs[large].amount}`);
+    console.log(`Largest Input Address: ${inputs[large].address}\n`);
+
+    return inputs[large].address;
+  }
+  else {
+    console.log(`No Inputs. Exiting...`);
+    process.exit();
+  }
+
+  console.log(inputs);
 
 }
 
-// $ ./src/zcash-cli z_sendmany "$ZADDR" "[{\"amount\": 0.8, \"address\": \"$FRIEND\"}]"
-function createCmd(sendAddress, sendAmount, payAddress, fee) {
-  var str = `zcash-cli z_sendmany "${sendAddress}" `;
-  str += `"[{\\"amount\\": ${sendAmount},`;
-  str += `\\"address\\": \\"${payAddress}\\"}]" 1 ${fee}`;
-  return str;
+async function sendDrip(conn, sendingAddress) {
+    const cursor = await db.pendingDrips(conn);
+    const rows = await cursor.toArray();
+    if(rows.length === 0) return;
+
+    var opid = await rpc.zSendmany(sendingAddress, [
+    	{
+    			address: rows[0].payoutAddress,
+    			amount: config.sendingAmount,
+    	},
+    ], 1, config.sendingFee);
+
+    // change drip to processed
+    await r.table('payouts').get(rows[0].id).update({processed: true,
+       operationId: opid}).run(conn);
+
+    console.log(`Send Was: ${opid}\n`);
 }
 
-module.exports.createCmd = createCmd;
+async function updateDrips(conn) {
+  var operations = await rpc.zGetoperationresult();
+  for(let transaction of operations) {
+    if(!transaction.hasOwnProperty('result')) continue;
 
-function updateTransactionIds(conn) {
-  return new Promise(function(resolve, reject) {
-    res = shell.exec('zcash-cli z_getoperationresult');
-    sendList = JSON.parse(res.stdout);
+    // update drips
+    console.log('Updating TXID for operation id: ' + transaction.id);
+    await r.table('payouts').filter({operationId: transaction.id})
+  .update({transactionId: transaction.result.txid}).run(conn);
+    console.log(`Updated TXID with ${transaction.result.txid}`);
+  }
 
-    // update the TXID for each operation result
-    sendList.forEach(function(transaction) {
-      if(!transaction.hasOwnProperty('result')) return;
 
-      // update drips
-      console.log('Updating TXID for operation id: ' + transaction.id);
-      r.table('payouts').filter({operationId: transaction.id})
-        .update({transactionId: transaction.result.txid}).run(conn);
-      console.log(`Updated TXID with ${transaction.result.txid}`);
-    });
-
-    if (res.code !== 0) reject(function() {
-      console.log("Update transaction failed... " + res);
-    });
-    resolve();
-  });
+  return conn;
 }
 
 // start the server, if running this script alone
@@ -94,8 +106,15 @@ if (require.main === module) {
     this.conn = conn;
     if(err) throw err;
 
-    doWork(conn).then(function() {
-      console.log('Drips and update txids done');
+    findInputs(conn).then(sendingAddress => {
+      sendDrip(conn, sendingAddress).then(opid => {
+        updateDrips(conn).then(conn => {
+          // close up - errors...
+          conn.close();
+          process.exit();
+          console.log('Closing...');
+        });
+      });
     });
 
   });
