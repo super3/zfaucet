@@ -64,28 +64,22 @@ async function findInputs(conn) {
 }
 
 async function sendDrip(conn, sendingAddress) {
+    const cursor = await db.pendingDrips(conn);
+    const rows = await cursor.toArray();
+    if(rows.length === 0) return;
 
-  db.pendingDrips(conn).then(function(cursor) {
-    cursor.toArray(async function(err, rows) {
-      if(err) return;
-      if(rows.length === 0) return;
+    var opid = await rpc.zSendmany(sendingAddress, [
+    	{
+    			address: rows[0].payoutAddress,
+    			amount: config.sendingAmount,
+    	},
+    ], 1, config.sendingFee);
 
-      var opid = await rpc.zSendmany(sendingAddress, [
-      	{
-      			address: rows[0].payoutAddress,
-      			amount: config.sendingAmount,
-      	},
-      ], 1, config.sendingFee);
+    // change drip to processed
+    await r.table('payouts').get(rows[0].id).update({processed: true,
+       operationId: opid}).run(conn);
 
-      // change drip to processed
-      r.table('payouts').get(rows[0].id).update({processed: true,
-         operationId: opid}).run(conn);
-
-      console.log(`Send Was: ${opid}\n`);
-
-    });
-
-  });
+    console.log(`Send Was: ${opid}\n`);
 }
 
 async function updateDrips(conn) {
@@ -114,8 +108,8 @@ if (require.main === module) {
       sendDrip(conn, sendingAddress).then(opid => {
         updateDrips(conn).then(conn => {
           // close up - errors...
-          // conn.close();
-          // process.exit();
+          conn.close();
+          process.exit();
           console.log('Closing...');
         });
       });
