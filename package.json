@@ -40,7 +40,6 @@
     "coveralls": "^3.0.0",
     "istanbul": "^0.4.5",
     "jshint": "^2.9.5",
-    "jshint-esnext": "^2.7.0-3",
     "mocha": "^4.1.0",
     "nodemon": "^1.15.0",
     "sinon": "^4.4.2",

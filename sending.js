@@ -4,6 +4,7 @@ var stdrpc = require('stdrpc');
 // internal libs
 var db     = require('./lib/db.js');
 var config = require('./config.js');
+var utils  = require('./lib/utils.js');
 
 const rpc = stdrpc("http://localhost:8232", {
         req: {
@@ -14,24 +15,6 @@ const rpc = stdrpc("http://localhost:8232", {
         },
         methodTransform: require("decamelize")
 });
-
-function indexOfMax(arr) {
-    if (arr.length === 0) {
-        return -1;
-    }
-
-    var max = arr[0].amount;
-    var maxIndex = 0;
-
-    for (var i = 1; i < arr.length; i++) {
-        if (arr[i].amount > max) {
-            maxIndex = i;
-            max = arr[i].amount;
-        }
-    }
-
-    return maxIndex;
-}
 
 async function testBalance(rpc) {
   var balance = await rpc.getbalance();
@@ -50,7 +33,7 @@ async function findInputs(conn) {
   if (inputs.length) {
     console.log(`Number of Inputs: ${inputs.length}\n`);
 
-    const large = indexOfMax(inputs);
+    const large = utils.indexOfMax(inputs);
     console.log(`Largest Input Amount: ${inputs[large].amount}`);
     console.log(`Largest Input Address: ${inputs[large].address}\n`);
 
