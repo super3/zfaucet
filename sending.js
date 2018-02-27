@@ -16,15 +16,6 @@ const rpc = stdrpc("http://localhost:8232", {
         methodTransform: require("decamelize")
 });
 
-async function testBalance(rpc) {
-  var balance = await rpc.getbalance();
-
-  if (balance === 0)
-    throw new Error('Balance is Zero.');
-}
-
-module.exports.testBalance = testBalance;
-
 async function findInputs(conn) {
   var balance = await rpc.getbalance();
   console.log(`Current Balance: ${balance}`);
@@ -43,8 +34,6 @@ async function findInputs(conn) {
     console.log(`No Inputs. Exiting...`);
     process.exit();
   }
-
-  console.log(inputs);
 
 }
 

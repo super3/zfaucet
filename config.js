@@ -9,4 +9,6 @@ module.exports = {
   port: process.env.PORT || 80,
   rpcuser: process.env.rpcuser,
   rpcpass: process.env.rpcpass,
+  displayPendingNum: 10,
+  dripsPerSend: 1
 };
