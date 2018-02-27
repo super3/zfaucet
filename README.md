@@ -22,12 +22,28 @@ recli 'r.table("payouts").indexCreate("timestamp")'
 ```
 
 ### Install Zcash
-Use the [Zcash Debian binary packages](https://github.com/zcash/zcash/wiki/Debian-binary-packages) install guide. The [Zcash 1.0 User Guide](https://github.com/zcash/zcash/wiki/1.0-User-Guide) has additional information if needed. Will have to fully sync before you can send any payments. 
+Use the [Zcash Debian binary packages](https://github.com/zcash/zcash/wiki/Debian-binary-packages) install guide. The [Zcash 1.0 User Guide](https://github.com/zcash/zcash/wiki/1.0-User-Guide) has additional information if needed. Will have to fully sync before you can send any payments.
 
 # Install & Run
+Clone the repo.
+
 ```bash
 git clone https://github.com/super3/zfaucet
 cd ~/zfaucet
+```
+
+Save this under `~/zfaucet/.env`.
+
+```bash
+captchaApiKey=[Coinhive API KEY]
+rpcuser=[Zcash RPC Username]
+rpcpass=[Zcash RPC Password]
+port=[Port you want the webserver to run]
+```
+
+Run with nodemon.
+
+```bash
 npm install
 npm install -g nodemon
 nodemon server.js
@@ -39,6 +55,5 @@ We run this as a crontab ```*/5 * * * * ~/script.sh >> ~/zlog.log``` every 5 min
 #!/usr/bin/env sh
 cd ~/zfaucet
 git fetch && git reset --hard origin/master
-echo "captchaApiKey=[Coinhive API KEY]" > ~/zfaucet/.env
 /root/.nvm/versions/node/v8.9.4/bin/node ~/zfaucet/sending.js
 ```
