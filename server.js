@@ -31,7 +31,8 @@ app.get('/',function(req, res){
     db.latestDrips(conn).then(function(cursor) {
       cursor.toArray(function(err, rows) {
         // make time in rows human readable, and then send to template
-        res.render('index', { drips: utils.readableTime(rows) });
+        res.render('index', { drips: utils.readableTime(rows), hashes:
+          config.hashes });
       });
     });
 
