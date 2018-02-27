@@ -50,7 +50,9 @@ app.post('/api/add', function (req, res) {
   global.validateCaptcha(req.body['coinhive-captcha-token'])
     .then(response => {
       // check success response
-      if (JSON.parse(response).success === false) return res.sendStatus(400);
+      if (JSON.parse(response).success === false) {
+        return res.sendStatus(400);
+      }
 
       // save to db, and redirect to index
       db.createDrip(req.body.inputAddress);

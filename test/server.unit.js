@@ -79,7 +79,7 @@ describe('Server Routes', function() {
       api.post('/api/add')
        .set("Content-Type", "application/json")
        .type("form")
-       .send({'inputAddress': 't1KjU2TUgNuWmbyXmYh19AJL5niF5EdUsoa',
+       .send({'inputAddress': 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa',
               'coinhive-captcha-token': 'invalidcaptcha'})
        .expect(400, done);
     });
