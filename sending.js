@@ -8,8 +8,8 @@ var utils  = require('./lib/utils.js');
 const rpc = require("./lib/rpc.js");
 
 async function findInputs(conn) {
+  // get balance from rpc daemon
   const balance = await rpc.getbalance();
-  console.log(`Current Balance: ${balance}`);
 
   // check if we have enought money to send
   const balMinusSend = balance -
@@ -17,27 +17,25 @@ async function findInputs(conn) {
   if (balMinusSend <= 0)
     throw new Error("Not enough to send.");
 
+  // get inputs and make sure its not empty
   var inputs = await rpc.listunspent();
   if(inputs.length === 0)
     throw new Error("No inputs.");
 
-  console.log(`Number of Inputs: ${inputs.length}\n`);
-
+  // get and return largest input address
   const large = utils.indexOfMax(inputs);
-  console.log(`Largest Input Amount: ${inputs[large].amount}`);
-  console.log(`Largest Input Address: ${inputs[large].address}\n`);
-
-  console.log(inputs[large].address);
   return inputs[large].address;
 }
 
 module.exports.findInputs = findInputs;
 
 async function sendDrip(conn, sendingAddress) {
+    // get pending drips and make sure its not empty
     const cursor = await db.pendingDrips(conn);
     const rows = await cursor.toArray();
     if(rows.length === 0) return;
 
+    // send payment
     var opid = await rpc.zSendmany(sendingAddress, [
     	{
     			address: rows[0].payoutAddress,
@@ -45,11 +43,11 @@ async function sendDrip(conn, sendingAddress) {
     	},
     ], 1, config.sendingFee);
 
-    // change drip to processed
+    // change drips to processed:true
     await r.table('payouts').get(rows[0].id).update({processed: true,
        operationId: opid}).run(conn);
 
-    console.log(`Send Was: ${opid}\n`);
+    //console.log(`Send Was: ${opid}\n`);
     return opid;
 }
 
@@ -61,10 +59,10 @@ async function updateDrips(conn) {
     if(!transaction.hasOwnProperty('result')) continue;
 
     // update drips
-    console.log('Updating TXID for operation id: ' + transaction.id);
+    //console.log('Updating TXID for operation id: ' + transaction.id);
     await r.table('payouts').filter({operationId: transaction.id})
       .update({transactionId: transaction.result.txid}).run(conn);
-    console.log(`Updated TXID with ${transaction.result.txid}`);
+    //console.log(`Updated TXID with ${transaction.result.txid}`);
   }
 
   return conn;

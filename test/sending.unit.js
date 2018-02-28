@@ -90,7 +90,7 @@ describe('Sending Script', function() {
 
   describe('Send Testing', function() {
 
-    it("pick largest input", async () => {
+    it("send sample drip", async () => {
       await db.createDrip('t1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX');
 
       rpc.getbalance = sinon.stub().returns(1);
@@ -108,7 +108,7 @@ describe('Sending Script', function() {
 
   describe('Update Testing', function() {
 
-    it("pick largest input", async () => {
+    it("update sample drip", async () => {
       rpc.getbalance = sinon.stub().returns(1);
       rpc.listunspent = sinon.stub().returns(inputs);
       rpc.zGetoperationresult = sinon.stub().returns(ops);
