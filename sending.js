@@ -1,10 +1,10 @@
-var r      = require('rethinkdb');
-var stdrpc = require('stdrpc');
+const r      = require('rethinkdb');
+const stdrpc = require('stdrpc');
 
 // internal libs
-var db     = require('./lib/db.js');
-var config = require('./config.js');
-var utils  = require('./lib/utils.js');
+const db     = require('./lib/db.js');
+const config = require('./config.js');
+const utils  = require('./lib/utils.js');
 const rpc  = require("./lib/rpc.js");
 
 async function findInputs(conn) {
@@ -18,7 +18,7 @@ async function findInputs(conn) {
     throw new Error("Not enough to send.");
 
   // get inputs and make sure its not empty
-  var inputs = await rpc.listunspent();
+  const inputs = await rpc.listunspent();
   if(inputs.length === 0)
     throw new Error("No inputs.");
 
@@ -36,7 +36,7 @@ async function sendDrip(conn, sendingAddress) {
     if(rows.length === 0) return;
 
     // send payment
-    var opid = await rpc.zSendmany(sendingAddress, [
+    const opid = await rpc.zSendmany(sendingAddress, [
     	{
     			address: rows[0].payoutAddress,
     			amount: config.sendingAmount,
@@ -54,7 +54,8 @@ async function sendDrip(conn, sendingAddress) {
 module.exports.sendDrip = sendDrip;
 
 async function updateDrips(conn) {
-  var operations = await rpc.zGetoperationresult();
+  const operations = await rpc.zGetoperationresult();
+  
   for(let transaction of operations) {
     if(!transaction.hasOwnProperty('result')) continue;
 
