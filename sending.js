@@ -5,7 +5,7 @@ var stdrpc = require('stdrpc');
 var db     = require('./lib/db.js');
 var config = require('./config.js');
 var utils  = require('./lib/utils.js');
-const rpc = require("./lib/rpc.js");
+const rpc  = require("./lib/rpc.js");
 
 async function findInputs(conn) {
   // get balance from rpc daemon
