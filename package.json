@@ -7,7 +7,7 @@
     "node": "8.9.4"
   },
   "scripts": {
-    "test": "npm run testsuite && npm run linter",
+    "test": "npm run testsuite",
     "testsuite": "./node_modules/.bin/mocha test/* --recursive --exit",
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec --exit",
     "linter": "./node_modules/.bin/jshint --config .jshintrc ./server.js ./lib ./test",
