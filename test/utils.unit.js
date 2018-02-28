@@ -83,9 +83,19 @@ describe('Backend Utils', function() {
               "amount": 0.00197900,
               "confirmations": 390,
               "spendable": true
+            },
+            {
+              "txid": "80e2185b6b12b77dbc11bf6105b7cb801d3e44eb65fed6858a592f2781a5afb6",
+              "vout": 1,
+              "generated": false,
+              "address": "t1atPPxpdgpzC7TUNtZLMq7KCUieEYuJKkn",
+              "scriptPubKey": "76a914baa0073177890860e854780b0db792333f79df1388ac",
+              "amount": 0.00199900,
+              "confirmations": 390,
+              "spendable": true
             }
           ];
-          expect(utils.indexOfMax(sample)).to.equal(1);
+          expect(utils.indexOfMax(sample)).to.equal(2);
       });
   });
 
