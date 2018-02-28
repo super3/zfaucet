@@ -5,37 +5,33 @@ var stdrpc = require('stdrpc');
 var db     = require('./lib/db.js');
 var config = require('./config.js');
 var utils  = require('./lib/utils.js');
-
-const rpc = stdrpc("http://localhost:8232", {
-        req: {
-                auth: {
-                        username: config.rpcuser,
-                        password: config.rpcpass
-                }
-        },
-        methodTransform: require("decamelize")
-});
+const rpc = require("./lib/rpc.js");
 
 async function findInputs(conn) {
-  var balance = await rpc.getbalance();
+  const balance = await rpc.getbalance();
   console.log(`Current Balance: ${balance}`);
 
+  // check if we have enought money to send
+  const balMinusSend = balance -
+    (config.sendingAmount * config.dripsPerSend) - config.sendingFee;
+  if (balMinusSend <= 0)
+    throw new Error("Not enough to send.");
+
   var inputs = await rpc.listunspent();
-  if (inputs.length) {
-    console.log(`Number of Inputs: ${inputs.length}\n`);
+  if(inputs.length === 0)
+    throw new Error("No inputs.");
 
-    const large = utils.indexOfMax(inputs);
-    console.log(`Largest Input Amount: ${inputs[large].amount}`);
-    console.log(`Largest Input Address: ${inputs[large].address}\n`);
+  console.log(`Number of Inputs: ${inputs.length}\n`);
 
-    return inputs[large].address;
-  }
-  else {
-    console.log(`No Inputs. Exiting...`);
-    process.exit();
-  }
+  const large = utils.indexOfMax(inputs);
+  console.log(`Largest Input Amount: ${inputs[large].amount}`);
+  console.log(`Largest Input Address: ${inputs[large].address}\n`);
 
+  console.log(inputs[large].address);
+  return inputs[large].address;
 }
+
+module.exports.findInputs = findInputs;
 
 async function sendDrip(conn, sendingAddress) {
     const cursor = await db.pendingDrips(conn);
@@ -54,7 +50,10 @@ async function sendDrip(conn, sendingAddress) {
        operationId: opid}).run(conn);
 
     console.log(`Send Was: ${opid}\n`);
+    return opid;
 }
+
+module.exports.sendDrip = sendDrip;
 
 async function updateDrips(conn) {
   var operations = await rpc.zGetoperationresult();
@@ -64,13 +63,14 @@ async function updateDrips(conn) {
     // update drips
     console.log('Updating TXID for operation id: ' + transaction.id);
     await r.table('payouts').filter({operationId: transaction.id})
-  .update({transactionId: transaction.result.txid}).run(conn);
+      .update({transactionId: transaction.result.txid}).run(conn);
     console.log(`Updated TXID with ${transaction.result.txid}`);
   }
 
-
   return conn;
 }
+
+module.exports.updateDrips = updateDrips;
 
 // start the server, if running this script alone
 if (require.main === module) {
