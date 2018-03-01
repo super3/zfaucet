@@ -7,10 +7,10 @@
     "node": "8.9.4"
   },
   "scripts": {
-    "test": "npm run testsuite",
+    "test": "npm run testsuite && npm run coverage",
     "testsuite": "./node_modules/.bin/mocha test/* --recursive --exit",
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec --exit",
-    "linter": "./node_modules/.bin/jshint --config .jshintrc ./server.js ./lib ./test",
+    "linter": "xo",
     "start": "node server.js"
   },
   "repository": {
@@ -39,7 +39,7 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.0",
-    "istanbul": "^0.4.5",
+    "istanbul": "^1.1.0-alpha.1",
     "jshint": "^2.9.5",
     "mocha": "^4.1.0",
     "nodemon": "^1.17.1",
