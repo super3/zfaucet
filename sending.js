@@ -85,7 +85,7 @@ if (require.main === module) {
 		}
 
 		findInputs(conn).then(sendingAddress => {
-			sendDrip(conn, sendingAddress).then(opid => {
+			sendDrip(conn, sendingAddress).then(() => {
 				updateDrips(conn).then(conn => {
 					// Close up - errors...
 					conn.close();
