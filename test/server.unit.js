@@ -23,6 +23,12 @@ describe('Server Routes', () => {
 		});
 	});
 
+	describe('Faucet Route', () => {
+		it('faucet should return a 200 response', done => {
+			api.get('/faucet').expect(200, done);
+		});
+	});
+
 	describe('Add Route', () => {
 		it('missing inputAddress in /api/add', done => {
 			api.post('/api/add')

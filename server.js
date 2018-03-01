@@ -35,6 +35,19 @@ app.get('/', async (req, res) => {
 	config.hashes});
 });
 
+// index route
+app.get('/faucet', async (req, res) => {
+	const conn = await r.connect(config.connectionConfig);
+
+	// pass drips to ejs for rendering
+	const cursor = await db.latestDrips(conn);
+	const rows = await cursor.toArray();
+
+	// make time in rows human readable, and then send to template
+	res.render('faucet', {drips: utils.readableTime(rows), hashes:
+	config.hashes});
+});
+
 // add route
 app.post('/api/add', async (req, res) => {
 	// empty input, valid zcash address, then empty captcha
@@ -52,7 +65,7 @@ app.post('/api/add', async (req, res) => {
 
 	// save to db, and redirect to index
 	db.createDrip(req.body.inputAddress);
-	res.redirect('/');
+	res.redirect('/faucet');
 });
 
 // start the server, if running this script alone
