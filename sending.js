@@ -12,7 +12,7 @@ async function findInputs(conn) {
 
 	// Check if we have enought money to send
 	const balMinusSend = balance -
-    (config.sendingAmount * config.dripsPerSend) - config.sendingFee;
+		(config.sendingAmount * config.dripsPerSend) - config.sendingFee;
 	if (balMinusSend <= 0) {
 		throw new Error('Not enough to send.');
 	}
@@ -41,10 +41,10 @@ async function sendDrip(conn, sendingAddress) {
 
 	// Send payment
 	const opid = await rpc.zSendmany(sendingAddress, [
-    	{
-    			address: rows[0].payoutAddress,
-    			amount: config.sendingAmount
-    	}
+		{
+			address: rows[0].payoutAddress,
+			amount: config.sendingAmount
+		}
 	], 1, config.sendingFee);
 
 	// Change drips to processed:true
@@ -78,21 +78,21 @@ module.exports.updateDrips = updateDrips;
 
 // Start the server, if running this script alone
 if (require.main === module) {
-  r.connect(config.connectionConfig, function (err, conn) {
-  	this.conn = conn;
-  	if (err) {
-  		throw err;
-  	}
+	r.connect(config.connectionConfig, function (err, conn) {
+		this.conn = conn;
+		if (err) {
+			throw err;
+		}
 
-    findInputs(conn).then(sendingAddress => {
-      sendDrip(conn, sendingAddress).then(opid => {
-        updateDrips(conn).then(conn => {
-          // Close up - errors...
-          conn.close();
-          process.exit();
-          console.log('Closing...');
-        });
-      });
-    });
-  });
+		findInputs(conn).then(sendingAddress => {
+			sendDrip(conn, sendingAddress).then(opid => {
+				updateDrips(conn).then(conn => {
+					// Close up - errors...
+					conn.close();
+					process.exit();
+					console.log('Closing...');
+				});
+			});
+		});
+	});
 }
