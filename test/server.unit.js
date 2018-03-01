@@ -1,3 +1,5 @@
+/* global it, describe, before */
+
 const supertest = require('supertest');
 
 const app = require('../server.js');
@@ -23,8 +25,7 @@ describe('Server Routes', () => {
       api.post('/api/add')
       	.set('Content-Type', 'application/json')
       	.type('form')
-      	.send({inputAddress: 'notcorrectforminput',
-      		'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
+      	.send({inputAddress: 'notcorrectforminput', 'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
       	.expect(400, done);
     });
 

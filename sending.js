@@ -79,10 +79,10 @@ module.exports.updateDrips = updateDrips;
 // Start the server, if running this script alone
 if (require.main === module) {
   r.connect(config.connectionConfig, function (err, conn) {
-    this.conn = conn;
-    if (err) {
-      throw err;
-    }
+  	this.conn = conn;
+  	if (err) {
+  		throw err;
+  	}
 
     findInputs(conn).then(sendingAddress => {
       sendDrip(conn, sendingAddress).then(opid => {

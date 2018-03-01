@@ -1,3 +1,6 @@
+/* global it, describe */
+/* eslint camelcase: ["error", {properties: "never"}] */
+
 const sinon = require('sinon');
 const chai = require('chai');
 const r = require('rethinkdb');
@@ -58,56 +61,55 @@ describe('Sending Script', () => {
 	];
 
   describe('Balance Testing', () => {
-    it('error when balance is 0', async () => {
-    	rpc.getbalance = sinon.stub().returns(0);
-    	await chai.assert.isRejected(sending.findInputs());
-    });
+		it('error when balance is 0', async () => {
+			rpc.getbalance = sinon.stub().returns(0);
+			await chai.assert.isRejected(sending.findInputs());
+		});
 
-    it(`error when balance is ${config.sendingAmount}`, async () => {
-    	rpc.getbalance = sinon.stub().returns(config.sendingAmount);
-    	await chai.assert.isRejected(sending.findInputs());
-    });
+		it(`error when balance is ${config.sendingAmount}`, async () => {
+			rpc.getbalance = sinon.stub().returns(config.sendingAmount);
+			await chai.assert.isRejected(sending.findInputs());
+		});
   });
 
   describe('Inputs Testing', () => {
-    it('error with empty inputs', async () => {
-    	rpc.listunspent = sinon.stub().returns([]);
-    	await chai.assert.isRejected(sending.findInputs());
-    });
+		it('error with empty inputs', async () => {
+			rpc.listunspent = sinon.stub().returns([]);
+			await chai.assert.isRejected(sending.findInputs());
+		});
 
-    it('pick largest input', async () => {
-    	rpc.getbalance = sinon.stub().returns(1);
-    	rpc.listunspent = sinon.stub().returns(inputs);
-    	await chai.assert.eventually.equal(sending.findInputs(),
-       't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX');
-    });
+		it('pick largest input', async () => {
+			rpc.getbalance = sinon.stub().returns(1);
+			rpc.listunspent = sinon.stub().returns(inputs);
+			await chai.assert.eventually.equal(sending.findInputs(),
+				't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX');
+		});
   });
 
   describe('Send Testing', () => {
-    it('send sample drip', async () => {
-    	await db.createDrip('t1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX');
+		it('send sample drip', async () => {
+			await db.createDrip('t1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX');
 
-    	rpc.getbalance = sinon.stub().returns(1);
-    	rpc.listunspent = sinon.stub().returns(inputs);
-    	rpc.zSendmany = sinon.stub()
-    		.returns('opid-f746c8ac-116d-476b-8b44-bb098a354dad');
+			rpc.getbalance = sinon.stub().returns(1);
+			rpc.listunspent = sinon.stub().returns(inputs);
+			rpc.zSendmany = sinon.stub()
+				.returns('opid-f746c8ac-116d-476b-8b44-bb098a354dad');
 
-    	const conn = await r.connect(config.connectionConfig);
-    	await chai.assert.eventually.equal(sending
-    		.sendDrip(conn, 't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX'),
-       'opid-f746c8ac-116d-476b-8b44-bb098a354dad');
-    });
+			const conn = await r.connect(config.connectionConfig);
+			await chai.assert.eventually.equal(sending
+				.sendDrip(conn, 't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX'),
+				'opid-f746c8ac-116d-476b-8b44-bb098a354dad');
+		});
   });
 
   describe('Update Testing', () => {
-    it('update sample drip', async () => {
-    	rpc.getbalance = sinon.stub().returns(1);
-    	rpc.listunspent = sinon.stub().returns(inputs);
-    	rpc.zGetoperationresult = sinon.stub().returns(ops);
+		it('update sample drip', async () => {
+			rpc.getbalance = sinon.stub().returns(1);
+			rpc.listunspent = sinon.stub().returns(inputs);
+			rpc.zGetoperationresult = sinon.stub().returns(ops);
 
-    	const conn = await r.connect(config.connectionConfig);
-    	await chai.assert.eventually.equal(sending.updateDrips(conn),
-       conn);
-    });
+			const conn = await r.connect(config.connectionConfig);
+			await chai.assert.eventually.equal(sending.updateDrips(conn), conn);
+		});
   });
 });

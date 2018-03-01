@@ -46,25 +46,22 @@ app.post('/api/add', (req, res) => {
 	if (!req.body['coinhive-captcha-token']) return res.sendStatus(400);
 
   // check if captcha is valid
-  global.validateCaptcha(req.body['coinhive-captcha-token'])
-	.then(response => {
-  		// check success response
-  		if (JSON.parse(response).success === false) {
-  			return res.sendStatus(400);
-  		}
+  global.validateCaptcha(req.body['coinhive-captcha-token']).then(response => {
+  	// check success response
+  	if (JSON.parse(response).success === false)
+  		return res.sendStatus(400);
 
-      // save to db, and redirect to index
-      db.createDrip(req.body.inputAddress);
-      res.redirect('/');
-  	});
+    // save to db, and redirect to index
+    db.createDrip(req.body.inputAddress);
+    res.redirect('/');
+  });
 });
 
 // start the server, if running this script alone
 /* istanbul ignore next */
-if (require.main === module) {
+if (require.main === module)
   app.listen(config.port, () => {
     console.log('Server started! At http://localhost:' + config.port);
   });
-}
 
 module.exports = app;
