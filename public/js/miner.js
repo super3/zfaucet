@@ -85,7 +85,7 @@ $('#stop').on('click', e => {
 	$('#stop').addClass('hidden');
 	$('#start').removeClass('hidden');
 	$('#inputAddress').removeClass('hidden');
-	$('#progress').removeClass('hidden');
+	$('#progress').addClass('hidden');
 
 	engine.stop();
 });
