@@ -46,5 +46,8 @@
     "sinon": "^4.4.2",
     "supertest": "^3.0.0",
     "xo": "^0.20.3"
+  },
+  "xo": {
+    "unicorn/filename-case": ["error", {"case": "camelCase"}]
   }
 }

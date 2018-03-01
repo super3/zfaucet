@@ -7,7 +7,10 @@ const config = require('../config.js');
 
 const api = supertest('http://localhost:' + config.port);
 
-require('./testHelper');
+const captcha = require('../lib/captcha');
+const helper = require('./helper');
+
+captcha.validateCaptcha = helper.validateCaptcha;
 
 describe('Server Routes', () => {
 	before(done => {
@@ -25,7 +28,8 @@ describe('Server Routes', () => {
 			api.post('/api/add')
 				.set('Content-Type', 'application/json')
 				.type('form')
-				.send({inputAddress: 'notcorrectforminput', 'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
+				.send({inputAddress: 'notcorrectforminput',
+					'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
 				.expect(400, done);
 		});
 

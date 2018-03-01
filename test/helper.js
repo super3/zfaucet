@@ -9,4 +9,4 @@ function validateCaptcha(captchaToken) {
 	}));
 }
 
-global.validateCaptcha = validateCaptcha;
+module.exports.validateCaptcha = validateCaptcha;

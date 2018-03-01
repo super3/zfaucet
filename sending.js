@@ -6,7 +6,7 @@ const config = require('./config.js');
 const utils = require('./lib/utils.js');
 const rpc = require('./lib/rpc.js');
 
-async function findInputs(conn) {
+async function findInputs() {
 	// Get balance from rpc daemon
 	const balance = await rpc.getbalance();
 
@@ -59,9 +59,10 @@ module.exports.sendDrip = sendDrip;
 
 async function updateDrips(conn) {
 	const operations = await rpc.zGetoperationresult();
-	for (const transaction of operations) {
-		if (!transaction.hasOwnProperty('result')) {
-			continue;
+
+	await Promise.all(operations.map(async transaction => {
+		if (typeof transaction.result !== 'object') {
+			return;
 		}
 
 		// Update drips
@@ -69,7 +70,7 @@ async function updateDrips(conn) {
 		await r.table('payouts').filter({operationId: transaction.id})
 			.update({transactionId: transaction.result.txid}).run(conn);
 		// Console.log(`Updated TXID with ${transaction.result.txid}`);
-	}
+	}));
 
 	return conn;
 }
@@ -78,15 +79,13 @@ module.exports.updateDrips = updateDrips;
 
 // Start the server, if running this script alone
 if (require.main === module) {
-  (async () => {
-  	const conn = this.conn = await r.connect(config.connectionConfig);
+	(async () => {
+		const conn = await r.connect(config.connectionConfig);
 
-    const sendingAddress = await findInputs(conn);
-    const opid = await sendDrip(conn, sendingAddress);
-    await updateDrips(conn);
+		const sendingAddress = await findInputs(conn);
+		await sendDrip(conn, sendingAddress);
+		await updateDrips(conn);
 
-    conn.close();
-    process.exit();
-    console.log('Closing...');
-  })();
+		conn.close();
+	})();
 }

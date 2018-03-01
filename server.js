@@ -20,21 +20,19 @@ app.set('view engine', 'ejs');
 const config = require('./config.js');
 const db = require('./lib/db.js');
 const utils = require('./lib/utils.js');
-require('./lib/captcha.js');
+const captcha = require('./lib/captcha.js');
 
 // index route
-app.get('/', (req, res) => {
-	r.connect(config.connectionConfig, async (err, conn) => {
-		if (err) throw err;
+app.get('/', async (req, res) => {
+	const conn = await r.connect(config.connectionConfig);
 
-		// pass drips to ejs for rendering
-		const cursor = await db.latestDrips(conn);
-		cursor.toArray((err, rows) => {
-			// make time in rows human readable, and then send to template
-			res.render('index', {drips: utils.readableTime(rows), hashes:
-			config.hashes});
-		});
-	});
+	// pass drips to ejs for rendering
+	const cursor = await db.latestDrips(conn);
+	const rows = await cursor.toArray();
+
+	// make time in rows human readable, and then send to template
+	res.render('index', {drips: utils.readableTime(rows), hashes:
+	config.hashes});
 });
 
 // add route
@@ -45,7 +43,9 @@ app.post('/api/add', async (req, res) => {
 	if (!req.body['coinhive-captcha-token']) return res.sendStatus(400);
 
 	// check if captcha is valid
-	const response = await global.validateCaptcha(req.body['coinhive-captcha-token']);
+	const response = await captcha.validateCaptcha(
+	req.body['coinhive-captcha-token']);
+
 	// check success response
 	if (JSON.parse(response).success === false)
 		return res.sendStatus(400);

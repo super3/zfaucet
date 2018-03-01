@@ -6,10 +6,10 @@ const utils = require('../lib/utils.js');
 describe('Backend Utils', () => {
 	describe('timeSince function', () => {
 		// Subtract hours from a Date
-		Date.prototype.subtractMinutes = function (m) {
+		function subtractMinutes(m) {
 			this.setMinutes(this.getMinutes() - m);
 			return this;
-		};
+		}
 
 		it('check timeSince function', () => {
 			const currentTime = new Date();
@@ -18,15 +18,15 @@ describe('Backend Utils', () => {
 			chai.expect(utils.timeSince(currentTime)).to.equal('0 seconds ago');
 
 			// Subtract 10 minutes
-			currentTime.subtractMinutes(10);
+			subtractMinutes.call(currentTime, 10);
 			chai.expect(utils.timeSince(currentTime)).to.equal('10 minutes ago');
 
 			// Subtract 2 hours
-			currentTime.subtractMinutes(120);
+			subtractMinutes.call(currentTime, 120);
 			chai.expect(utils.timeSince(currentTime)).to.equal('2 hours ago');
 
 			// Subtract 2 days
-			currentTime.subtractMinutes(2880);
+			subtractMinutes.call(currentTime, 2880);
 			chai.expect(utils.timeSince(currentTime)).to.equal('2 days ago');
 		});
 	});
