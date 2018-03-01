@@ -10,6 +10,7 @@ const app = express();
 
 // make the css folder viewable
 app.use(express.static('public/css'));
+app.use(express.static('public/js'));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
 
