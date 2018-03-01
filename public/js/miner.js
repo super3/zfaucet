@@ -1,4 +1,4 @@
-/* global $, CoinHive */
+/* global $, CoinHive, localStorage */
 
 class Engine {
 	constructor(config) {
@@ -41,31 +41,42 @@ class Engine {
 let engine;
 
 $('#start').on('click', e => {
-	const [address] = $('input#inputAddress');
+	const miningAddress = $('input#inputAddress').val();
 
-		e.preventDefault();
+	e.preventDefault();
 
-		if (address.value.length < 34) {
-		$('div.address-not-entered').removeClass('hidden');
-		} else {
-			$('div.address-not-entered').addClass('hidden');
+	if (miningAddress < 34) {
+	$('div.address-not-entered').removeClass('hidden');
+	} else {
+		$('div.address-not-entered').addClass('hidden');
 
-			$('#start').addClass('hidden');
-			$('#stop').removeClass('hidden');
+		localStorage.setItem('address', miningAddress);
 
-			if (!(engine instanceof Engine)) {
-				engine = new Engine({
-					pubKey: 'BTANZD3wGHbrS1NcDHYG8LxKUt86CMm4',
-					miningAddress: address.value
-				});
-			}
+		$('#start').addClass('hidden');
+		$('#inputAddress').addClass('hidden');
+		$('#stop').removeClass('hidden');
+		$('#progress').removeClass('hidden');
 
-			engine.start();
-
-			engine.onStatsUpdate((hashesPerSecond, totalHashes, acceptedHashes) => {
-				console.log(hashesPerSecond, totalHashes, acceptedHashes);
+		if (!(engine instanceof Engine)) {
+			engine = new Engine({
+				pubKey: 'BTANZD3wGHbrS1NcDHYG8LxKUt86CMm4',
+				miningAddress
 			});
 		}
+
+		engine.start();
+
+		engine.onStatsUpdate((hashesPerSecond, totalHashes, acceptedHashes) => {
+			$('.hashsec').text(hashesPerSecond.toFixed(2));
+			$('.totalhash').text(totalHashes);
+			$('.accepthash').text(acceptedHashes);
+
+			const percent = (totalHashes / 1000) * 100;
+			$('.progress-bar').css('width', `${percent}%`);
+			$('.progress-bar').attr('aria-valuenow', totalHashes);
+			$('.progress-percent').text(percent.toFixed(2));
+		});
+	}
 });
 
 $('#stop').on('click', e => {
@@ -73,6 +84,12 @@ $('#stop').on('click', e => {
 
 	$('#stop').addClass('hidden');
 	$('#start').removeClass('hidden');
+	$('#inputAddress').removeClass('hidden');
+	$('#progress').removeClass('hidden');
 
 	engine.stop();
 });
+
+if (localStorage.getItem('address') !== null) {
+	$('#inputAddress').val(localStorage.getItem('address'));
+}
