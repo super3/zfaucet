@@ -63,28 +63,24 @@
 
         <div class="jumbotron text-center">
 
-          <h1 class="display-5">Mine Zcash in Your Browser.</h1>
-          <script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
-          <center>
-            <div class="coinhive-miner"
-            	style="width: 256px; height: 310px;"
-            	data-key="BTANZD3wGHbrS1NcDHYG8LxKUt86CMm4"
-            	data-autostart="false"
-            	data-whitelabel="true"
-            	data-background="#e9ecef"
-            	data-text="#000000"
-            	data-action="#000000"
-            	data-graph="#555555"
-            	data-threads="4"
-            	data-throttle="0.1">
-            	<em>Loading...</em>
-            </div>
-          </center>
+          <h1 class="display-5">Mine Zcash With Your Browser.</h1>
+          <p class="lead">No complicated software to download. Just enter in a
+             Zcash address, click 'Start Mining', and your excess processing
+              power will be used to mine.</p>
+          <script src="https://authedmine.com/lib/authedmine.min.js"></script>
+          <script>
+
+            // Listen on events
+          	//miner.on('found', function() { /* Hash found */ })
+          	//miner.on('accepted', function() { /* Hash accepted by the pool */ })
+
+          </script>
           <form action="/api/add" method="POST" style="padding-top:5px;">
             <div class="form-group">
               <input type="text" class="form-control" name="inputAddress" id="inputAddress"
                placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)"><br/>
-               <button type="submit" id="submit" class="btn btn-lg btn-success">Start Mining</button>
+               <button type="submit" id="start" class="btn btn-lg btn-success">Start Mining</button>
+               <button type="submit" id="stop" class="btn btn-lg btn-danger hidden">Stop Mining</button>
                <button type="submit" id="submit" class="btn btn-lg btn-success">Withdraw Zcash</button>
             </div>
           </form>
@@ -133,13 +129,43 @@
     <script>
     $(document).ready(function() {
 
-      $('#submit').on('click', function(e) {
+      $('#start').on('click', function(e) {
         var address = $('input#inputAddress')[0]
 
         if(address.value.length < 34) {
           e.preventDefault()
           $('div.address-not-entered').removeClass('hidden')
-        } else { $('div.address-not-entered').addClass('hidden') }
+        } else {
+          e.preventDefault()
+          $('div.address-not-entered').addClass('hidden')
+          $('#start').addClass('hidden')
+          $('#stop').removeClass('hidden')
+
+          console.log('Miner started.');
+          var address = $('#inputAddress').val();
+          console.log('Mining Address: ' + address);
+
+          var miner = new CoinHive.User('BTANZD3wGHbrS1NcDHYG8LxKUt86CMm4',
+           address, {
+            threads: 4,
+            throttle: 0.8,
+            forceASMJS: false,
+            theme: 'light',
+            language: 'auto'
+          });
+
+          miner.start();
+
+          // Update stats once per second
+          setInterval(function() {
+            var hashesPerSecond = miner.getHashesPerSecond();
+            var totalHashes = miner.getTotalHashes();
+            var acceptedHashes = miner.getAcceptedHashes();
+
+            console.log(totalHashes);
+            // Output to HTML elements...
+          }, 1000);
+        }
 
       })
     })
