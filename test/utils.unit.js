@@ -77,7 +77,7 @@ describe('Backend Utils', () => {
 						generated: false,
 						address: 't1atPPxpdgpzC7TUNtZLMq7KCUieEYuJKkn',
 						scriptPubKey: '76a914baa0073177890860e854780b0db792333f79df1388ac',
-						amount: 0.00197900,
+						amount: 0.00117900,
 						confirmations: 390,
 						spendable: true
 					},
