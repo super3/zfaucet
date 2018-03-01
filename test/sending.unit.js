@@ -74,6 +74,7 @@ describe('Sending Script', () => {
 
   describe('Inputs Testing', () => {
 		it('error with empty inputs', async () => {
+			rpc.getbalance = sinon.stub().returns(1);
 			rpc.listunspent = sinon.stub().returns([]);
 			await chai.assert.isRejected(sending.findInputs());
 		});
