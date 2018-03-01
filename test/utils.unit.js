@@ -1,6 +1,6 @@
 /* global it, describe */
 
-const expect = require('chai').expect;
+const chai = require('chai');
 const utils = require('../lib/utils.js');
 
 describe('Backend Utils', () => {
@@ -15,48 +15,48 @@ describe('Backend Utils', () => {
 			const currentTime = new Date();
 
 			// Current time
-			expect(utils.timeSince(currentTime)).to.equal('0 seconds ago');
+			chai.expect(utils.timeSince(currentTime)).to.equal('0 seconds ago');
 
 			// Subtract 10 minutes
 			currentTime.subtractMinutes(10);
-			expect(utils.timeSince(currentTime)).to.equal('10 minutes ago');
+			chai.expect(utils.timeSince(currentTime)).to.equal('10 minutes ago');
 
 			// Subtract 2 hours
 			currentTime.subtractMinutes(120);
-			expect(utils.timeSince(currentTime)).to.equal('2 hours ago');
+			chai.expect(utils.timeSince(currentTime)).to.equal('2 hours ago');
 
 			// Subtract 2 days
 			currentTime.subtractMinutes(2880);
-			expect(utils.timeSince(currentTime)).to.equal('2 days ago');
+			chai.expect(utils.timeSince(currentTime)).to.equal('2 days ago');
 		});
 	});
 
 	describe('isAddress function', () => {
 			it('valid taddress', () => {
 				const validAddress = 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa';
-				expect(utils.isAddress(validAddress)).to.equal(true);
+				chai.expect(utils.isAddress(validAddress)).to.equal(true);
 			});
 			it('invalid taddress', () => {
-				expect(utils.isAddress('notvalidaddress')).to.equal(false);
+				chai.expect(utils.isAddress('notvalidaddress')).to.equal(false);
 			});
 			it('wrong length', () => {
-				expect(utils.isAddress('t1Zo4ZtTpu7tvdXvZRBZvC'))
+				chai.expect(utils.isAddress('t1Zo4ZtTpu7tvdXvZRBZvC'))
 					.to.equal(false);
 			});
 			it('changed address', () => {
 				const changedAddress = 't1KjU2TUgNuWmbyEmYh19zJL5iiF5XdUsoa';
-				expect(utils.isAddress(changedAddress)).to.equal(false);
+				chai.expect(utils.isAddress(changedAddress)).to.equal(false);
 			});
 			it('bitcoin address', () => {
 				const bitcoinAddress = '1mayif3H2JDC62S4N3rLNtBNRAiUUP99k';
-				expect(utils.isAddress(bitcoinAddress)).to.equal(false);
+				chai.expect(utils.isAddress(bitcoinAddress)).to.equal(false);
 			});
 	});
 
 	describe('indexOfMax function', () => {
 			it('empty array', () => {
 				const arr = [];
-				expect(utils.indexOfMax(arr)).to.equal(-1);
+				chai.expect(utils.indexOfMax(arr)).to.equal(-1);
 			});
 
 			it('sample inputs', () => {
@@ -92,7 +92,7 @@ describe('Backend Utils', () => {
 						spendable: true
 					}
 				];
-				expect(utils.indexOfMax(sample)).to.equal(2);
+				chai.expect(utils.indexOfMax(sample)).to.equal(2);
 			});
 	});
 });
