@@ -78,21 +78,15 @@ module.exports.updateDrips = updateDrips;
 
 // Start the server, if running this script alone
 if (require.main === module) {
-	r.connect(config.connectionConfig, function (err, conn) {
-		this.conn = conn;
-		if (err) {
-			throw err;
-		}
+  (async () => {
+  	const conn = this.conn = await r.connect(config.connectionConfig);
 
-		findInputs(conn).then(sendingAddress => {
-			sendDrip(conn, sendingAddress).then(() => {
-				updateDrips(conn).then(conn => {
-					// Close up - errors...
-					conn.close();
-					process.exit();
-					console.log('Closing...');
-				});
-			});
-		});
-	});
+    const sendingAddress = await findInputs(conn);
+    const opid = await sendDrip(conn, sendingAddress);
+    await updateDrips(conn);
+
+    conn.close();
+    process.exit();
+    console.log('Closing...');
+  })();
 }
