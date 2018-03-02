@@ -18,10 +18,10 @@ app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
 app.set('view engine', 'ejs');
 
 // internal libs
-const config = require('./config.js');
-const db = require('./lib/db.js');
-const utils = require('./lib/utils.js');
-const captcha = require('./lib/captcha.js');
+const config = require('./config');
+const db = require('./lib/db');
+const utils = require('./lib/utils');
+const coinhive = require('./lib/coinhive');
 
 // index route
 app.get('/', async (req, res) => {
@@ -30,6 +30,10 @@ app.get('/', async (req, res) => {
 	// pass drips to ejs for rendering
 	const cursor = await db.latestDrips(conn);
 	const rows = await cursor.toArray();
+
+	const testOut = await coinhive
+		.getBalance('t1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa');
+	console.log(testOut);
 
 	// make time in rows human readable, and then send to template
 	res.render('index', {drips: utils.readableTime(rows), hashes:
@@ -57,7 +61,7 @@ app.post('/api/add', async (req, res) => {
 	if (!req.body['coinhive-captcha-token']) return res.sendStatus(400);
 
 	// check if captcha is valid
-	const response = await captcha.validateCaptcha(
+	const response = await coinhive.validateCaptcha(
 	req.body['coinhive-captcha-token']);
 
 	// check success response

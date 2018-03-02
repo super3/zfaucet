@@ -2,15 +2,15 @@
 
 const supertest = require('supertest');
 
-const app = require('../server.js');
-const config = require('../config.js');
+const app = require('../server');
+const config = require('../config');
 
 const api = supertest('http://localhost:' + config.port);
 
-const captcha = require('../lib/captcha');
+const coinhive = require('../lib/coinhive');
 const helper = require('./helper');
 
-captcha.validateCaptcha = helper.validateCaptcha;
+coinhive.validateCaptcha = helper.validateCaptcha;
 
 describe('Server Routes', () => {
 	before(done => {

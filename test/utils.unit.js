@@ -1,7 +1,7 @@
 /* global it, describe */
 
 const chai = require('chai');
-const utils = require('../lib/utils.js');
+const utils = require('../lib/utils');
 
 describe('Backend Utils', () => {
 	describe('timeSince function', () => {

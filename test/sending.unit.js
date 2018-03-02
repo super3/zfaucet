@@ -7,10 +7,10 @@ const r = require('rethinkdb');
 
 chai.use(require('chai-as-promised'));
 
-const rpc = require('../lib/rpc.js');
-const sending = require('../sending.js');
-const config = require('../config.js');
-const db = require('../lib/db.js');
+const rpc = require('../lib/rpc');
+const sending = require('../sending');
+const config = require('../config');
+const db = require('../lib/db');
 
 describe('Sending Script', () => {
 	const inputs = [
