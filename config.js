@@ -10,5 +10,7 @@ module.exports = {
 	rpcuser: process.env.rpcuser,
 	rpcpass: process.env.rpcpass,
 	displayPendingNum: 10,
-	dripsPerSend: 1
+	dripsPerSend: 1,
+	coinhivePubKey: process.env.COINHIVEPUBKEY,
+	coinhivePrivKey: process.env.COINHIVEPRIVKEY
 };

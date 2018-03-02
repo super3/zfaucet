@@ -31,9 +31,9 @@ app.get('/', async (req, res) => {
 	const cursor = await db.latestDrips(conn);
 	const rows = await cursor.toArray();
 
-	const testOut = await coinhive
-		.getBalance('t1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa');
-	console.log(testOut);
+	// const testOut = await coinhive
+	// 	.getBalance('t1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa');
+	// console.log(testOut);
 
 	// make time in rows human readable, and then send to template
 	res.render('index', {drips: utils.readableTime(rows), hashes:
@@ -50,7 +50,7 @@ app.get('/faucet', async (req, res) => {
 
 	// make time in rows human readable, and then send to template
 	res.render('faucet', {drips: utils.readableTime(rows), hashes:
-	config.hashes});
+	config.hashes, pubKey: config.coinhivePubKey});
 });
 
 // add route
