@@ -70,9 +70,10 @@
           <table class="table table-bordered">
            <thead>
              <tr>
-               <th scope="col">Hashes/sec</th>
-               <th scope="col">Current Hashes</th>
-               <th scope="col">Accepted Hashes</th>
+               <th scope="col">Hashes/s</th>
+               <th scope="col">Session Total</th>
+               <th scope="col">Hash Balance</th>
+               <th scope="col">Payout Rate</th>
              </tr>
            </thead>
            <tbody>
@@ -80,6 +81,7 @@
                <td class="hashsec">0</td>
                <td class="totalhash">0</td>
                <td class="accepthash">0</td>
+               <td>~1000 sats / 1M hashes*</td>
              </tr>
            </tbody>
           </table>
@@ -93,7 +95,7 @@
                   <h4>Progress to Withdrawal:</h4>
                   <div class="progress" style="margin-bottom: 20px; height: 31px; background-color: #cccccc;">
 
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="1000">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100000">
                       <span class="progress-percent">0</span>%
                     </div>
                   </div>
@@ -102,6 +104,14 @@
                <button type="submit" id="start" class="btn btn-lg btn-success">Start Mining</button>
                <button type="submit" id="stop" class="btn btn-lg btn-danger hidden">Stop Mining</button>
                <button type="submit" id="submit" class="btn btn-lg btn-primary" disabled>Withdraw Zcash</button>
+
+               <small>
+                 <br/><br/><b>* PAYOUT RATE IS ESTIMATED!</b><br/>
+                 This miner mines XMR which is converted to ZEC.
+                 Payments are calculated based on
+                 <a href="https://coinmarketcap.com/">current
+                 exchange rates</a>.
+               </small>
             </div>
           </form>
         </div>

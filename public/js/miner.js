@@ -7,7 +7,7 @@ class Engine {
 		this.miner = new CoinHive.User(this.pubKey,
 			this.miningAddress, {
 				threads: 4,
-				throttle: 0.8,
+				throttle: 0.5,
 				forceASMJS: false,
 				theme: 'light',
 				language: 'auto'
@@ -71,7 +71,7 @@ $('#start').on('click', e => {
 			$('.totalhash').text(totalHashes);
 			$('.accepthash').text(acceptedHashes);
 
-			const percent = (totalHashes / 1000) * 100;
+			const percent = ((totalHashes + acceptedHashes) / 100000) * 100;
 			$('.progress-bar').css('width', `${percent}%`);
 			$('.progress-bar').attr('aria-valuenow', totalHashes);
 			$('.progress-percent').text(percent.toFixed(2));
