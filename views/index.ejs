@@ -85,7 +85,7 @@
              </tr>
            </tbody>
           </table>
-          <form action="/api/withdraw" method="POST" style="padding-top:5px;">
+          <div>
             <div class="form-group">
               <input type="text" class="form-control" name="inputAddress" id="inputAddress"
                placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)"
@@ -103,7 +103,7 @@
 
                <button type="submit" id="start" class="btn btn-lg btn-success">Start Mining</button>
                <button type="submit" id="stop" class="btn btn-lg btn-danger hidden">Stop Mining</button>
-               <button type="submit" id="submit" class="btn btn-lg btn-primary" disabled>Withdraw Zcash</button>
+               <button type="submit" id="withdraw" class="btn btn-lg btn-primary" disabled>Withdraw Zcash</button>
 
                <small>
                  <br/><br/><b>* PAYOUT RATE IS ESTIMATED!</b><br/>
@@ -113,7 +113,7 @@
                  exchange rates</a>.
                </small>
             </div>
-          </form>
+          </div>
         </div>
 
         <div class="row marketing">
@@ -157,6 +157,7 @@
 
     <style>.hidden { display: none; }</style>
     <script src="https://authedmine.com/lib/authedmine.min.js"></script>
+    <script src="engine.js"></script>
     <script src="miner.js"></script>
   </body>
 </html>

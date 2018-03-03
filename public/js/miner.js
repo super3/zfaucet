@@ -1,49 +1,14 @@
-/* global $, CoinHive, localStorage */
-
-class Engine {
-	constructor(config) {
-		Object.assign(this, config);
-
-		this.miner = new CoinHive.User(this.pubKey,
-			this.miningAddress, {
-				threads: 4,
-				throttle: 0.5,
-				forceASMJS: false,
-				theme: 'light',
-				language: 'auto'
-			});
-
-		this.statsUpdate = () => {};
-	}
-
-	onStatsUpdate(handler) {
-		this.statsUpdate = handler;
-	}
-
-	start() {
-		this.miner.start();
-
-		this.statsInterval = setInterval(() => {
-			const hashesPerSecond = this.miner.getHashesPerSecond();
-			const totalHashes = this.miner.getTotalHashes();
-			const acceptedHashes = this.miner.getAcceptedHashes();
-
-			this.statsUpdate(hashesPerSecond, totalHashes, acceptedHashes);
-		}, 1000);
-	}
-
-	stop() {
-		this.miner.stop();
-		clearInterval(this.statsInterval);
-	}
-}
+/* global $, localStorage, Engine */
 
 let engine;
+let withdrawn;
+const withdrawThreshold = 1000;
 
-$('#start').on('click', e => {
+$('#start').on('click', async () => {
 	const miningAddress = $('input#inputAddress').val();
-
-	e.preventDefault();
+	const balance = await getBalance(miningAddress);
+	const _withdrawn = balance.withdrawn;
+	withdrawn = _withdrawn;
 
 	if (miningAddress < 34) {
 	$('div.address-not-entered').removeClass('hidden');
@@ -69,19 +34,24 @@ $('#start').on('click', e => {
 		engine.onStatsUpdate((hashesPerSecond, totalHashes, acceptedHashes) => {
 			$('.hashsec').text(hashesPerSecond.toFixed(2));
 			$('.totalhash').text(totalHashes);
-			$('.accepthash').text(acceptedHashes);
+			$('.accepthash').text(Math.max(acceptedHashes - withdrawn, 0));
 
-			const percent = ((totalHashes + acceptedHashes) / 100000) * 100;
+			const percent = ((totalHashes + acceptedHashes - withdrawn) /
+				withdrawThreshold) * 100;
 			$('.progress-bar').css('width', `${percent}%`);
 			$('.progress-bar').attr('aria-valuenow', totalHashes);
 			$('.progress-percent').text(percent.toFixed(2));
+
+			if (percent >= 100) {
+				$('#withdraw').removeAttr('disabled');
+			} else {
+				$('#withdraw').attr('disabled', '');
+			}
 		});
 	}
 });
 
-$('#stop').on('click', e => {
-	e.preventDefault();
-
+$('#stop').on('click', () => {
 	$('#stop').addClass('hidden');
 	$('#start').removeClass('hidden');
 	$('#inputAddress').removeClass('hidden');
@@ -90,6 +60,23 @@ $('#stop').on('click', e => {
 	engine.stop();
 });
 
+$('#withdraw').on('click', () => {
+	withdraw(engine.miningAddress);
+});
+
 if (localStorage.getItem('address') !== null) {
 	$('#inputAddress').val(localStorage.getItem('address'));
+}
+
+async function getBalance(address) {
+	return get('/api/balance/' + address);
+}
+
+async function withdraw(address) {
+	await get('/api/withdraw/' + address);
+	withdrawn += withdrawThreshold;
+}
+
+async function get(url) {
+	return new Promise(resolve => $.get(url, resolve));
 }
