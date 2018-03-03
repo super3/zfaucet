@@ -1,4 +1,5 @@
 /* global it, describe */
+/* eslint capitalized-comments: ["error", "never"] */
 /* eslint camelcase: ["error", {properties: "never"}] */
 
 const sinon = require('sinon');
@@ -99,9 +100,9 @@ describe('Sending Script', () => {
 		});
 
 		it('empty drips', async () => {
-			rpc.zSendmany = sinon.stub().returns('');
-
+			rpc.zSendmany = sinon.stub().returns(''); //  block accidentally sending
 			db.pendingDrips = sinon.stub().returns([]);
+
 			const conn = await r.connect(config.connectionConfig);
 			await chai.assert.eventually.equal(sending
 				.sendDrip(conn, 't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX'), 0);
@@ -110,12 +111,11 @@ describe('Sending Script', () => {
 
   describe('Update Testing', () => {
 		it('update transaction', async () => {
-			rpc.getbalance = sinon.stub().returns(1);
-			rpc.listunspent = sinon.stub().returns(inputs);
+			// relying on other tests...
 			rpc.zGetoperationresult = sinon.stub().returns(ops);
 
 			const conn = await r.connect(config.connectionConfig);
-			await chai.assert.eventually.equal(sending.updateDrips(conn), 0);
+			await chai.assert.eventually.equal(sending.updateDrips(conn), 1);
 		});
   });
 
@@ -125,7 +125,7 @@ describe('Sending Script', () => {
 			rpc.listunspent = sinon.stub().returns(inputs);
 			rpc.zGetoperationresult = sinon.stub().returns(ops);
 
-			await chai.assert.eventually.equal(sending.main(), 0);
+			await chai.assert.eventually.equal(sending.main(), 1);
 		});
 	});
 });

@@ -65,7 +65,7 @@ async function updateDrips(conn) {
 		// console.log(`Updated TXID with ${transaction.result.txid}`);
 	}));
 
-	return 0; // signal finished without error
+	return 1; // signal finished without error
 }
 
 module.exports.updateDrips = updateDrips;
@@ -78,7 +78,7 @@ async function main() {
 	await updateDrips(conn);
 
 	conn.close();
-	return 0; // signal finished without error
+	return 1; // signal finished without error
 }
 
 module.exports.main = main;
