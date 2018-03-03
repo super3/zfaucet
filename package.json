@@ -48,6 +48,11 @@
     "xo": "^0.20.3"
   },
   "xo": {
-    "unicorn/filename-case": ["error", {"case": "camelCase"}]
+    "unicorn/filename-case": [
+      "error",
+      {
+        "case": "camelCase"
+      }
+    ]
   }
 }

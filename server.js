@@ -73,8 +73,8 @@ app.post('/api/add', async (req, res) => {
 	res.redirect('/faucet');
 });
 
-// start the server, if running this script alone
 /* istanbul ignore next */
+// start the server, if running this script alone
 if (require.main === module)
 	app.listen(config.port, () => {
 		console.log('Server started! At http://localhost:' + config.port);

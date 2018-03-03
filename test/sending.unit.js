@@ -110,7 +110,17 @@ describe('Sending Script', () => {
 			rpc.zGetoperationresult = sinon.stub().returns(ops);
 
 			const conn = await r.connect(config.connectionConfig);
-			await chai.assert.eventually.equal(sending.updateDrips(conn), conn);
+			await chai.assert.eventually.equal(sending.updateDrips(conn), 0);
 		});
   });
+
+	describe('Main Testing', () => {
+		it('make sure it exits properly', async () => {
+			rpc.getbalance = sinon.stub().returns(1);
+			rpc.listunspent = sinon.stub().returns(inputs);
+			rpc.zGetoperationresult = sinon.stub().returns(ops);
+
+			await chai.assert.eventually.equal(sending.main(), 0);
+		});
+	});
 });
