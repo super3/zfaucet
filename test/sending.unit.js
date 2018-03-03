@@ -89,10 +89,6 @@ describe('Sending Script', () => {
 
   describe('Send Testing', () => {
 		it('send sample drip', async () => {
-			await db.createDrip('t1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX');
-
-			rpc.getbalance = sinon.stub().returns(1);
-			rpc.listunspent = sinon.stub().returns(inputs);
 			rpc.zSendmany = sinon.stub()
 				.returns('opid-f746c8ac-116d-476b-8b44-bb098a354dad');
 
@@ -101,10 +97,19 @@ describe('Sending Script', () => {
 				.sendDrip(conn, 't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX'),
 				'opid-f746c8ac-116d-476b-8b44-bb098a354dad');
 		});
+
+		it('empty drips', async () => {
+			rpc.zSendmany = sinon.stub().returns('');
+
+			db.pendingDrips = sinon.stub().returns([]);
+			const conn = await r.connect(config.connectionConfig);
+			await chai.assert.eventually.equal(sending
+				.sendDrip(conn, 't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX'), 0);
+		});
   });
 
   describe('Update Testing', () => {
-		it('update sample drip', async () => {
+		it('update transaction', async () => {
 			rpc.getbalance = sinon.stub().returns(1);
 			rpc.listunspent = sinon.stub().returns(inputs);
 			rpc.zGetoperationresult = sinon.stub().returns(ops);

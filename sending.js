@@ -31,10 +31,8 @@ module.exports.findInputs = findInputs;
 
 async function sendDrip(conn, sendingAddress) {
 	// get pending drips and make sure its not empty
-	const cursor = await db.pendingDrips(conn);
-	const rows = await cursor.toArray();
-
-	if (rows.length === 0) return;
+	const rows = await db.pendingDrips(conn);
+	if (rows.length === 0) return 0;
 
 	// send payment
 	const opid = await rpc.zSendmany(sendingAddress, [
