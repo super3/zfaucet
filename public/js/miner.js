@@ -30,8 +30,9 @@ $('#start').on('click', async () => {
 	const _withdrawn = balance.withdrawn;
 	withdrawn = _withdrawn;
 
-	if (miningAddress < 34)
+	if (miningAddress < 34) {
 		return $('div.address-not-entered').removeClass('hidden');
+	}
 
 	$('div.address-not-entered').addClass('hidden');
 
