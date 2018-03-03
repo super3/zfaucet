@@ -13,5 +13,5 @@ module.exports = {
 	dripsPerSend: 1,
 	coinhivePubKey: process.env.COINHIVEPUBKEY,
 	coinhivePrivKey: process.env.COINHIVEPRIVKEY,
-	withdrawThreshold: 1000
+	withdrawThreshold: 2500
 };

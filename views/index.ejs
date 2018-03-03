@@ -70,7 +70,7 @@
                <td class="hashsec">0</td>
                <td class="totalhash">0</td>
                <td class="accepthash">0</td>
-               <td>~1000 sats / 1M hashes*</td>
+               <td>~1000 sats / <%= withdrawThreshold/1000 %>k hashes</td>
              </tr>
            </tbody>
           </table>
@@ -93,14 +93,6 @@
                <button type="submit" id="start" class="btn btn-lg btn-success">Start Mining</button>
                <button type="submit" id="stop" class="btn btn-lg btn-danger hidden">Stop Mining</button>
                <button type="submit" id="withdraw" class="btn btn-lg btn-primary" disabled>Withdraw Zcash</button>
-
-               <small>
-                 <br/><br/><b>* PAYOUT RATE IS ESTIMATED!</b><br/>
-                 This miner mines XMR which is converted to ZEC.
-                 Payments are calculated based on
-                 <a href="https://coinmarketcap.com/">current
-                 exchange rates</a>.
-               </small>
             </div>
           </div>
         </div>

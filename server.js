@@ -32,7 +32,7 @@ app.get('/', async (req, res) => {
 
 	// make time in rows human readable, and then send to template
 	res.render('index', {drips: utils.readableTime(rows), hashes:
-	config.hashes});
+	config.hashes, withdrawThreshold: config.withdrawThreshold});
 });
 
 app.get('/api/balance/:address', async (req, res) => {
