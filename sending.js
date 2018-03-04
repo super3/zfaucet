@@ -1,29 +1,28 @@
+/* eslint capitalized-comments: ["error", "never"] */
+/* eslint curly: ["error", "multi"] */
+
 const r = require('rethinkdb');
 
-// Internal libs
+// internal libs
 const db = require('./lib/db.js');
 const config = require('./config.js');
 const utils = require('./lib/utils.js');
 const rpc = require('./lib/rpc.js');
 
 async function findInputs() {
-	// Get balance from rpc daemon
+	// get balance from rpc daemon
 	const balance = await rpc.getbalance();
 
-	// Check if we have enought money to send
+	// check if we have enought money to send
 	const balMinusSend = balance -
 		(config.sendingAmount * config.dripsPerSend) - config.sendingFee;
-	if (balMinusSend <= 0) {
-		throw new Error('Not enough to send.');
-	}
+	if (balMinusSend <= 0) 	throw new Error('Not enough to send.');
 
-	// Get inputs and make sure its not empty
+	// get inputs and make sure its not empty
 	const inputs = await rpc.listunspent();
-	if (inputs.length === 0) {
-		throw new Error('No inputs.');
-	}
+	if (inputs.length === 0) throw new Error('No inputs.');
 
-	// Get and return largest input address
+	// get and return largest input address
 	const large = utils.indexOfMax(inputs);
 	return inputs[large].address;
 }
@@ -31,15 +30,11 @@ async function findInputs() {
 module.exports.findInputs = findInputs;
 
 async function sendDrip(conn, sendingAddress) {
-	// Get pending drips and make sure its not empty
-	const cursor = await db.pendingDrips(conn);
-	const rows = await cursor.toArray();
+	// get pending drips and make sure its not empty
+	const rows = await db.pendingDrips(conn);
+	if (rows.length === 0) return 0;
 
-	if (rows.length === 0) {
-		return;
-	}
-
-	// Send payment
+	// send payment
 	const opid = await rpc.zSendmany(sendingAddress, [
 		{
 			address: rows[0].payoutAddress,
@@ -47,11 +42,11 @@ async function sendDrip(conn, sendingAddress) {
 		}
 	], 1, config.sendingFee);
 
-	// Change drips to processed:true
+	// change drips to processed:true
 	await r.table('payouts').get(rows[0].id).update({processed: true,
 		operationId: opid}).run(conn);
 
-	// Console.log(`Send Was: ${opid}\n`);
+	// console.log(`Send Was: ${opid}\n`);
 	return opid;
 }
 
@@ -61,31 +56,31 @@ async function updateDrips(conn) {
 	const operations = await rpc.zGetoperationresult();
 
 	await Promise.all(operations.map(async transaction => {
-		if (typeof transaction.result !== 'object') {
-			return;
-		}
-
-		// Update drips
+		// update drips
 		// console.log('Updating TXID for operation id: ' + transaction.id);
 		await r.table('payouts').filter({operationId: transaction.id})
 			.update({transactionId: transaction.result.txid}).run(conn);
-		// Console.log(`Updated TXID with ${transaction.result.txid}`);
+		// console.log(`Updated TXID with ${transaction.result.txid}`);
 	}));
 
-	return conn;
+	return 1; // signal finished without error
 }
 
 module.exports.updateDrips = updateDrips;
 
-// Start the server, if running this script alone
-if (require.main === module) {
-	(async () => {
-		const conn = await r.connect(config.connectionConfig);
+async function main() {
+	const conn = await r.connect(config.connectionConfig);
 
-		const sendingAddress = await findInputs(conn);
-		await sendDrip(conn, sendingAddress);
-		await updateDrips(conn);
+	const sendingAddress = await findInputs(conn);
+	await sendDrip(conn, sendingAddress);
+	await updateDrips(conn);
 
-		conn.close();
-	})();
+	conn.close();
+	return 1; // signal finished without error
 }
+
+module.exports.main = main;
+
+/* istanbul ignore next */
+// send the drips, if running this script alone
+if (require.main === module) main();

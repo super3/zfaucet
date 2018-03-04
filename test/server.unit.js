@@ -1,16 +1,16 @@
 /* global it, describe, before */
 
 const supertest = require('supertest');
+const sinon = require('sinon');
+const chai = require('chai');
 
-const app = require('../server.js');
-const config = require('../config.js');
+const app = require('../server');
+const config = require('../config');
 
 const api = supertest('http://localhost:' + config.port);
 
-const captcha = require('../lib/captcha');
+const coinhive = require('../lib/coinhive');
 const helper = require('./helper');
-
-captcha.validateCaptcha = helper.validateCaptcha;
 
 describe('Server Routes', () => {
 	before(done => {
@@ -23,66 +23,85 @@ describe('Server Routes', () => {
 		});
 	});
 
-	describe('Add Route', () => {
-		it('missing inputAddress in /api/add', done => {
-			api.post('/api/add')
-				.set('Content-Type', 'application/json')
-				.type('form')
-				.send({inputAddress: 'notcorrectforminput',
-					'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
-				.expect(400, done);
+	describe('Recent Routes', () => {
+		it('recent should return a 200 response', done => {
+			api.get('/api/recent').expect(200, done);
 		});
 
-		it('no inputAddress in /api/add', done => {
-			api.post('/api/add')
-				.set('Content-Type', 'application/json')
-				.type('form')
-				.send({'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
-				.expect(400, done);
+		it('recent + address should return a 200 response', done => {
+			api.get('/api/recent/' + helper.validAddr).expect(200, done);
 		});
 
-		it('sample address to /api/add', done => {
-			api.post('/api/add')
-				.set('Content-Type', 'application/json')
-				.type('form')
-				.send({inputAddress: 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa',
-					'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
-				.expect(302, done); // 302 because we are redirecting to index route
+		it('recent + bad address should return a 401 response', done => {
+			api.get('/api/recent/' + helper.invalidAddr).expect(401, done);
+		});
+	});
+
+	describe('Balance Route', () => {
+		it('balance should return a 200 response', async () => {
+			const sampleBody = {success: true,
+				name: 't1WtH7oSXf2d8EhfBjXZhCovYog38rHECn3',
+				total: 25344,
+				withdrawn: 24000,
+				balance: 1344};
+			coinhive.getBalance = sinon.stub().returns(sampleBody);
+
+			const response = await api.get('/api/balance/' + helper.validAddr)
+				.expect('Content-Type', /json/)
+				.expect(200);
+			chai.assert.strictEqual(response.body.success, true);
 		});
 
-		it('invalid address to /api/add', done => {
-			api.post('/api/add')
-				.set('Content-Type', 'application/json')
-				.type('form')
-				.send({inputAddress: 'notvalidaddress',
-					'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
-				.expect(400, done);
+		it('invalid address', async () => {
+			await api.get('/api/balance/' + helper.invalidAddr).expect(401);
+		});
+	});
+
+	describe('Withdraw Route', () => {
+		it('invalid address', async () => {
+			await api.get('/api/withdraw/' + helper.invalidAddr).expect(401);
 		});
 
-		it('changed address to /api/add', done => {
-			api.post('/api/add')
-				.set('Content-Type', 'application/json')
-				.type('form')
-				.send({inputAddress: 't1KjU2TUgNuWmbyXmYh19AJL5niF5EdUsoa',
-					'coinhive-captcha-token': 'DS6WL3kCBmnMSPN3vsXspJEOdEIP6Era'})
-				.expect(400, done);
+		it('empty balance', async () => {
+			const sampleBal = {success: true,
+				name: 't1WtH7oSXf2d8EhfBjXZhCovYog38rHECn3',
+				total: 25344,
+				withdrawn: 24000,
+				balance: 0};
+
+			coinhive.getBalance = sinon.stub().returns(sampleBal);
+			await api.get('/api/withdraw/' + helper.validAddr).expect(402);
 		});
 
-		it('empty captcha token on /api/add', done => {
-			api.post('/api/add')
-				.set('Content-Type', 'application/json')
-				.type('form')
-				.send({inputAddress: 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa'})
-				.expect(400, done);
+		it('withdraw success', async () => {
+			const sampleBal = {success: true,
+				name: 't1WtH7oSXf2d8EhfBjXZhCovYog38rHECn3',
+				total: 25344,
+				withdrawn: 24000,
+				balance: config.withdrawThreshold};
+			const sampleWith = {success: true,
+				name: 't1WtH7oSXf2d8EhfBjXZhCovYog38rHECn3',
+				amount: 2500};
+			coinhive.getBalance = sinon.stub().returns(sampleBal);
+			coinhive.withdraw = sinon.stub().returns(sampleWith);
+
+			const response = await api.get('/api/withdraw/' + helper.validAddr)
+				.expect(200);
+			chai.assert.strictEqual(response.text, 'true');
 		});
 
-		it('invalid captcha token on /api/add', done => {
-			api.post('/api/add')
-				.set('Content-Type', 'application/json')
-				.type('form')
-				.send({inputAddress: 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa',
-					'coinhive-captcha-token': 'invalidcaptcha'})
-				.expect(400, done);
+		it('withdraw fail', async () => {
+			const sampleBal = {success: true,
+				name: 't1WtH7oSXf2d8EhfBjXZhCovYog38rHECn3',
+				total: 25344,
+				withdrawn: 24000,
+				balance: config.withdrawThreshold};
+			const sampleWith = {success: false,
+				name: 't1WtH7oSXf2d8EhfBjXZhCovYog38rHECn3'};
+			coinhive.getBalance = sinon.stub().returns(sampleBal);
+			coinhive.withdraw = sinon.stub().returns(sampleWith);
+
+			await api.get('/api/withdraw/' + helper.validAddr).expect(403);
 		});
 	});
 });
