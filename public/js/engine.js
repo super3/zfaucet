@@ -24,9 +24,9 @@ class Engine {
 		this.miner.start();
 
 		this.statsInterval = setInterval(() => {
-			const hashesPerSecond = this.miner.getHashesPerSecond();
-			const totalHashes = this.miner.getTotalHashes();
-			const acceptedHashes = this.miner.getAcceptedHashes();
+			const hashesPerSecond = this.miner.getHashesPerSecond() || 0;
+			const totalHashes = this.miner.getTotalHashes() || 0;
+			const acceptedHashes = this.miner.getAcceptedHashes() || 0;
 
 			this.statsUpdate(hashesPerSecond, totalHashes, acceptedHashes);
 		}, 1000);
