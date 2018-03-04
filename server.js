@@ -4,9 +4,11 @@
 const r = require('rethinkdb');
 const express = require('express');
 const bodyParser = require('body-parser'); // create application/json parser
+const apicache = require('apicache');
 
 // create app and config vars
 const app = express();
+const cache = apicache.middleware;
 
 // make the css folder viewable
 app.use(express.static('public/css'));
@@ -32,14 +34,14 @@ app.get('/', async (req, res) => {
 	config.hashes, withdrawThreshold: config.withdrawThreshold});
 });
 
-app.get('/api/recent', async (req, res) => {
+app.get('/api/recent', cache('30 seconds'), async (req, res) => {
 	const conn = await r.connect(config.connectionConfig);
 	const rows = await db.latestDrips(conn);
 	res.set('Content-Type', 'application/json');
 	res.send(JSON.stringify(utils.readableTime(rows)));
 });
 
-app.get('/api/recent/:address', async (req, res) => {
+app.get('/api/recent/:address', cache('30 seconds'), async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
 	const conn = await r.connect(config.connectionConfig);
