@@ -78,6 +78,8 @@ $('#start').on('click', async () => {
 
 		if (accPercent >= 200) {
 			$('.multidraw').text(' (x' + Math.floor(accPercent / 100) + ')');
+		} else {
+			$('.multidraw').text('');
 		}
 	});
 });
