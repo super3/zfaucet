@@ -12,15 +12,10 @@ const api = supertest('http://localhost:' + config.port);
 const coinhive = require('../lib/coinhive');
 const helper = require('./helper');
 
-coinhive.validateCaptcha = helper.validateCaptcha;
-
 describe('Server Routes', () => {
 	before(done => {
 		app.listen(config.port, done);
 	});
-
-	const addr = 't1WtH7oSXf2d8EhfBjXZhCovYog38rHECn3';
-	const addrBad = 't1bad7oSXf2d8EhfBjXZhCovYog38rHECn3';
 
 	describe('Index Route', () => {
 		it('index should return a 200 response', done => {
@@ -37,20 +32,20 @@ describe('Server Routes', () => {
 				balance: 1344};
 			coinhive.getBalance = sinon.stub().returns(sampleBody);
 
-			const response = await api.get('/api/balance/' + addr)
+			const response = await api.get('/api/balance/' + helper.validAddr)
 				.expect('Content-Type', /json/)
 				.expect(200);
 			chai.assert.strictEqual(response.body.success, true);
 		});
 
 		it('invalid address', async () => {
-			await api.get('/api/balance/' + addrBad).expect(401);
+			await api.get('/api/balance/' + helper.invalidAddr).expect(401);
 		});
 	});
 
 	describe('Withdraw Route', () => {
 		it('invalid address', async () => {
-			await api.get('/api/withdraw/' + addrBad).expect(401);
+			await api.get('/api/withdraw/' + helper.invalidAddr).expect(401);
 		});
 
 		it('empty balance', async () => {
@@ -61,7 +56,7 @@ describe('Server Routes', () => {
 				balance: 0};
 
 			coinhive.getBalance = sinon.stub().returns(sampleBal);
-			await api.get('/api/withdraw/' + addr).expect(402);
+			await api.get('/api/withdraw/' + helper.validAddr).expect(402);
 		});
 
 		it('withdraw success', async () => {
@@ -76,7 +71,7 @@ describe('Server Routes', () => {
 			coinhive.getBalance = sinon.stub().returns(sampleBal);
 			coinhive.withdraw = sinon.stub().returns(sampleWith);
 
-			const response = await api.get('/api/withdraw/' + addr)
+			const response = await api.get('/api/withdraw/' + helper.validAddr)
 				.expect(200);
 			chai.assert.strictEqual(response.text, 'true');
 		});
@@ -92,7 +87,7 @@ describe('Server Routes', () => {
 			coinhive.getBalance = sinon.stub().returns(sampleBal);
 			coinhive.withdraw = sinon.stub().returns(sampleWith);
 
-			await api.get('/api/withdraw/' + addr).expect(403);
+			await api.get('/api/withdraw/' + helper.validAddr).expect(403);
 		});
 	});
 });
