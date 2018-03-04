@@ -33,9 +33,17 @@ app.get('/', async (req, res) => {
 	config.hashes, withdrawThreshold: config.withdrawThreshold});
 });
 
-app.get('/recent', async (req, res) => {
+app.get('/api/recent', async (req, res) => {
 	const conn = await r.connect(config.connectionConfig);
 	const rows = await db.latestDrips(conn);
+	res.send(JSON.stringify(utils.readableTime(rows)));
+});
+
+app.get('/api/recent/:address', async (req, res) => {
+	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
+
+	const conn = await r.connect(config.connectionConfig);
+	const rows = await db.userDrips(conn, req.params.address);
 	res.send(JSON.stringify(utils.readableTime(rows)));
 });
 
@@ -48,6 +56,7 @@ app.get('/api/balance/:address', async (req, res) => {
 });
 
 app.get('/api/withdraw/:address', async (req, res) => {
+	const conn = await r.connect(config.connectionConfig);
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
 	// make sure the user has enough balance
@@ -60,7 +69,7 @@ app.get('/api/withdraw/:address', async (req, res) => {
 		config.withdrawThreshold);
 	if (withReponse.success !== true) return res.sendStatus(403);
 
-	await db.createDrip(req.params.address);
+	await db.createDrip(conn, req.params.address);
 	res.end('true');
 });
 

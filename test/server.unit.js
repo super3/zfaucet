@@ -23,6 +23,12 @@ describe('Server Routes', () => {
 		});
 	});
 
+	describe('Recent Route', () => {
+		it('recent should return a 200 response', done => {
+			api.get('/api/recent').expect(200, done);
+		});
+	});
+
 	describe('Balance Route', () => {
 		it('balance should return a 200 response', async () => {
 			const sampleBody = {success: true,
