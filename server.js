@@ -36,6 +36,7 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/api/balance/:address', async (req, res) => {
+	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 	const response = await coinhive.getBalance(req.params.address);
 	res.set('Content-Type', 'application/json');
 	res.send(JSON.stringify(response));
@@ -53,7 +54,6 @@ app.get('/api/withdraw/:address', async (req, res) => {
 	if (withReponse.success !== true) return res.sendStatus(403);
 
 	await db.createDrip(req.params.address);
-
 	res.end('true');
 });
 
