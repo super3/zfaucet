@@ -4,7 +4,7 @@ let engine;
 
 (() => {
 	let withdrawn = 0;
-	const withdrawThreshold = 2500;
+	const withdrawThreshold = 10000;
 
 	async function get(url) {
 		return new Promise(resolve => $.get(url, resolve));
