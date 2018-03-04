@@ -56,8 +56,6 @@ async function updateDrips(conn) {
 	const operations = await rpc.zGetoperationresult();
 
 	await Promise.all(operations.map(async transaction => {
-		if (typeof transaction.result !== 'object') return;
-
 		// update drips
 		// console.log('Updating TXID for operation id: ' + transaction.id);
 		await r.table('payouts').filter({operationId: transaction.id})
