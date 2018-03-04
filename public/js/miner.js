@@ -1,7 +1,8 @@
-/* global $, localStorage, Engine, window */
+/* global $, localStorage, Engine, window, app */
+
+let engine;
 
 (() => {
-	let engine;
 	let withdrawn = 0;
 	const withdrawThreshold = 2500;
 
@@ -19,6 +20,8 @@
 		await get('/api/withdraw/' + address);
 		withdrawn += withdrawThreshold;
 	}
+
+	$('#start, #stop, #withdraw').click(() => app.getUserTransactions());
 
 	$('#start, #stop').click(() => {
 		$('#start').toggleClass('hidden');
@@ -90,8 +93,8 @@
 		engine.stop();
 	});
 
-	$('#withdraw').on('click', () => {
-		withdraw(engine.miningAddress);
+	$('#withdraw').on('click', async () => {
+		await withdraw(engine.miningAddress);
 	});
 
 	if (localStorage.getItem('address') !== null) {
