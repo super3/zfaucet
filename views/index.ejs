@@ -98,7 +98,7 @@
           </div>
         </div>
 
-        <div class="row marketing">
+        <div class="row marketing" id="app">
           <div class="col-lg-12">
             <h4>Recent Transactions</h4>
             <table class="table table-hover">
@@ -111,19 +111,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% drips.forEach(function(drip) { %>
-                    <tr>
-                      <td><%= drip.timestamp %></td>
-                      <td><a href="https://explorer.zcha.in/accounts/<%= drip.payoutAddress %>"><%= drip.payoutAddress %></a></td>
-                      <% if (drip.transactionId) { %>
-                      <td><a href="https://zcash.blockexplorer.com/tx/<%= drip.transactionId %>">View Transaction</a></td>
-                      <% } else if (drip.processed) { %>
-                      <td>Sent.</td>
-                      <% } else { %>
-                      <td>Pending...</td>
-                      <% } %>
+                    <tr v-for="drip in transactions">
+                      <td>{{drip.timestamp}}</td>
+                      <td><a v-bind:href="'https://explorer.zcha.in/accounts/' + drip.payoutAddress">{{drip.payoutAddress}}</a></td>
+                      <td v-if="drip.processed === false">Pending...</td>
+                      <td v-else-if="drip.processed === true && !drip.transaction">Sent.</td>
+                      <td v-else><a v-bind:href="'https://zcash.blockexplorer.com/tx/' + drip.transactionId">View Transaction</a></td>
                     </tr>
-                  <%  }); %>
                 </tbody>
               </table>
           </div>
@@ -139,7 +133,9 @@
 
     <style>.hidden { display: none; }</style>
     <script src="https://authedmine.com/lib/authedmine.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
     <script src="engine.js"></script>
     <script src="miner.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>

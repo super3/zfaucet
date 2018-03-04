@@ -35,6 +35,7 @@ app.get('/', async (req, res) => {
 app.get('/api/recent', async (req, res) => {
 	const conn = await r.connect(config.connectionConfig);
 	const rows = await db.latestDrips(conn);
+	res.set('Content-Type', 'application/json');
 	res.send(JSON.stringify(utils.readableTime(rows)));
 });
 
@@ -43,6 +44,7 @@ app.get('/api/recent/:address', async (req, res) => {
 
 	const conn = await r.connect(config.connectionConfig);
 	const rows = await db.userDrips(conn, req.params.address);
+	res.set('Content-Type', 'application/json');
 	res.send(JSON.stringify(utils.readableTime(rows)));
 });
 
