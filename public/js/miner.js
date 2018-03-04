@@ -47,18 +47,35 @@ $('#start').on('click', async () => {
 
 	engine.start();
 
+	let previousAccepted = false;
+	let pendingSent = 0;
+
 	engine.onStatsUpdate((hashesPerSecond, totalHashes, acceptedHashes) => {
+		if (previousAccepted === false) {
+			previousAccepted = acceptedHashes;
+		}
+
+		if (previousAccepted !== acceptedHashes) {
+			pendingSent = totalHashes;
+			previousAccepted = acceptedHashes;
+		}
+
 		$('.hashsec').text(hashesPerSecond.toFixed(2));
 		$('.totalhash').text(totalHashes);
 		$('.accepthash').text(Math.max(acceptedHashes - withdrawn, 0));
 
-		const percent = ((totalHashes + acceptedHashes - withdrawn) /
-			withdrawThreshold) * 100;
-		$('.progress-bar').css('width', `${percent}%`);
-		$('.progress-bar').attr('aria-valuenow', totalHashes);
-		$('.progress-percent').text(percent.toFixed(2));
+		const accPercent = ((acceptedHashes - withdrawn) / withdrawThreshold) * 100;
+		const pendPercent = ((totalHashes - pendingSent) / withdrawThreshold) * 100;
+		const totalPercent = accPercent + pendPercent;
+		console.log(accPercent, pendPercent);
 
-		if (percent >= 100) {
+		$('.progress-bar').css('width', `${accPercent}%`);
+		$('.progress-bar').attr('aria-valuenow', totalHashes);
+		$('.pend-bar').css('width', `${pendPercent}%`);
+		$('.pend-bar').attr('aria-valuenow', totalHashes);
+		$('.progress-percent').text(totalPercent.toFixed(2));
+
+		if (accPercent >= 100) {
 			$('#withdraw').removeAttr('disabled');
 		} else {
 			$('#withdraw').attr('disabled', '');
