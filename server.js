@@ -26,8 +26,6 @@ const coinhive = require('./lib/coinhive');
 // index route
 app.get('/', async (req, res) => {
 	const conn = await r.connect(config.connectionConfig);
-
-	// pass drips to ejs for rendering
 	const rows = await db.latestDrips(conn);
 
 	// make time in rows human readable, and then send to template
@@ -37,6 +35,7 @@ app.get('/', async (req, res) => {
 
 app.get('/api/balance/:address', async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
+
 	const response = await coinhive.getBalance(req.params.address);
 	res.set('Content-Type', 'application/json');
 	res.send(JSON.stringify(response));
@@ -45,10 +44,12 @@ app.get('/api/balance/:address', async (req, res) => {
 app.get('/api/withdraw/:address', async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
+	// make sure the user has enough balance
 	const balResponse = await coinhive.getBalance(req.params.address);
 	if (balResponse.balance < config.withdrawThreshold)
 		return res.sendStatus(402);
 
+	// make sure the withdrawal was successful
 	const withReponse = await coinhive.withdraw(req.params.address,
 		config.withdrawThreshold);
 	if (withReponse.success !== true) return res.sendStatus(403);
