@@ -23,9 +23,17 @@ describe('Server Routes', () => {
 		});
 	});
 
-	describe('Recent Route', () => {
+	describe('Recent Routes', () => {
 		it('recent should return a 200 response', done => {
 			api.get('/api/recent').expect(200, done);
+		});
+
+		it('recent + address should return a 200 response', done => {
+			api.get('/api/recent/' + helper.validAddr).expect(200, done);
+		});
+
+		it('recent + bad address should return a 401 response', done => {
+			api.get('/api/recent/' + helper.invalidAddr).expect(401, done);
 		});
 	});
 
