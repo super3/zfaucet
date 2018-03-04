@@ -1,4 +1,4 @@
-/* global $, localStorage, Engine, window, app */
+/* global $, localStorage, Engine, window, app, $crisp */
 
 let engine;
 
@@ -32,6 +32,7 @@ let engine;
 
 	$('#start').on('click', async () => {
 		const miningAddress = $('input#inputAddress').val();
+		$crisp.push(['set', 'session:data', ['miningAddress', miningAddress]]);
 		const balance = await getBalance(miningAddress);
 		withdrawn = balance.withdrawn || 0;
 
