@@ -23,7 +23,6 @@ const db = require('./lib/db');
 const utils = require('./lib/utils');
 const coinhive = require('./lib/coinhive');
 
-// index route
 app.get('/', async (req, res) => {
 	const conn = await r.connect(config.connectionConfig);
 	const rows = await db.latestDrips(conn);
@@ -33,14 +32,12 @@ app.get('/', async (req, res) => {
 	config.hashes, withdrawThreshold: config.withdrawThreshold});
 });
 
-// recent route
 app.get('/api/recent', async (req, res) => {
 	const conn = await r.connect(config.connectionConfig);
 	const rows = await db.latestDrips(conn);
 	res.send(JSON.stringify(utils.readableTime(rows)));
 });
 
-// recent address route
 app.get('/api/recent/:address', async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
