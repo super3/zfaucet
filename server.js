@@ -33,6 +33,12 @@ app.get('/', async (req, res) => {
 	config.hashes, withdrawThreshold: config.withdrawThreshold});
 });
 
+app.get('/recent', async (req, res) => {
+	const conn = await r.connect(config.connectionConfig);
+	const rows = await db.latestDrips(conn);
+	res.send(JSON.stringify(utils.readableTime(rows)));
+});
+
 app.get('/api/balance/:address', async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
