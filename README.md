@@ -35,10 +35,11 @@ cd ~/zfaucet
 Save this under `~/zfaucet/.env`.
 
 ```bash
-captchaApiKey=[Coinhive API KEY]
-rpcuser=[Zcash RPC Username]
-rpcpass=[Zcash RPC Password]
-port=[Port you want the webserver to run]
+RPCUSER=[Zcash RPC Username]
+RPCPASS=[Zcash RPC Password]
+PORT=[Webserver Port]
+COINHIVEPUBKEY=[Coinhive Public Key]
+COINHIVEPRIVKEY=[Coinhive Public Key]
 ```
 
 Run with nodemon.
