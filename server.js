@@ -26,12 +26,8 @@ const utils = require('./lib/utils');
 const coinhive = require('./lib/coinhive');
 
 app.get('/', async (req, res) => {
-	const conn = await r.connect(config.connectionConfig);
-	const rows = await db.latestDrips(conn);
-
 	// make time in rows human readable, and then send to template
-	res.render('index', {drips: utils.readableTime(rows), hashes:
-	config.hashes, withdrawThreshold: config.withdrawThreshold});
+	res.render('index', {withdrawThreshold: config.withdrawThreshold});
 });
 
 app.get('/api/check/:address', (req, res) => {

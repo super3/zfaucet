@@ -1,4 +1,4 @@
-/* global Vue, Engine, axios, localStorage */
+/* global Vue, Engine, axios, localStorage, withdrawThreshold */
 /* eslint curly: ["error", "multi"] */
 
 async function get(url) {
@@ -7,7 +7,6 @@ async function get(url) {
 }
 
 let engine;
-const withdrawThreshold = 10000;
 
 const app = new Vue({
 	el: '#app',
