@@ -24,10 +24,6 @@
 
       gtag('config', 'UA-114304012-1');
     </script>
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.min.js"
-      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-      crossorigin="anonymous"></script>
 
     <script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="83f8538e-f7e8-42f6-9ec7-a8efc855d1fd";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script>
   </head>
@@ -39,7 +35,7 @@
         <h3 class="text-muted">zFaucet</h3>
       </header>
 
-      <main role="main">
+      <main role="main" id="app">
 
         <div class="alert alert-danger address-not-entered hidden" role="alert">
           <strong>Oops!</strong> You need to supply a valid zcash t-address.
@@ -69,38 +65,49 @@
            </thead>
            <tbody>
              <tr>
-               <td class="hashsec">0</td>
-               <td class="totalhash">0</td>
-               <td class="accepthash">0</td>
+               <td>{{hashesPerSecond.toFixed(2)}}</td>
+               <td>{{totalHashes}}</td>
+               <td>{{acceptedHashes}}</td>
                <td>~1000 sats / <%= withdrawThreshold/1000 %>k hashes</td>
              </tr>
            </tbody>
           </table>
           <div>
             <div class="form-group">
-              <input type="text" class="form-control" name="inputAddress" id="inputAddress"
+              <input type="text" class="form-control"
                placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)"
-               style="margin-bottom: 10px;">
+               style="margin-bottom: 10px;" v-model.trim="address" v-on:change="validateAddress" v-bind:class="{ hidden: mining, 'is-valid': addressValid, 'is-invalid': !addressValid }">
 
-                <div class="hidden" id="progress">
+                <div v-bind:class="{ hidden: !mining }">
                   <h4>Progress to Withdrawal:</h4>
                   <div class="progress" style="margin-bottom: 20px; height: 31px; background-color: #cccccc;">
 
-                    <div class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                      <span class="progress-percent">0</span>%
+                    <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: acceptedPercent + '%' }">
+                      <span class="progress-percent">{{totalPercent.toFixed(2)}}</span>%
                     </div>
-                    <div class="progress-bar pend-bar bg-success bg-warning" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar pend-bar bg-success bg-warning" role="progressbar" v-bind:style="{ width: pendingPercent + '%' }"></div>
                   </div>
                 </div>
 
-               <button type="submit" id="start" class="btn btn-lg btn-success">Start Mining</button>
-               <button type="submit" id="stop" class="btn btn-lg btn-danger hidden">Stop Mining</button>
-               <button type="submit" id="withdraw" class="btn btn-lg btn-primary" disabled>Withdraw Zcash<span class="multidraw"></span></button>
+               <button type="submit" class="btn btn-lg btn-success"
+                  v-bind:class="{ hidden: mining }"
+                  v-bind:disabled="address == ''"
+                  v-on:click="startMining"
+                >Start Mining</button>
+
+               <button type="submit" class="btn btn-lg btn-danger"
+                  v-bind:class="{ hidden: !mining }"
+                  v-on:click="stopMining"
+                >Stop Mining</button>
+               <button type="submit" class="btn btn-lg btn-primary"
+                v-bind:disabled="acceptedHashes < withdrawThreshold"
+                v-on:click="withdraw"
+               >Withdraw Zcash <span v-if="acceptedPercent >= 200">({{ Math.floor(acceptedPercent / 100) }}x)</span></button>
             </div>
           </div>
         </div>
 
-        <div class="row marketing" id="app">
+        <div class="row marketing">
           <div class="col-lg-12" v-if="userTransactions.length > 0">
             <h4>Your Transactions</h4>
             <table class="table table-hover">
@@ -158,9 +165,9 @@
     <style>.hidden { display: none; }</style>
     <script src="https://authedmine.com/lib/authedmine.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script>const withdrawThreshold = <%= withdrawThreshold %>;</script>
     <script src="engine.js"></script>
-    <script src="miner.js"></script>
     <script src="app.js"></script>
-
     </body>
 </html>
