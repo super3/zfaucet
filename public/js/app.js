@@ -1,8 +1,9 @@
-/* global Vue, Engine, $, localStorage */
+/* global Vue, Engine, axios, localStorage */
 /* eslint curly: ["error", "multi"] */
 
 async function get(url) {
-	return new Promise(resolve => $.get(url, resolve));
+	const {data} = await axios.get(url);
+	return data;
 }
 
 let engine;
