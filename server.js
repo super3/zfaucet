@@ -34,6 +34,10 @@ app.get('/', async (req, res) => {
 	config.hashes, withdrawThreshold: config.withdrawThreshold});
 });
 
+app.get('/api/check/:address', (req, res) => {
+		res.end(String(utils.isAddress(req.params.address)));
+});
+
 app.get('/api/recent', cache('30 seconds'), async (req, res) => {
 	const conn = await r.connect(config.connectionConfig);
 	const rows = await db.latestDrips(conn);

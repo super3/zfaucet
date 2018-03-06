@@ -23,6 +23,20 @@ describe('Server Routes', () => {
 		});
 	});
 
+	describe('Address Check Route', () => {
+		const route = '/api/check/';
+
+		it('good address', async () => {
+			const response = await api.get(route + helper.validAddr).expect(200);
+			chai.assert.strictEqual(response.text, 'true');
+		});
+
+		it('bad address', async () => {
+			const response = await api.get(route + helper.invalidAddr).expect(200);
+			chai.assert.strictEqual(response.text, 'false');
+		});
+	});
+
 	describe('Recent Routes', () => {
 		it('recent should return a 200 response', done => {
 			api.get('/api/recent').expect(200, done);
