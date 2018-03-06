@@ -4,7 +4,9 @@ const app = new Vue({
 	el: '#app',
 	data: {
 		transactions: [],
-		userTransactions: []
+		userTransactions: [],
+		address: '',
+		addressValid: false
 	},
 	methods: {
 		async getTransactions() {
@@ -13,6 +15,13 @@ const app = new Vue({
 		async getUserTransactions() {
 			if (engine !== undefined && engine.miningAddress !== undefined) {
 				this.userTransactions = await get(`/api/recent/${engine.miningAddress}`);
+			}
+		},
+		async validateAddress() {
+			if (await get(`/api/check/${this.address}`) === true) {
+				this.addressValid = true;
+			} else {
+				this.addressValid = false;
 			}
 		}
 	}

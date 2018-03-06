@@ -35,7 +35,8 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/api/check/:address', (req, res) => {
-		res.end(String(utils.isAddress(req.params.address)));
+		res.set('Content-Type', 'application/json');
+		res.end(JSON.stringify(utils.isAddress(req.params.address)));
 });
 
 app.get('/api/recent', cache('30 seconds'), async (req, res) => {
