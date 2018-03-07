@@ -6,7 +6,7 @@ Simple Zcash(ZEC) faucet built with Node.
 [![License](https://img.shields.io/badge/license-AGPLv3-blue.svg?label=license)](https://github.com/Storj/super3/zfaucet/blob/master/LICENSE)
 
 ## DB and Zcash Setup
-#### Download and Install RethinkDB
+#### Download and Install [RethinkDB](https://www.rethinkdb.com/)
 ```bash
 source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
 wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
@@ -22,7 +22,7 @@ recli 'r.table("payouts").indexCreate("timestamp")'
 ```
 
 ### Install Zcash
-Use the [Zcash Debian binary packages](https://github.com/zcash/zcash/wiki/Debian-binary-packages) install guide. The [Zcash 1.0 User Guide](https://github.com/zcash/zcash/wiki/1.0-User-Guide) has additional information if needed. Will have to fully sync before you can send any payments.
+Use the [Zcash Debian binary packages](https://github.com/zcash/zcash/wiki/Debian-binary-packages) install guide. The [Zcash 1.0 User Guide](https://github.com/zcash/zcash/wiki/1.0-User-Guide) has additional information if needed. You will have to fully sync the node before you can send any payments.
 
 # Install & Run
 Clone the repo.
@@ -40,6 +40,7 @@ RPCPASS=[Zcash RPC Password]
 PORT=[Webserver Port]
 COINHIVEPUBKEY=[Coinhive Public Key]
 COINHIVEPRIVKEY=[Coinhive Public Key]
+WITHDRAWTHRESHOLD=[Coinhive Hashes Needed to Withdraw]
 ```
 
 Run with nodemon.
