@@ -54,6 +54,7 @@ module.exports.sendDrip = sendDrip;
 
 async function updateDrips(conn) {
 	const operations = await rpc.zGetoperationresult();
+	console.log(operations);
 
 	await Promise.all(operations.map(async transaction => {
 		// update drips

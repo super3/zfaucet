@@ -33,7 +33,6 @@
     "express": "^4.16.2",
     "request-promise": "^4.2.2",
     "rethinkdb": "^2.3.3",
-    "shelljs": "^0.8.1",
     "stdrpc": "0.0.3"
   },
   "devDependencies": {
