@@ -22,7 +22,7 @@ recli 'r.db("test").tableCreate("payouts")'
 recli 'r.table("payouts").indexCreate("timestamp")'
 ```
 
-### Install [Zcash](https://z.cash/)
+#### Install [Zcash](https://z.cash/)
 Use the [Zcash Debian binary packages](https://github.com/zcash/zcash/wiki/Debian-binary-packages) install guide. The [Zcash 1.0 User Guide](https://github.com/zcash/zcash/wiki/1.0-User-Guide) has additional information if needed. You will have to fully sync the node before you can send any payments.
 ```bash
 sudo apt-get install apt-transport-https
