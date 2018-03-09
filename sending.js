@@ -55,7 +55,6 @@ module.exports.sendDrip = sendDrip;
 
 async function updateDrips(conn) {
 	const operations = await rpc.zGetoperationresult();
-	console.log(operations);
 
 	await Promise.all(operations.map(async transaction => {
 		// update drips
@@ -80,10 +79,11 @@ async function main() {
 		await sendDrip(conn, sendingAddress);
 		await updateDrips(conn);
 	} catch (err) {
-		console.log('should close', err);
+		console.log('we had an error:', err);
 	}
 
 	conn.close();
+	return 1;
 }
 
 module.exports.main = main;
