@@ -4,7 +4,7 @@
   "description": "Simple Zcash(ZEC) faucet built with Node.",
   "main": "server.js",
   "engines": {
-    "node": "8.9.4"
+    "node": "8.10.0"
   },
   "scripts": {
     "test": "npm run testsuite && npm run linter",
