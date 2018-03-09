@@ -1,5 +1,6 @@
 /* eslint capitalized-comments: ["error", "never"] */
 /* eslint curly: ["error", "multi"] */
+/* eslint no-process-exit: "off" */
 
 const r = require('rethinkdb');
 
@@ -70,14 +71,19 @@ async function updateDrips(conn) {
 module.exports.updateDrips = updateDrips;
 
 async function main() {
-	const conn = await r.connect(config.connectionConfig);
+	let conn;
 
-	const sendingAddress = await findInputs(conn);
-	await sendDrip(conn, sendingAddress);
-	await updateDrips(conn);
+	try {
+		conn = await r.connect(config.connectionConfig);
+
+		const sendingAddress = await findInputs(conn);
+		await sendDrip(conn, sendingAddress);
+		await updateDrips(conn);
+	} catch (err) {
+		console.log('should close', err);
+	}
 
 	conn.close();
-	return 1; // signal finished without error
 }
 
 module.exports.main = main;
