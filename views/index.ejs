@@ -24,7 +24,7 @@
 
       gtag('config', 'UA-114304012-1');
     </script>
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" rel="stylesheet">
   </head>
 
   <body>
@@ -92,16 +92,18 @@
                   v-bind:class="{ hidden: mining }"
                   v-bind:disabled="address == ''"
                   v-on:click="startMining"
-                >Start Mining</button>
+                ><span style="top: 4px;" class="oi oi-play-circle"></span> Start Mining</button>
 
                <button type="submit" class="btn btn-lg btn-danger"
                   v-bind:class="{ hidden: !mining }"
                   v-on:click="stopMining"
-                >Stop Mining</button>
+                ><span style="top: 4px;" class="oi oi-media-stop"></span> Stop Mining</button>
+
                <button type="submit" class="btn btn-lg btn-primary"
                 v-bind:disabled="acceptedHashes < withdrawThreshold"
                 v-on:click="withdraw"
-               >Withdraw Zcash <span v-if="acceptedPercent >= 200">({{ Math.floor(acceptedPercent / 100) }}x)</span></button>
+               ><span style="top: 4px;" class="oi oi-action-undo"></span> Withdraw Zcash
+               <span v-if="acceptedPercent >= 200">({{ Math.floor(acceptedPercent / 100) }}x)</span></button>
             </div>
           </div>
         </div>
