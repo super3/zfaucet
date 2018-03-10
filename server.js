@@ -25,6 +25,19 @@ const db = require('./lib/db');
 const utils = require('./lib/utils');
 const coinhive = require('./lib/coinhive');
 
+// middleware
+app.use(async (req, res, next) => {
+	req.conn = await r.connect(config.connectionConfig);
+	const {end} = res;
+
+	res.end = function (...args) {
+		req.conn.close();
+		end.apply(this, args);
+	};
+
+	next();
+});
+
 app.get('/', async (req, res) => {
 	// make time in rows human readable, and then send to template
 	res.render('index', {withdrawThreshold: config.withdrawThreshold});
@@ -36,19 +49,17 @@ app.get('/api/check/:address', (req, res) => {
 });
 
 app.get('/api/recent', cache('30 seconds'), async (req, res) => {
-	const conn = await r.connect(config.connectionConfig);
-	const rows = await db.latestDrips(conn);
+	const rows = await db.latestDrips(req.conn);
 	res.set('Content-Type', 'application/json');
-	res.send(JSON.stringify(utils.readableTime(rows)));
+	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
 app.get('/api/recent/:address', cache('30 seconds'), async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
-	const conn = await r.connect(config.connectionConfig);
-	const rows = await db.userDrips(conn, req.params.address);
+	const rows = await db.userDrips(req.conn, req.params.address);
 	res.set('Content-Type', 'application/json');
-	res.send(JSON.stringify(utils.readableTime(rows)));
+	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
 app.get('/api/balance/:address', async (req, res) => {
@@ -56,11 +67,10 @@ app.get('/api/balance/:address', async (req, res) => {
 
 	const response = await coinhive.getBalance(req.params.address);
 	res.set('Content-Type', 'application/json');
-	res.send(JSON.stringify(response));
+	res.end(JSON.stringify(response));
 });
 
 app.get('/api/withdraw/:address', async (req, res) => {
-	const conn = await r.connect(config.connectionConfig);
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
 	// make sure the user has enough balance
@@ -73,7 +83,7 @@ app.get('/api/withdraw/:address', async (req, res) => {
 		config.withdrawThreshold);
 	if (withReponse.success !== true) return res.sendStatus(403);
 
-	await db.createDrip(conn, req.params.address);
+	await db.createDrip(req.conn, req.params.address);
 	res.end('true');
 });
 
