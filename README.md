@@ -46,7 +46,7 @@ RPCUSER=[Zcash RPC Username]
 RPCPASS=[Zcash RPC Password]
 PORT=[Webserver Port]
 COINHIVEPUBKEY=[Coinhive Public Key]
-COINHIVEPRIVKEY=[Coinhive Public Key]
+COINHIVEPRIVKEY=[Coinhive Private Key]
 WITHDRAWTHRESHOLD=[Coinhive Hashes Needed to Withdraw]
 ```
 
@@ -64,5 +64,5 @@ We run this as a crontab ```*/5 * * * * ~/script.sh >> ~/zlog.log``` every 5 min
 #!/usr/bin/env sh
 cd ~/zfaucet
 git fetch && git reset --hard origin/master
-/root/.nvm/versions/node/v8.9.4/bin/node ~/zfaucet/sending.js
+/root/.nvm/versions/node/v8.10.0/bin/node ~/zfaucet/sending.js
 ```
