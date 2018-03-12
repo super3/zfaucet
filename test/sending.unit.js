@@ -134,5 +134,10 @@ describe('Sending Script', () => {
 
 			await chai.assert.eventually.equal(sending.main(), 1);
 		});
+
+		it('check one error', async () => {
+			rpc.getbalance = sinon.stub().returns(0);
+			await chai.assert.eventually.equal(sending.main(), 0);
+		});
 	});
 });

@@ -79,7 +79,7 @@ async function main() {
 		await sendDrip(conn, sendingAddress);
 		await updateDrips(conn);
 	} catch (err) {
-		console.log('we had an error:', err);
+		return 0;
 	}
 
 	conn.close();
