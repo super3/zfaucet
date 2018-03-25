@@ -54,8 +54,8 @@ Run with nodemon.
 
 ```bash
 npm install
-npm install -g nodemon
-nodemon server.js
+npm install pm2 -g
+pm2 start server.js
 ```
 
 #### Sending Script
