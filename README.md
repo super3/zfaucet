@@ -50,7 +50,7 @@ COINHIVEPRIVKEY=[Coinhive Private Key]
 WITHDRAWTHRESHOLD=[Coinhive Hashes Needed to Withdraw]
 ```
 
-Run with nodemon.
+Run with [PM2](http://pm2.keymetrics.io/).
 
 ```bash
 npm install
