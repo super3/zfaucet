@@ -79,6 +79,7 @@ async function main() {
 		await sendDrip(conn, sendingAddress);
 		await updateDrips(conn);
 	} catch (err) {
+		conn.close();
 		return 0;
 	}
 
