@@ -37,6 +37,7 @@ Clone the repo.
 ```bash
 git clone https://github.com/super3/zfaucet
 cd ~/zfaucet
+npm install
 ```
 
 Save this under `~/zfaucet/.env`.
@@ -53,7 +54,6 @@ WITHDRAWTHRESHOLD=[Coinhive Hashes Needed to Withdraw]
 Run with [PM2](http://pm2.keymetrics.io/).
 
 ```bash
-npm install
 npm install pm2 -g
 pm2 start server.js
 ```
