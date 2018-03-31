@@ -55,7 +55,7 @@ Run with [PM2](http://pm2.keymetrics.io/).
 
 ```bash
 npm install pm2 -g
-pm2 start server.js
+pm2 start process.json
 ```
 
 #### Sending Script
@@ -64,5 +64,4 @@ We run this as a crontab ```*/5 * * * * ~/script.sh >> ~/zlog.log``` every 5 min
 #!/usr/bin/env sh
 cd ~/zfaucet
 git fetch && git reset --hard origin/master
-/root/.nvm/versions/node/v8.10.0/bin/node ~/zfaucet/sending.js
 ```
