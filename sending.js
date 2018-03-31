@@ -91,4 +91,7 @@ module.exports.main = main;
 
 /* istanbul ignore next */
 // send the drips, if running this script alone
-if (require.main === module) main();
+if (require.main === module) {
+	main();
+	setInterval(main, config.sendingIntervalMin * 60 * 1000);
+}
