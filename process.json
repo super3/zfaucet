@@ -1,0 +1,19 @@
+{
+	apps: [{
+		name: "server",
+		script: "server.js",
+		max_memory_restart: "256M",
+		watch: true,
+		env: {
+			NODE_ENV: "production"
+		}
+	}, {
+		name: "sending",
+		script: "sending.js",
+		max_memory_restart: "256M",
+		watch: true,
+		env: {
+			NODE_ENV: "production"
+		}
+	}]
+}
