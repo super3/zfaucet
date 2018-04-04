@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../../../favicon.ico">
+
+    <title>zFaucet - Free Zcash (ZEC) Faucet</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="narrow-jumbotron.css" rel="stylesheet">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114304012-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-114304012-1');
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="container">
+      <header class="header clearfix">
+        <nav>
+          <ul class="nav nav-pills float-right">
+            <li class="nav-item">
+              <a class="nav-link active" href="https://zfaucet.typeform.com/to/QPlWIN">Feedback Survey (With Bonus Payout!)</span></a>
+            </li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">zFaucet</h3>
+      </header>
+
+      <main role="main" id="app">
+
+        <div class="alert alert-danger address-not-entered hidden" role="alert">
+          <strong>Oops!</strong> You need to supply a valid zcash t-address.
+          <a href="https://www.zcashcommunity.com/wallets/">Here is a list</a>
+           of good wallets to use.
+        </div>
+
+        <div class="jumbotron text-center">
+
+          <h1 class="display-5">Mine Zcash With Your Browser.</h1>
+          <p class="lead">No complicated software to download. Just enter in a
+             Zcash address, click 'Start Mining', and your excess processing
+              power will be used to mine.</p>
+          <table class="table table-bordered">
+           <thead>
+             <tr>
+               <th scope="col">Hashes/s</th>
+               <th scope="col">Pending Hashes</th>
+               <th scope="col">Hash Balance</th>
+               <th scope="col">Payout Rate</th>
+             </tr>
+           </thead>
+           <tbody>
+             <tr>
+               <td>{{hashesPerSecond.toFixed(2)}}</td>
+               <td>{{totalHashes}}</td>
+               <td>{{acceptedHashes}}</td>
+               <td>~100 sats / <%= withdrawThreshold/1000 %>k hashes</td>
+             </tr>
+           </tbody>
+          </table>
+          <div>
+            <div class="form-group">
+              <input type="text" class="form-control"
+               placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)"
+               style="margin-bottom: 10px;" v-model.trim="address" v-on:change="validateAddress" v-bind:class="{ hidden: mining, 'is-valid': addressValid, 'is-invalid': !addressValid }">
+
+                <div v-bind:class="{ hidden: !mining }">
+                  <h4>Progress to Withdrawal:</h4>
+                  <div class="progress" style="margin-bottom: 20px; height: 31px; background-color: #cccccc;">
+
+                    <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: acceptedPercent + '%' }">
+                      <span class="progress-percent">{{totalPercent.toFixed(2)}}</span>%
+                    </div>
+                    <div class="progress-bar pend-bar bg-success bg-warning" role="progressbar" v-bind:style="{ width: pendingPercent + '%' }"></div>
+                  </div>
+                </div>
+
+               <button type="submit" class="btn btn-lg btn-success"
+                  v-bind:class="{ hidden: mining }"
+                  v-bind:disabled="address == ''"
+                  v-on:click="startMining"
+                ><span style="top: 4px;" class="oi oi-play-circle"></span> Start Mining</button>
+
+               <button type="submit" class="btn btn-lg btn-danger"
+                  v-bind:class="{ hidden: !mining }"
+                  v-on:click="stopMining"
+                ><span style="top: 4px;" class="oi oi-media-stop"></span> Stop Mining</button>
+
+               <button type="submit" class="btn btn-lg btn-primary"
+                v-bind:disabled="acceptedHashes < withdrawThreshold"
+                v-on:click="withdraw"
+               ><span style="top: 4px;" class="oi oi-action-undo"></span> Withdraw Zcash
+               <span v-if="acceptedPercent >= 200">({{ Math.floor(acceptedPercent / 100) }}x)</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row marketing">
+          <div class="col-lg-12" v-if="userTransactions.length > 0">
+            <h4>Your Transactions</h4>
+            <transactions-table v-bind:drips="userTransactions"></transactions-table>
+          </div>
+          <div class="col-lg-12">
+            <h4>Recent Transactions</h4>
+            <transactions-table v-bind:drips="transactions"></transactions-table>
+          </div>
+        </div>
+
+      </main>
+
+      <footer class="footer">
+        <p>Powered by <a href="https://github.com/super3/zfaucet">zFaucet</a>.</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <style>.hidden { display: none; }</style>
+    <script src="https://authedmine.com/lib/authedmine.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script>const withdrawThreshold = <%= withdrawThreshold %>;</script>
+    <script src="engine.js"></script>
+    <script src="app.js"></script>
+    </body>
+</html>
