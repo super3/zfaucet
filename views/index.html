@@ -10,7 +10,8 @@
     <title>zFaucet - Free Zcash (ZEC) Faucet</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <!-- Custom styles for this template -->
     <link href="pricing.css" rel="stylesheet">
@@ -43,17 +44,32 @@
             <h4 class="my-0 font-weight-normal">1. Set Wallet</h4>
           </div>
           <div class="card-body">
-            <!--<label><b>Your Wallet Address:</b></label>
-            <input type="text" placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)" class="form-control is-valid" style="margin-bottom: 10px;">
+            <div v-bind:class="{ hidden: !mining }">
+              <label><b>Your Wallet Address:</b></label>
+              <input type="text" class="form-control"
+               placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)"
+               style="margin-bottom: 10px;" v-model.trim="address" v-on:change="validateAddress"
+               v-bind:class="{ hidden: mining, 'is-valid': addressValid, 'is-invalid': !addressValid }">
 
-            <label><b>Suggested Wallets:</b></label>
-            <button type="button" class="btn btn-lg btn-block btn-outline-primary">Jaxx</button>
-            <button type="button" class="btn btn-lg btn-block btn-outline-primary">Carbon Wallet</button><br/>-->
-            <br/>
-            <h1 class="card-title pricing-card-title">5:42 <small class="text-muted">remaining</small></h1>
-            <div class="progress" style="margin-bottom: 20px; height: 31px; background-color: rgb(204, 204, 204);"><div role="progressbar" class="progress-bar bg-success" style="width: 46.8%;"><span class="progress-percent">46.83%</span>
-                                </div> <div role="progressbar" class="progress-bar pend-bar bg-success bg-warning" style="width: 0.03%;"></div></div>
-            <button type="button" class="btn btn-lg btn-block btn-outline-primary">Withdraw to Wallet</button>
+              <label><b>Suggested Wallets:</b></label>
+              <button type="button" class="btn btn-lg btn-block btn-outline-primary">Jaxx</button>
+              <button type="button" class="btn btn-lg btn-block btn-outline-primary">Carbon Wallet</button><br/>
+            </div>
+            <div v-bind:class="{ hidden: mining }">
+              <h1 class="card-title pricing-card-title">0:00 <small class="text-muted">remaining</small></h1>
+              <div class="progress" style="margin-bottom: 20px; height: 31px; background-color: rgb(204, 204, 204);">
+                <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: acceptedPercent + '%' }">
+                  <span class="progress-percent">{{totalPercent.toFixed(2)}}</span>%
+                </div>
+                <div class="progress-bar pend-bar bg-success bg-warning" role="progressbar" v-bind:style="{ width: pendingPercent + '%' }"></div>
+              </div>
+
+              <button type="submit" class="btn btn-lg btn-block btn-primary"
+               v-bind:disabled="acceptedHashes < withdrawThreshold"
+               v-on:click="withdraw"
+              ><span style="top: 4px;" class="oi oi-action-undo"></span> Withdraw
+              <span v-if="acceptedPercent >= 200">({{ Math.floor(acceptedPercent / 100) }}x)</span></button>
+            </div>
           </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -67,9 +83,17 @@
               <li>Hash Balance: 0 </li><br/>
               <li>~100 sats / 100k hashes</li>
             </ul>
-            <button type="button" class="btn btn-lg btn-block btn-success">
-              <span class="oi oi-play-circle" style="top: 4px; margin-right: 3px;"></span>
-              Start Mining</button>
+
+            <button type="submit" class="btn btn-lg btn-success"
+               v-bind:class="{ hidden: mining }"
+               v-bind:disabled="address == ''"
+               v-on:click="startMining"
+             ><span style="top: 4px; margin-right: 3px;" class="oi oi-play-circle"></span> Start Mining</button>
+
+            <button type="submit" class="btn btn-lg btn-danger"
+               v-bind:class="{ hidden: !mining }"
+               v-on:click="stopMining"
+             ><span style="top: 4px; margin-right: 3px;" class="oi oi-media-stop"></span> Stop Mining</button>
           </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -132,17 +156,12 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-    <script src="../../../../assets/js/vendor/popper.min.js"></script>
-    <script src="../../../../dist/js/bootstrap.min.js"></script>
-    <script src="../../../../assets/js/vendor/holder.min.js"></script>
-    <script>
-      Holder.addTheme('thumb', {
-        bg: '#55595c',
-        fg: '#eceeef',
-        text: 'Thumbnail'
-      });
-    </script>
+    <style>.hidden { display: none; }</style>
+    <script src="https://authedmine.com/lib/authedmine.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script>const withdrawThreshold = <%= withdrawThreshold %>;</script>
+    <script src="engine.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
