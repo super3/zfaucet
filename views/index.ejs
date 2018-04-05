@@ -58,11 +58,11 @@
                v-bind:class="{ hidden: mining, 'is-valid': addressValid, 'is-invalid': !addressValid }">
 
               <label><b>Suggested Wallets:</b></label>
-              <button type="button" class="btn btn-lg btn-block btn-outline-primary">Jaxx</button>
-              <button type="button" class="btn btn-lg btn-block btn-outline-primary">Carbon Wallet</button><br/>
+              <a href="https://jaxx.io/" class="btn btn-lg btn-block btn-outline-primary">Jaxx</a>
+              <a href="https://carbonwallet.com/" class="btn btn-lg btn-block btn-outline-primary">Carbon Wallet</a><br/>
             </div>
             <div v-bind:class="{ hidden: !mining }">
-              <h1 class="card-title pricing-card-title">0:00 <small class="text-muted">remaining</small></h1>
+              <h1 class="card-title pricing-card-title">{{timeRemaining}} <small class="text-muted">left</small></h1>
               <div class="progress" style="margin-bottom: 20px; height: 31px; background-color: rgb(204, 204, 204);">
                 <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: acceptedPercent + '%' }">
                   <span class="progress-percent">{{totalPercent.toFixed(2)}}</span>%
@@ -72,12 +72,11 @@
 
               <button type="submit" class="btn btn-lg btn-block btn-outline-primary"
               ><span style="top: 4px;" class="oi oi-link-intact"></span> View Transactions</span></button>
-
-              <button type="submit" class="btn btn-lg btn-block"
-               v-bind:disabled="acceptedHashes < withdrawThreshold"
+              <button type="submit" class="btn btn-lg btn-block btn-primary"
+               v-bind:disabled="hashBalance < withdrawThreshold"
                v-on:click="withdraw"
               ><span style="top: 4px;" class="oi oi-action-undo"></span> Withdraw
-              <span v-if="acceptedPercent >= 200">({{ Math.floor(acceptedPercent / 100) }}x)</span></button>
+              <span v-if="acceptedPercent >= 200">({{ Math.floor(hashBalance / withdrawThreshold) }}x)</span></button>
             </div>
           </div>
         </div>
@@ -118,9 +117,9 @@
               <li>CPU, NVIDIA, and AMD mining</li>
               <li>Automatic miner downloads</li>
             </ul>
-            <button type="button" class="btn btn-lg btn-block btn-primary">
-              <span class="oi oi-cloud-download" style="top: 4px; margin-right: 3px;"></span>
-              Download</button>
+
+            <a href="https://github.com/super3/zmine/releases" class="btn btn-lg btn-block btn-primary"><span class="oi oi-cloud-download" style="top: 4px; margin-right: 3px;"></span>
+            Download</button></a>
           </div>
         </div>
         <!--<div class="card text-center box-shadow">

@@ -32,6 +32,8 @@ const TransactionsTable = Vue.component('transactions-table', {
 
 let engine;
 
+const remainingBuffer = [];
+
 const app = new Vue({
 	el: '#app',
 	data: {
@@ -100,6 +102,27 @@ const app = new Vue({
 	computed: {
 		totalPercent() {
 			return this.acceptedPercent + this.pendingPercent;
+		},
+		hashBalance() {
+			return this.acceptedHashes - this.withdrawn;
+		},
+		timeRemaining() {
+			const totalSeconds = (this.withdrawThreshold - (this.hashBalance % this.withdrawThreshold)) /
+				this.hashesPerSecond;
+
+			if (!Number.isFinite(totalSeconds))
+				return `00:00`;
+
+			remainingBuffer.push(totalSeconds);
+
+			if (remainingBuffer.length > 10)
+				remainingBuffer.shift();
+
+			const smoothSeconds = remainingBuffer.reduce((a, b) => a + b) / remainingBuffer.length;
+
+			const minutes = Math.floor(smoothSeconds / 60);
+			const seconds = Math.round((smoothSeconds % 60));
+			return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 		}
 	},
 	async created() {
