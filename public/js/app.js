@@ -123,6 +123,9 @@ const app = new Vue({
 			const minutes = Math.floor(smoothSeconds / 60);
 			const seconds = Math.round((smoothSeconds % 60));
 			return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+		},
+		transactionURL() {
+			return 'https://zcash.blockexplorer.com/address/' + this.address;
 		}
 	},
 	async created() {

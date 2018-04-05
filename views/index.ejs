@@ -70,8 +70,8 @@
                 <div class="progress-bar pend-bar bg-success bg-warning" role="progressbar" v-bind:style="{ width: pendingPercent + '%' }"></div>
               </div>
 
-              <button type="submit" class="btn btn-lg btn-block btn-outline-primary"
-              ><span style="top: 4px;" class="oi oi-link-intact"></span> View Transactions</span></button>
+              <a v-bind:href="transactionURL" class="btn btn-lg btn-block btn-outline-primary"
+              ><span style="top: 4px;" class="oi oi-link-intact"></span> View Transactions</a>
               <button type="submit" class="btn btn-lg btn-block btn-primary"
                v-bind:disabled="hashBalance < withdrawThreshold"
                v-on:click="withdraw"
