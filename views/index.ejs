@@ -35,7 +35,7 @@
         <a class="p-2 text-dark" href="#">Support</a>
         <a class="p-2 text-dark" href="#">Pricing</a>
       </nav>-->
-      <a class="btn btn-outline-primary" href="#">Feedback</a>
+      <a class="btn btn-outline-primary" href="https://zfaucet.typeform.com/to/QPlWIN">Feedback (Bonus!)</a>
     </div>
 
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -138,12 +138,18 @@
           <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs">
               <li class="nav-item">
-                <a class="nav-link active" href="#">Recent Transactions</a>
+                <a class="nav-link" href="#" v-bind:class="{ active: currentTab === 0 }" v-on:click="currentTab=0">Recent Transactions</a>
+              </li>
+              <li class="nav-item" v-if="mining">
+                <a class="nav-link" href="#" v-bind:class="{ active: currentTab === 1 }" v-on:click="currentTab=1">My Transactions</a>
               </li>
             </ul>
           </div>
-          <div class="card-body">
+          <div class="card-body" v-if="currentTab === 0">
             <transactions-table v-bind:drips="transactions"></transactions-table>
+          </div>
+          <div class="card-body" v-if="currentTab === 1">
+            <transactions-table v-bind:drips="userTransactions"></transactions-table>
           </div>
         </div>
       </div>

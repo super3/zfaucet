@@ -48,7 +48,8 @@ const app = new Vue({
 		acceptedPercent: 0,
 		pendingPercent: 0,
 		withdrawn: 0,
-		withdrawThreshold
+		withdrawThreshold,
+		currentTab: 0
 	},
 	methods: {
 		async getTransactions() {
