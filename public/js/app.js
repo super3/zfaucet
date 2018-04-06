@@ -9,7 +9,7 @@ async function get(url) {
 const TransactionsTable = Vue.component('transactions-table', {
 	props: ['drips'],
 	template: `
-		<table class="table table-bordered">
+		<table class="table">
 			<thead>
 				<tr>
 					<th scope="col">Time</th>
