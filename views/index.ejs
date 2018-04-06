@@ -59,10 +59,10 @@
                v-bind:class="{ hidden: mining, 'is-valid': addressValid, 'is-invalid': !addressValid }">
 
               <label><b>Suggested Wallets:</b></label>
+              <a href="https://walletgenerator.net/?currency=Zcash" class="btn btn-lg btn-block btn-outline-primary">WalletGenerator.net</a>
               <a href="https://jaxx.io/" class="btn btn-lg btn-block btn-outline-primary">Jaxx</a>
-              <a href="https://carbonwallet.com/" class="btn btn-lg btn-block btn-outline-primary">Carbon Wallet</a><br/>
             </div>
-            <div v-bind:class="{ hidden: !mining }">
+            <div v-bind:class="{ hidden: !mining }" v-cloak>
               <h1 class="card-title pricing-card-title">{{timeRemaining}} <small class="text-muted">left</small></h1>
               <div class="progress" style="margin-bottom: 20px; height: 31px; background-color: rgb(204, 204, 204);">
                 <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: acceptedPercent + '%' }">
@@ -86,7 +86,7 @@
             <h4 class="my-0 font-weight-normal">2. Mine Online</h4>
           </div>
           <div class="card-body">
-            <h1 class="card-title pricing-card-title">{{hashesPerSecond.toFixed(2)}} <small class="text-muted"> hashes/s </small></h1>
+            <h1 class="card-title pricing-card-title" v-cloak>{{hashesPerSecond.toFixed(2)}} <small class="text-muted"> hashes/s </small></h1>
             <ul class="list-unstyled mt-3 mb-4">
               <li>Pending Hashes: {{totalHashes}} </li>
               <li>Hash Balance: {{hashBalance}} </li><br/>
@@ -102,6 +102,7 @@
             <button type="submit" class="btn btn-lg btn-danger"
                v-bind:class="{ hidden: !mining }"
                v-on:click="stopMining"
+               v-cloak
              ><span style="top: 4px; margin-right: 3px;" class="oi oi-media-stop"></span> Stop Mining</button>
           </div>
         </div>
@@ -177,7 +178,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <style>.hidden { display: none; }</style>
+    <style>.hidden { display: none; } [v-cloak] { display: none; }</style>
     <script src="https://authedmine.com/lib/authedmine.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
