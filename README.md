@@ -58,7 +58,7 @@ npm install pm2 -g
 pm2 start process.json
 ```
 
-#### Sending Script
+#### Code Update Script
 We run this as a crontab ```*/5 * * * * ~/script.sh >> ~/zlog.log``` every 5 minutes.
 ```bash
 #!/usr/bin/env sh

@@ -104,7 +104,7 @@ const app = new Vue({
 			return this.acceptedPercent + this.pendingPercent;
 		},
 		hashBalance() {
-			return this.acceptedHashes - this.withdrawn;
+			return Math.max(this.acceptedHashes - this.withdrawn, 0);
 		},
 		timeRemaining() {
 			const totalSeconds = (this.withdrawThreshold - (this.hashBalance % this.withdrawThreshold)) /
