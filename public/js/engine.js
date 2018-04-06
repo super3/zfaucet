@@ -34,6 +34,7 @@ class Engine {
 
 	stop() {
 		this.miner.stop();
+		this.statsUpdate(0, 0, 0);
 		clearInterval(this.statsInterval);
 	}
 }

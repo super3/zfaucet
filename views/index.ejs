@@ -66,7 +66,7 @@
               <h1 class="card-title pricing-card-title">{{timeRemaining}} <small class="text-muted">left</small></h1>
               <div class="progress" style="margin-bottom: 20px; height: 31px; background-color: rgb(204, 204, 204);">
                 <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: acceptedPercent + '%' }">
-                  <span class="progress-percent">{{totalPercent.toFixed(2)}}</span>%
+                  <span class="progress-percent">{{totalPercent.toFixed(2)}}%</span>
                 </div>
                 <div class="progress-bar pend-bar bg-success bg-warning" role="progressbar" v-bind:style="{ width: pendingPercent + '%' }"></div>
               </div>
@@ -88,10 +88,20 @@
           <div class="card-body">
             <h1 class="card-title pricing-card-title" v-cloak>{{hashesPerSecond.toFixed(2)}} <small class="text-muted"> hashes/s </small></h1>
             <ul class="list-unstyled mt-3 mb-4">
-              <li>Pending Hashes: {{totalHashes}} </li>
-              <li>Hash Balance: {{hashBalance}} </li><br/>
+              <li>Pending: {{totalHashes}}</li>
+              <li>Balance: {{hashBalance}}</li><br/>
               <li>~100 sats / <%= withdrawThreshold/1000 %>k hashes</li>
             </ul>
+
+            <!--<div class="input-group" style="margin">
+              <div class="input-group-prepend">
+                <span class="input-group-text">@</span>
+              </div>
+              <input type="text" class="form-control" id="username" placeholder="Username" required="">
+              <div class="invalid-feedback" style="width: 100%;">
+                Your username is required.
+              </div>
+            </div>-->
 
             <button type="submit" class="btn btn-lg btn-success"
                v-bind:class="{ hidden: mining }"
@@ -112,7 +122,7 @@
               3. Download GUI</h4>
           </div>
           <div class="card-body">
-            <h1 class="card-title pricing-card-title">zMine <small class="text-muted"> v0.2.1</small></h1>
+            <h1 class="card-title pricing-card-title">zMine <small class="text-muted"> v0.2.2</small></h1>
             <ul class="list-unstyled mt-3 mb-4">
               <li>One click mining support</li>
               <li>Open source / free software</li>
