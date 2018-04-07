@@ -94,6 +94,7 @@ const app = new Vue({
 		stopMining() {
 			engine.stop();
 			this.mining = false;
+			this.currentTab = 0;
 		},
 		async withdraw() {
 			await get('/api/withdraw/' + this.address);
@@ -125,8 +126,15 @@ const app = new Vue({
 			const seconds = Math.round((smoothSeconds % 60));
 			return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 		},
-		transactionURL() {
-			return 'https://zcash.blockexplorer.com/address/' + this.address;
+		throttle() {
+			if (this.mining)
+				return engine.miner.getThrottle() * 100;
+			return 0;
+		},
+		numThreads() {
+			if (this.mining)
+				return engine.miner.getNumThreads();
+			return 0;
 		}
 	},
 	async created() {
