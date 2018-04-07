@@ -1,4 +1,5 @@
 /* global CoinHive, window */
+/* eslint curly: ["error", "multi"] */
 
 class Engine {
 	constructor(config) {
@@ -20,8 +21,11 @@ class Engine {
 		this.statsUpdate = handler;
 	}
 
-	start() {
+	start(numThreads, numThrottle) {
 		this.miner.start();
+
+		this.miner.setNumThreads(numThreads);
+		this.miner.setThrottle(numThrottle);
 
 		this.statsInterval = setInterval(() => {
 			const hashesPerSecond = this.miner.getHashesPerSecond() || 0;

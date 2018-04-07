@@ -49,7 +49,9 @@ const app = new Vue({
 		pendingPercent: 0,
 		withdrawn: 0,
 		withdrawThreshold,
-		currentTab: 0
+		currentTab: 0,
+		numThreads: 4,
+		numThrottle: 50
 	},
 	methods: {
 		async getTransactions() {
@@ -74,7 +76,7 @@ const app = new Vue({
 				miningAddress: this.address
 			});
 
-			engine.start();
+			engine.start(this.numThreads, this.numThrottle / 100);
 
 			let pendingSent = 0;
 
@@ -94,6 +96,31 @@ const app = new Vue({
 		stopMining() {
 			engine.stop();
 			this.mining = false;
+			this.currentTab = 0;
+		},
+		upThreads() {
+			if (this.numThreads < 16)
+				this.numThreads++;
+			if (this.mining)
+				engine.miner.setNumThreads(this.numThreads);
+		},
+		downThreads() {
+			if (this.numThreads > 1)
+				this.numThreads--;
+			if (this.mining)
+					engine.miner.setNumThreads(this.numThreads);
+		},
+		upThrottle() {
+			if (this.numThrottle <= 80)
+				this.numThrottle += 10;
+			if (this.mining)
+				engine.miner.setThrottle(this.numThrottle / 100);
+		},
+		downThrottle() {
+			if (this.numThrottle >= 10)
+				this.numThrottle -= 10;
+			if (this.mining)
+				engine.miner.setThrottle(this.numThrottle / 100);
 		},
 		async withdraw() {
 			await get('/api/withdraw/' + this.address);
@@ -124,9 +151,6 @@ const app = new Vue({
 			const minutes = Math.floor(smoothSeconds / 60);
 			const seconds = Math.round((smoothSeconds % 60));
 			return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-		},
-		transactionURL() {
-			return 'https://zcash.blockexplorer.com/address/' + this.address;
 		}
 	},
 	async created() {

@@ -71,13 +71,18 @@
                 <div class="progress-bar pend-bar bg-success bg-warning" role="progressbar" v-bind:style="{ width: pendingPercent + '%' }"></div>
               </div>
 
-              <a v-bind:href="transactionURL" class="btn btn-lg btn-block btn-outline-primary"
-              ><span style="top: 4px;" class="oi oi-link-intact"></span> View Transactions</a>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li><b>Pending:</b> {{totalHashes}} hashes</li>
+                <li><b>Balance:</b> {{hashBalance}} hashes</li>
+                <!--<li>~100 sats / <%= withdrawThreshold/1000 %>k hashes</li>-->
+              </ul>
               <button type="submit" class="btn btn-lg btn-block btn-primary"
                v-bind:disabled="hashBalance < withdrawThreshold"
                v-on:click="withdraw"
+               style="margin-bottom: 5px;"
               ><span style="top: 4px;" class="oi oi-action-undo"></span> Withdraw
               <span v-if="acceptedPercent >= 200">({{ Math.floor(hashBalance / withdrawThreshold) }}x)</span></button>
+
             </div>
           </div>
         </div>
@@ -87,17 +92,20 @@
           </div>
           <div class="card-body">
             <h1 class="card-title pricing-card-title" v-cloak>{{hashesPerSecond.toFixed(2)}} <small class="text-muted"> hashes/s </small></h1>
-            <ul class="list-unstyled mt-3 mb-4">
-              <li>Pending: {{totalHashes}}</li>
-              <li>Balance: {{hashBalance}}</li><br/>
-              <li>~100 sats / <%= withdrawThreshold/1000 %>k hashes</li>
-            </ul>
-            
-            <!--<div class="btn-group" role="group" style="margin-bottom: 10px;">
-              <button type="button" class="btn btn-secondary">Threads: 1</button>
-              <button type="button" class="btn btn-secondary">+</button>
-              <button type="button" class="btn btn-secondary">-</button>
-            </div>-->
+
+
+            <table class="table">
+            <tbody style="font-size: 22px;">
+              <tr>
+                <th scope="row">{{numThreads}} Threads</th>
+                <td><button type="button" class="link" v-on:click="upThreads">+</button> / <button type="button" class="link" v-on:click="downThreads">-</button></td>
+              </tr>
+              <tr>
+                <th scope="row">{{100-numThrottle}}% Speed</th>
+                <td><button type="button" class="link" v-on:click="downThrottle">+</button> / <button type="button" class="link" v-on:click="upThrottle">-</button></td>
+              </tr>
+            </tbody>
+          </table>
 
             <button type="submit" class="btn btn-lg btn-success"
                v-bind:class="{ hidden: mining }"
@@ -145,6 +153,7 @@
             <transactions-table v-bind:drips="transactions"></transactions-table>
           </div>
           <div class="card-body" v-if="currentTab === 1">
+            <b>Current Payout Rate:</b> ~100 sats / <%= withdrawThreshold/1000 %>k hashes<br/><br/>
             <transactions-table v-bind:drips="userTransactions"></transactions-table>
           </div>
         </div>
@@ -190,7 +199,23 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <style>.hidden { display: none; } [v-cloak] { display: none; }</style>
+    <style>
+    .hidden { display: none; } [v-cloak] { display: none; }
+
+    button.link {
+      display:inline-block;
+      position:relative;
+      background-color: transparent;
+      cursor: pointer;
+      border:0;
+      padding:0;
+      color:#007bff;
+      font: inherit;
+    }
+    button.link:hover {
+      text-decoration:underline;
+    }
+    </style>
     <script src="https://authedmine.com/lib/authedmine.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
