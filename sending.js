@@ -1,7 +1,3 @@
-/* eslint capitalized-comments: ["error", "never"] */
-/* eslint curly: ["error", "multi"] */
-/* eslint no-process-exit: "off" */
-
 const r = require('rethinkdb');
 
 // internal libs

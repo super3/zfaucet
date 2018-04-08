@@ -48,11 +48,11 @@
     "xo": "^0.20.3"
   },
   "xo": {
-    "unicorn/filename-case": [
-      "error",
-      {
-        "case": "camelCase"
-      }
-    ]
+    "rules": {
+      "no-await-in-loop": "off",
+      "curly": "off",
+      "capitalized-comments": "off",
+      "no-new": "off"
+    }
   }
 }

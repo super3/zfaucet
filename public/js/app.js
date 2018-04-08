@@ -1,5 +1,4 @@
 /* global Vue, Engine, axios, localStorage, withdrawThreshold */
-/* eslint curly: ["error", "multi"] */
 
 async function get(url) {
 	const {data} = await axios.get(url);

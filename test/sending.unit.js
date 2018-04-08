@@ -1,5 +1,4 @@
 /* global it, describe */
-/* eslint capitalized-comments: ["error", "never"] */
 /* eslint camelcase: ["error", {properties: "never"}] */
 
 const sinon = require('sinon');

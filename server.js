@@ -1,6 +1,3 @@
-/* eslint capitalized-comments: ["error", "never"] */
-/* eslint curly: ["error", "multi"] */
-
 const r = require('rethinkdb');
 const express = require('express');
 const bodyParser = require('body-parser'); // create application/json parser

@@ -1,5 +1,4 @@
 /* global CoinHive, window */
-/* eslint curly: ["error", "multi"] */
 
 class Engine {
 	constructor(config) {
