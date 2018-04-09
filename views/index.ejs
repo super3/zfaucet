@@ -9,11 +9,12 @@
 
     <title>zFaucet - Free Zcash (ZEC) Faucet</title>
 
-    <!-- Bootstrap core CSS -->
+    <!-- CSS -->
     <link href="bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
     <link href="pricing.css" rel="stylesheet">
+    <link href="custom.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" rel="stylesheet">
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114304012-1"></script>
     <script>
@@ -22,7 +23,8 @@
       gtag('js', new Date());
       gtag('config', 'UA-114304012-1');
     </script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" rel="stylesheet">
+
+    <!-- Full Story -->
     <script>
       window['_fs_debug'] = false;
       window['_fs_host'] = 'fullstory.com';
@@ -52,7 +54,8 @@
         <a class="p-2 text-dark" href="#">Support</a>
         <a class="p-2 text-dark" href="#">Pricing</a>
       </nav>-->
-      <a class="btn btn-outline-primary" target="_blank" href="https://zfaucet.typeform.com/to/QPlWIN">Feedback (Bonus!)</a>
+      <a class="btn btn-outline-primary" target="_blank"
+        href="https://zfaucet.typeform.com/to/QPlWIN">Feedback (Bonus!)</a>
     </div>
 
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -67,6 +70,7 @@
           <div class="card-header">
             <h4 class="my-0 font-weight-normal">1. Wallet</h4>
           </div>
+
           <div class="card-body">
             <div v-bind:class="{ hidden: mining }">
               <label><b>Your Wallet Address:</b></label>
@@ -76,11 +80,16 @@
                v-bind:class="{ hidden: mining, 'is-valid': addressValid, 'is-invalid': !addressValid }">
 
               <label><b>Suggested Wallets:</b></label>
-              <a href="https://walletgenerator.net/?currency=Zcash" target="_blank" class="btn btn-lg btn-block btn-outline-primary">WalletGenerator.net</a>
-              <a href="https://jaxx.io/" target="_blank" class="btn btn-lg btn-block btn-outline-primary">Jaxx</a>
+              <a href="https://walletgenerator.net/?currency=Zcash"
+                target="_blank" class="btn btn-lg btn-block btn-outline-primary">
+              WalletGenerator.net</a>
+              <a href="https://jaxx.io/" target="_blank"
+                class="btn btn-lg btn-block btn-outline-primary">Jaxx</a>
             </div>
             <div v-bind:class="{ hidden: !mining }" v-cloak>
-              <h1 class="card-title pricing-card-title">{{timeRemaining}} <small class="text-muted">left</small></h1>
+              <h1 class="card-title pricing-card-title">{{timeRemaining}}
+                <small class="text-muted">left</small>
+              </h1>
               <div class="progress" style="margin-bottom: 20px; height: 31px; background-color: rgb(204, 204, 204);">
                 <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: acceptedPercent + '%' }">
                   <span class="progress-percent">{{totalPercent.toFixed(2)}}%</span>
@@ -91,15 +100,15 @@
               <ul class="list-unstyled mt-3 mb-4">
                 <li><b>Pending:</b> {{totalHashes}} hashes</li>
                 <li><b>Balance:</b> {{hashBalance}} hashes</li>
-                <!--<li>~100 sats / <%= withdrawThreshold/1000 %>k hashes</li>-->
               </ul>
               <button type="submit" class="btn btn-lg btn-block btn-primary"
                v-bind:disabled="hashBalance < withdrawThreshold"
                v-on:click="withdraw"
                style="margin-bottom: 5px;"
-              ><span style="top: 4px;" class="oi oi-action-undo"></span> Withdraw
-              <span v-if="acceptedPercent >= 200">({{ Math.floor(hashBalance / withdrawThreshold) }}x)</span></button>
-
+              >
+                <span style="top: 4px;" class="oi oi-action-undo"></span> Withdraw
+                <span v-if="acceptedPercent >= 200">({{ Math.floor(hashBalance / withdrawThreshold) }}x)</span>
+              </button>
             </div>
           </div>
         </div>
@@ -108,8 +117,9 @@
             <h4 class="my-0 font-weight-normal">2. Mine Online</h4>
           </div>
           <div class="card-body">
-            <h1 class="card-title pricing-card-title" v-cloak>{{hashesPerSecond.toFixed(2)}} <small class="text-muted"> hashes/s </small></h1>
-
+            <h1 class="card-title pricing-card-title" v-cloak>
+              {{hashesPerSecond.toFixed(2)}} <small class="text-muted"> hashes/s </small>
+            </h1>
 
             <table class="table">
             <tbody style="font-size: 22px;">
@@ -128,13 +138,17 @@
                v-bind:class="{ hidden: mining }"
                v-bind:disabled="address == ''"
                v-on:click="startMining"
-             ><span style="top: 4px; margin-right: 3px;" class="oi oi-play-circle"></span> Start Mining</button>
+             >
+              <span style="top: 4px; margin-right: 3px;" class="oi oi-play-circle"></span> Start Mining
+            </button>
 
             <button type="submit" class="btn btn-lg btn-danger"
                v-bind:class="{ hidden: !mining }"
                v-on:click="stopMining"
                v-cloak
-             ><span style="top: 4px; margin-right: 3px;" class="oi oi-media-stop"></span> Stop Mining</button>
+             >
+              <span style="top: 4px; margin-right: 3px;" class="oi oi-media-stop"></span> Stop Mining
+            </button>
           </div>
         </div>
         <div class="card mb-4 box-shadow">
@@ -143,7 +157,9 @@
               3. Download GUI</h4>
           </div>
           <div class="card-body">
-            <h1 class="card-title pricing-card-title">zMine <small class="text-muted"> v0.2.2</small></h1>
+            <h1 class="card-title pricing-card-title">
+              zMine <small class="text-muted"> v0.2.2</small>
+            </h1>
             <ul class="list-unstyled mt-3 mb-4">
               <li>One click mining support</li>
               <li>Open source / free software</li>
@@ -151,8 +167,9 @@
               <li>Automatic miner downloads</li>
             </ul>
 
-            <a href="https://github.com/super3/zmine/releases" target="_blank" class="btn btn-lg btn-block btn-primary"><span class="oi oi-cloud-download" style="top: 4px; margin-right: 3px;"></span>
-            Download</button></a>
+            <a href="https://github.com/super3/zmine/releases" target="_blank" class="btn btn-lg btn-block btn-primary">
+              <span class="oi oi-cloud-download" style="top: 4px; margin-right: 3px;"></span>Download
+            </a>
           </div>
         </div>
         <div class="card text-center box-shadow">
@@ -212,31 +229,15 @@
       </footer>
     </div>
 
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <style>
-    .hidden { display: none; } [v-cloak] { display: none; }
-
-    button.link {
-      display:inline-block;
-      position:relative;
-      background-color: transparent;
-      cursor: pointer;
-      border:0;
-      padding:0;
-      color:#007bff;
-      font: inherit;
-    }
-    button.link:hover {
-      text-decoration:underline;
-    }
-    </style>
     <script src="https://authedmine.com/lib/authedmine.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+
     <script>const withdrawThreshold = <%= withdrawThreshold %>;</script>
+
     <script src="engine.js"></script>
     <script src="app.js"></script>
   </body>
