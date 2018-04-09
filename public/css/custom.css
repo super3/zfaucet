@@ -15,3 +15,13 @@ button.link {
 button.link:hover {
 	text-decoration:underline;
 }
+
+.bottom-space {
+	margin-bottom: 10px;
+}
+
+.progress-extra {
+	margin-bottom: 20px;
+	height: 31px;
+	background-color: rgb(204, 204, 204);
+}

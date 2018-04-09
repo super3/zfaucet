@@ -74,9 +74,9 @@
           <div class="card-body">
             <div v-bind:class="{ hidden: mining }">
               <label><b>Your Wallet Address:</b></label>
-              <input type="text" class="form-control"
+              <input type="text" class="form-control bottom-space"
                placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)"
-               style="margin-bottom: 10px;" v-model.trim="address" v-on:change="validateAddress"
+               v-model.trim="address" v-on:change="validateAddress"
                v-bind:class="{ hidden: mining, 'is-valid': addressValid, 'is-invalid': !addressValid }">
 
               <label><b>Suggested Wallets:</b></label>
@@ -90,11 +90,12 @@
               <h1 class="card-title pricing-card-title">{{timeRemaining}}
                 <small class="text-muted">left</small>
               </h1>
-              <div class="progress" style="margin-bottom: 20px; height: 31px; background-color: rgb(204, 204, 204);">
+              <div class="progress progress-extra">
                 <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: acceptedPercent + '%' }">
                   <span class="progress-percent">{{totalPercent.toFixed(2)}}%</span>
                 </div>
-                <div class="progress-bar pend-bar bg-success bg-warning" role="progressbar" v-bind:style="{ width: pendingPercent + '%' }"></div>
+                <div class="progress-bar pend-bar bg-success bg-warning"
+                role="progressbar" v-bind:style="{ width: pendingPercent + '%' }"></div>
               </div>
 
               <ul class="list-unstyled mt-3 mb-4">
@@ -168,7 +169,7 @@
             </ul>
 
             <a href="https://github.com/super3/zmine/releases" target="_blank" class="btn btn-lg btn-block btn-primary">
-              <span class="oi oi-cloud-download" style="top: 4px; margin-right: 3px;"></span>Download
+              <span class="oi oi-cloud-download" style="top: 4px; margin-right: 3px;"></span> Download
             </a>
           </div>
         </div>
