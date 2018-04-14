@@ -37,7 +37,6 @@ app.use(async (req, res, next) => {
 });
 
 app.get('/', async (req, res) => {
-	// make time in rows human readable, and then send to template
 	res.render('index', {withdrawThreshold: config.withdrawThreshold});
 });
 
@@ -52,9 +51,10 @@ app.get('/api/recent', cache('30 seconds'), async (req, res) => {
 	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
-app.get('/api/recent/:address', cache('30 seconds'), async (req, res) => {
+app.get('/api/recent/:address', cache('15 seconds'), async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
+	// find the drips for the user and return
 	const rows = await db.userDrips(req.conn, req.params.address);
 	res.set('Content-Type', 'application/json');
 	res.end(JSON.stringify(utils.readableTime(rows)));
@@ -63,6 +63,7 @@ app.get('/api/recent/:address', cache('30 seconds'), async (req, res) => {
 app.get('/api/balance/:address', async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
+	// check the balance from coinhive and return
 	const response = await coinhive.getBalance(req.params.address);
 	res.set('Content-Type', 'application/json');
 	res.end(JSON.stringify(response));
@@ -81,6 +82,7 @@ app.get('/api/withdraw/:address', async (req, res) => {
 		config.withdrawThreshold);
 	if (withReponse.success !== true) return res.sendStatus(403);
 
+	// add the withdrawal to the queue and return true
 	await db.createDrip(req.conn, req.params.address);
 	res.end('true');
 });
