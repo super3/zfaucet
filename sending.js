@@ -40,7 +40,7 @@ async function sendDrip(conn, sendingAddress) {
 	], 1, config.sendingFee);
 
 	// change drips to processed:true
-	await r.table('payouts').get(rows[0].id).update({processed: true,
+	await r.table('payouts').get(rows[0].id).update({processed: Date.now(),
 		operationId: opid}).run(conn);
 
 	// console.log(`Send Was: ${opid}\n`);
@@ -52,12 +52,10 @@ module.exports.sendDrip = sendDrip;
 async function updateDrips(conn) {
 	const operations = await rpc.zGetoperationresult();
 
+	// udate drips
 	await Promise.all(operations.map(async transaction => {
-		// update drips
-		// console.log('Updating TXID for operation id: ' + transaction.id);
 		await r.table('payouts').filter({operationId: transaction.id})
 			.update({transactionId: transaction.result.txid}).run(conn);
-		// console.log(`Updated TXID with ${transaction.result.txid}`);
 	}));
 
 	return 1; // signal finished without error

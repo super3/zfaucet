@@ -21,7 +21,7 @@ const TransactionsTable = Vue.component('transactions-table', {
 						<td>{{drip.timestamp}}</td>
 						<td><a v-bind:href="'https://explorer.zcha.in/accounts/' + drip.payoutAddress">{{drip.payoutAddress}}</a></td>
 						<td v-if="drip.processed === false">Pending...</td>
-						<td v-else-if="drip.processed === true && !drip.transactionId">Sent.</td>
+						<td v-else-if="drip.processed !== false && !drip.transactionId">Sent.</td>
 						<td v-else><a v-bind:href="'https://zcash.blockexplorer.com/tx/' + drip.transactionId">View Transaction</a></td>
 					</tr>
 			</tbody>
