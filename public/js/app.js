@@ -134,21 +134,22 @@ const app = new Vue({
 			return Math.max(this.acceptedHashes - this.withdrawn, 0);
 		},
 		timeRemaining() {
-			const totalSeconds = (this.withdrawThreshold - (this.hashBalance % this.withdrawThreshold)) /
+			// find total seconds remaining to next withdrawal
+			const totalSeconds = (this.withdrawThreshold -
+				(this.hashBalance % this.withdrawThreshold)) /
 				this.hashesPerSecond;
+			if (!Number.isFinite(totalSeconds)) return `00:00`;
 
-			if (!Number.isFinite(totalSeconds))
-				return `00:00`;
-
+			// maintain buffer of time estimates
 			remainingBuffer.push(totalSeconds);
-
 			if (remainingBuffer.length > 10)
 				remainingBuffer.shift();
+			const smoothSeconds = remainingBuffer.reduce((a, b) => a + b) /
+				remainingBuffer.length;
 
-			const smoothSeconds = remainingBuffer.reduce((a, b) => a + b) / remainingBuffer.length;
-
+			// turn into human readable time
 			const minutes = Math.floor(smoothSeconds / 60);
-			const seconds = Math.round((smoothSeconds % 60));
+			const seconds = Math.round(smoothSeconds % 60);
 			return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 		}
 	},
