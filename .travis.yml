@@ -4,7 +4,7 @@ node_js:
 addons:
   rethinkdb: '2.3.6'
 before_install:
-  - "npm install -g recli"
+  - npm install -g recli
   - recli 'r.db("test").tableCreate("payouts")'
   - recli 'r.table("payouts").indexCreate("timestamp")'
 after_script:
