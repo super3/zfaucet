@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
+    <link rel="icon" href="favicon.ico">
 
     <title>zFaucet - Free Zcash (ZEC) Faucet</title>
 
@@ -81,8 +81,9 @@
 
               <label><b>Suggested Wallets:</b></label>
               <a href="https://walletgenerator.net/?currency=Zcash"
-                target="_blank" class="btn btn-lg btn-block btn-outline-primary">
-              WalletGenerator.net</a>
+                target="_blank"
+                class="btn btn-lg btn-block btn-outline-primary">
+                WalletGenerator.net</a>
               <a href="https://jaxx.io/" target="_blank"
                 class="btn btn-lg btn-block btn-outline-primary">Jaxx</a>
             </div>
@@ -91,11 +92,15 @@
                 <small class="text-muted">left</small>
               </h1>
               <div class="progress progress-extra">
-                <div class="progress-bar bg-success" role="progressbar" v-bind:style="{ width: acceptedPercent + '%' }">
-                  <span class="progress-percent">{{totalPercent.toFixed(2)}}%</span>
+                <div class="progress-bar bg-success" role="progressbar"
+                  v-bind:style="{ width: acceptedPercent + '%' }">
+                  <span class="progress-percent">
+                    {{totalPercent.toFixed(2)}}%
+                  </span>
                 </div>
                 <div class="progress-bar pend-bar bg-success bg-warning"
-                role="progressbar" v-bind:style="{ width: pendingPercent + '%' }"></div>
+                role="progressbar"
+                v-bind:style="{ width: pendingPercent + '%' }"></div>
               </div>
 
               <ul class="list-unstyled mt-3 mb-4">
@@ -108,7 +113,9 @@
                style="margin-bottom: 5px;"
               >
                 <span style="top: 4px;" class="oi oi-action-undo"></span> Withdraw
-                <span v-if="acceptedPercent >= 200">({{ Math.floor(hashBalance / withdrawThreshold) }}x)</span>
+                <span v-if="acceptedPercent >= 200">
+                  ({{ Math.floor(hashBalance / withdrawThreshold) }}x)
+                </span>
               </button>
             </div>
           </div>
@@ -126,11 +133,17 @@
             <tbody style="font-size: 22px;">
               <tr>
                 <th scope="row">{{numThreads}} Threads</th>
-                <td><button type="button" class="link" v-on:click="upThreads">+</button> / <button type="button" class="link" v-on:click="downThreads">-</button></td>
+                <td>
+                  <button type="button" class="link" v-on:click="upThreads">+</button> /
+                  <button type="button" class="link" v-on:click="downThreads">-</button>
+                </td>
               </tr>
               <tr>
                 <th scope="row">{{100-numThrottle}}% Speed</th>
-                <td><button type="button" class="link" v-on:click="downThrottle">+</button> / <button type="button" class="link" v-on:click="upThrottle">-</button></td>
+                <td>
+                  <button type="button" class="link" v-on:click="downThrottle">+</button> /
+                  <button type="button" class="link" v-on:click="upThrottle">-</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -140,7 +153,8 @@
                v-bind:disabled="address == ''"
                v-on:click="startMining"
              >
-              <span style="top: 4px; margin-right: 3px;" class="oi oi-play-circle"></span> Start Mining
+              <span style="top: 4px; margin-right: 3px;"
+                class="oi oi-play-circle center-icon"></span> Start Mining
             </button>
 
             <button type="submit" class="btn btn-lg btn-danger"
@@ -148,7 +162,8 @@
                v-on:click="stopMining"
                v-cloak
              >
-              <span style="top: 4px; margin-right: 3px;" class="oi oi-media-stop"></span> Stop Mining
+              <span style="top: 4px; margin-right: 3px;"
+                class="oi oi-media-stop center-icon"></span> Stop Mining
             </button>
           </div>
         </div>
@@ -168,8 +183,10 @@
               <li>Automatic miner downloads</li>
             </ul>
 
-            <a href="https://github.com/super3/zmine/releases" target="_blank" class="btn btn-lg btn-block btn-primary">
-              <span class="oi oi-cloud-download" style="top: 4px; margin-right: 3px;"></span> Download
+            <a href="https://github.com/super3/zmine/releases"
+              target="_blank" class="btn btn-lg btn-block btn-primary">
+              <span class="oi oi-cloud-download"
+                style="top: 4px; margin-right: 3px;"></span> Download
             </a>
           </div>
         </div>
@@ -177,10 +194,14 @@
           <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs">
               <li class="nav-item">
-                <a class="nav-link" href="#" v-bind:class="{ active: currentTab === 0 }" v-on:click="currentTab=0">Recent Transactions</a>
+                <a class="nav-link" href="#"
+                  v-bind:class="{ active: currentTab === 0 }"
+                  v-on:click="currentTab=0">Recent Transactions</a>
               </li>
               <li class="nav-item" v-if="mining">
-                <a class="nav-link" href="#" v-bind:class="{ active: currentTab === 1 }" v-on:click="currentTab=1">My Transactions</a>
+                <a class="nav-link" href="#"
+                  v-bind:class="{ active: currentTab === 1 }"
+                  v-on:click="currentTab=1">My Transactions</a>
               </li>
             </ul>
           </div>
@@ -188,7 +209,9 @@
             <transactions-table v-bind:drips="transactions"></transactions-table>
           </div>
           <div class="card-body" v-if="currentTab === 1">
-            <b>Current Payout Rate:</b> ~100 sats / <%= withdrawThreshold/1000 %>k hashes<br/><br/>
+            <div class="bottom-space">
+              <b>Current Payout Rate:</b> ~100 sats / <%= withdrawThreshold/1000 %>k hashes
+            </div>
             <transactions-table v-bind:drips="userTransactions"></transactions-table>
           </div>
         </div>
