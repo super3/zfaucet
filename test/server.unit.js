@@ -60,6 +60,16 @@ describe('Server Routes', () => {
 		});
 	});
 
+	describe('Referral Routes', () => {
+		it('referral + address should return a 200 response', done => {
+			api.get('/api/referral/' + helper.validAddr).expect(200, done);
+		});
+
+		it('referral + bad address should return a 401 response', done => {
+			api.get('/api/referral/' + helper.invalidAddr).expect(401, done);
+		});
+	});
+
 	describe('Balance Route', () => {
 		it('balance should return a 200 response', async () => {
 			const sampleBody = {success: true,

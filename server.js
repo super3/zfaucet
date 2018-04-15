@@ -63,6 +63,15 @@ app.get('/api/recent/:address', cache('15 seconds'), async (req, res) => {
 	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
+app.get('/api/referral/:address', cache('15 seconds'), async (req, res) => {
+	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
+
+	// find the drips for the user and return
+	const rows = await db.referralDrips(req.conn, req.params.address);
+	res.set('Content-Type', 'application/json');
+	res.end(JSON.stringify(utils.readableTime(rows)));
+});
+
 app.get('/api/balance/:address', async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 

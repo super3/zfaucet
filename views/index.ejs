@@ -203,6 +203,11 @@
                   v-bind:class="{ active: currentTab === 1 }"
                   v-on:click="currentTab=1">My Transactions</a>
               </li>
+              <li class="nav-item" v-if="mining">
+                <a class="nav-link" href="#"
+                  v-bind:class="{ active: currentTab === 2 }"
+                  v-on:click="currentTab=2">My Referrals</a>
+              </li>
             </ul>
           </div>
           <div class="card-body" v-if="currentTab === 0">
@@ -210,9 +215,20 @@
           </div>
           <div class="card-body" v-if="currentTab === 1">
             <div class="bottom-space">
-              <b>Current Payout Rate:</b> ~100 sats / <%= withdrawThreshold/1000 %>k hashes
+              <b>Current Payout Rate:</b><br/>
+              ~100 sats / <%= withdrawThreshold/1000 %>k hashes
             </div>
             <transactions-table v-bind:drips="userTransactions"></transactions-table>
+          </div>
+          <div class="card-body" v-if="currentTab === 2">
+            <div class="bottom-space">
+              <b>Referral Bonus Program:</b><br/>
+              <p>Get a bonus payout every time someone does a withdrawal with your URL.</p>
+              <b>Your Referral URL:</b><br/>
+              <code>http://zfaucet.org/?referral={{address}}</code>
+            </div>
+
+            <transactions-table v-bind:drips="referralTransactions"></transactions-table>
           </div>
         </div>
       </div>

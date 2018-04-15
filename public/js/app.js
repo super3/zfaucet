@@ -38,6 +38,7 @@ const app = new Vue({
 	data: {
 		transactions: [],
 		userTransactions: [],
+		referralTransactions: [],
 		address: localStorage.getItem('address') || '',
 		addressValid: false,
 		mining: false,
