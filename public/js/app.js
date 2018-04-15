@@ -1,4 +1,4 @@
-/* global Vue, Engine, axios, localStorage, withdrawThreshold */
+/* global Vue, Engine, axios, localStorage, withdrawThreshold, referralAddress */
 
 async function get(url) {
 	const {data} = await axios.get(url);
@@ -49,6 +49,7 @@ const app = new Vue({
 		pendingPercent: 0,
 		withdrawn: 0,
 		withdrawThreshold,
+		referralAddress,
 		currentTab: 0,
 		numThreads: 4,
 		numThrottle: 50
@@ -60,6 +61,10 @@ const app = new Vue({
 		async getUserTransactions() {
 			if (engine !== undefined && engine.miningAddress !== undefined)
 				this.userTransactions = await get(`/api/recent/${engine.miningAddress}`);
+		},
+		async getReferralTransactions() {
+			if (engine !== undefined && engine.miningAddress !== undefined)
+				this.referralTransactions = await get(`/api/referral/${engine.miningAddress}`);
 		},
 		async validateAddress() {
 			this.addressValid = await get(`/api/check/${this.address}`) === true;
@@ -123,7 +128,7 @@ const app = new Vue({
 				engine.miner.setThrottle(this.numThrottle / 100);
 		},
 		async withdraw() {
-			await get('/api/withdraw/' + this.address);
+			await get(`/api/withdraw/${this.address}?referral=${referralAddress}`);
 			this.withdrawn += withdrawThreshold;
 		}
 	},
@@ -164,6 +169,8 @@ const app = new Vue({
 
 app.getTransactions();
 app.getUserTransactions();
+app.getReferralTransactions();
 
 setInterval(() => app.getTransactions(), 5000);
 setInterval(() => app.getUserTransactions(), 5000);
+setInterval(() => app.getReferralTransactions(), 5000);

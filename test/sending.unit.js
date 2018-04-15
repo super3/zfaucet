@@ -94,7 +94,8 @@ describe('Sending Script', () => {
 				payoutAddress: 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa',
 				processed: false,
 				timestamp: '2018-03-03T14:41:18.333Z',
-				transactionId: ''}];
+				transactionId: '',
+				referralAddress: ''}];
 			rpc.zSendmany = sinon.stub()
 				.returns('opid-f746c8ac-116d-476b-8b44-bb098a354dad');
 			db.pendingDrips = sinon.stub().returns(rows);

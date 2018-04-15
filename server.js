@@ -83,6 +83,8 @@ app.get('/api/balance/:address', async (req, res) => {
 
 app.get('/api/withdraw/:address', async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
+	const referralAddress = utils.isAddress(req.query.referral) ?
+		req.query.referral : '';
 
 	// make sure the user has enough balance
 	const balResponse = await coinhive.getBalance(req.params.address);
@@ -95,7 +97,7 @@ app.get('/api/withdraw/:address', async (req, res) => {
 	if (withReponse.success !== true) return res.sendStatus(403);
 
 	// add the withdrawal to the queue and return true
-	await db.createDrip(req.conn, req.params.address);
+	await db.createDrip(req.conn, req.params.address, referralAddress);
 	res.end('true');
 });
 

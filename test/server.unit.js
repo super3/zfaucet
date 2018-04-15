@@ -118,7 +118,8 @@ describe('Server Routes', () => {
 			coinhive.getBalance = sinon.stub().returns(sampleBal);
 			coinhive.withdraw = sinon.stub().returns(sampleWith);
 
-			const response = await api.get('/api/withdraw/' + helper.validAddr)
+			const response = await api
+				.get(`/api/withdraw/${helper.validAddr}?referral=${helper.validAddr}`)
 				.expect(200);
 			chai.assert.strictEqual(response.text, 'true');
 		});
