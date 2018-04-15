@@ -23,6 +23,15 @@ describe('Server Routes', () => {
 		});
 	});
 
+	describe('Index with Referral', () => {
+		it('index with bad referral', done => {
+			api.get(`?referral=${helper.invalidAddr}`).expect(200, done);
+		});
+		it('index with good referral', done => {
+			api.get(`/?referral=${helper.validAddr}`).expect(200, done);
+		});
+	});
+
 	describe('Address Check Route', () => {
 		const route = '/api/check/';
 

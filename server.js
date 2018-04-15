@@ -37,7 +37,10 @@ app.use(async (req, res, next) => {
 });
 
 app.get('/', async (req, res) => {
-	res.render('index', {withdrawThreshold: config.withdrawThreshold});
+	const referralAddress = utils.isAddress(req.query.referral) ?
+		req.query.referral : '';
+	res.render('index', {withdrawThreshold: config.withdrawThreshold,
+		referralAddress});
 });
 
 app.get('/api/check/:address', (req, res) => {
