@@ -69,8 +69,7 @@ app.get('/api/referral/:address', cache('15 seconds'), async (req, res) => {
 	if (!utils.isAddress(referralAddress)) return res.sendStatus(401);
 
 	// find the drips for the user and return
-	const rows = await db.searchDrips(req.conn, referralAddress,
-		{referralAddress});
+	const rows = await db.searchDrips(req.conn, {referralAddress});
 	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
