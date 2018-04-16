@@ -7,10 +7,8 @@ const apicache = require('apicache');
 const app = express();
 const cache = apicache.middleware;
 
-// make the css folder viewable
-app.use(express.static('public/css'));
-app.use(express.static('public/js'));
-app.use(express.static('public/assets'));
+// make the public folder viewable
+app.use(express.static('public'));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
 
@@ -35,7 +33,7 @@ app.use(async (req, res, next) => {
 		end.apply(this, args);
 	};
 
-	// content-type for everything but the index
+	// set default content-type
 	res.set('Content-Type', 'application/json');
 	next();
 });
@@ -58,20 +56,21 @@ app.get('/api/recent', cache('30 seconds'), async (req, res) => {
 });
 
 app.get('/api/recent/:address', cache('15 seconds'), async (req, res) => {
-	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
+	const payoutAddress = req.params.address;
+	if (!utils.isAddress(payoutAddress)) return res.sendStatus(401);
 
 	// find the drips for the user and return
-	const payoutAddress = req.params.address;
 	const rows = await db.searchDrips(req.conn, payoutAddress, {payoutAddress});
 	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
 app.get('/api/referral/:address', cache('15 seconds'), async (req, res) => {
-	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
+	const referralAddress = req.params.address;
+	if (!utils.isAddress(referralAddress)) return res.sendStatus(401);
 
 	// find the drips for the user and return
-	const referralAddress = req.params.address;
-	const rows = await db.searchDrips(req.conn, referralAddress, {referralAddress});
+	const rows = await db.searchDrips(req.conn, referralAddress,
+		{referralAddress});
 	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
