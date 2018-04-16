@@ -107,10 +107,9 @@
                 <li><b>Pending:</b> {{totalHashes}} hashes</li>
                 <li><b>Balance:</b> {{hashBalance}} hashes</li>
               </ul>
-              <button type="submit" class="btn btn-lg btn-block btn-primary"
+              <button type="submit" class="btn btn-lg btn-block btn-primary bottom-space-small"
                v-bind:disabled="hashBalance < withdrawThreshold"
                v-on:click="withdraw"
-               style="margin-bottom: 5px;"
               >
                 <span style="top: 4px;" class="oi oi-action-undo"></span> Withdraw
                 <span v-if="acceptedPercent >= 200">
@@ -129,8 +128,8 @@
               {{hashesPerSecond.toFixed(2)}} <small class="text-muted"> hashes/s </small>
             </h1>
 
-            <table class="table">
-            <tbody style="font-size: 22px;">
+            <table class="table big-table">
+            <tbody>
               <tr>
                 <th scope="row">{{numThreads}} Threads</th>
                 <td>

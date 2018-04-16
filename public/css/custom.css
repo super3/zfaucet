@@ -20,8 +20,16 @@ button.link:hover {
 	margin-bottom: 10px;
 }
 
+.bottom-space-small {
+	margin-bottom: 5px;
+}
+
 .progress-extra {
 	margin-bottom: 20px;
 	height: 31px;
 	background-color: rgb(204, 204, 204);
+}
+
+.big-table tbody{
+	font-size: 22px;
 }
