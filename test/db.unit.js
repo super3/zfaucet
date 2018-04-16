@@ -25,7 +25,7 @@ describe('Database Testing', async () => {
 
 	it('latest drips', async () => {
 		const conn = await r.connect(config.connectionConfig);
-		const rows = await db.latestDrips(conn);
+		const rows = await db.searchDrips(conn, {});
 		chai.assert.strictEqual(rows[0].payoutAddress, helper.validAddr, '');
 	});
 });

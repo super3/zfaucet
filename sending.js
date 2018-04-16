@@ -1,10 +1,10 @@
 const r = require('rethinkdb');
 
 // internal libs
-const db = require('./lib/db.js');
-const config = require('./config.js');
-const utils = require('./lib/utils.js');
-const rpc = require('./lib/rpc.js');
+const db = require('./lib/db');
+const config = require('./config');
+const utils = require('./lib/utils');
+const rpc = require('./lib/rpc');
 
 async function findInputs() {
 	// get balance from rpc daemon
@@ -39,11 +39,9 @@ async function sendDrip(conn, sendingAddress) {
 		}
 	], 1, config.sendingFee);
 
-	// change drips to processed:true
+	// change drips to processed and return opid
 	await r.table('payouts').get(rows[0].id).update({processed: Date.now(),
 		operationId: opid}).run(conn);
-
-	// console.log(`Send Was: ${opid}\n`);
 	return opid;
 }
 
@@ -52,7 +50,7 @@ module.exports.sendDrip = sendDrip;
 async function updateDrips(conn) {
 	const operations = await rpc.zGetoperationresult();
 
-	// udate drips
+	// update drips
 	await Promise.all(operations.map(async transaction => {
 		await r.table('payouts').filter({operationId: transaction.id})
 			.update({transactionId: transaction.result.txid}).run(conn);

@@ -25,32 +25,35 @@ const coinhive = require('./lib/coinhive');
 
 // middleware
 app.use(async (req, res, next) => {
+	// create database connection to use in all routes
 	req.conn = await r.connect(config.connectionConfig);
 	const {end} = res;
 
+	// close the connection on res.end
 	res.end = function (...args) {
 		req.conn.close();
 		end.apply(this, args);
 	};
 
+	// content-type for everything but the index
+	res.set('Content-Type', 'application/json');
 	next();
 });
 
 app.get('/', async (req, res) => {
 	const referralAddress = utils.isAddress(req.query.referral) ?
 		req.query.referral : '';
+	res.set('Content-Type', 'text/html');
 	res.render('index', {withdrawThreshold: config.withdrawThreshold,
 		referralAddress});
 });
 
 app.get('/api/check/:address', (req, res) => {
-		res.set('Content-Type', 'application/json');
 		res.end(JSON.stringify(utils.isAddress(req.params.address)));
 });
 
 app.get('/api/recent', cache('30 seconds'), async (req, res) => {
-	const rows = await db.latestDrips(req.conn);
-	res.set('Content-Type', 'application/json');
+	const rows = await db.searchDrips(req.conn, {});
 	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
@@ -58,8 +61,8 @@ app.get('/api/recent/:address', cache('15 seconds'), async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
 	// find the drips for the user and return
-	const rows = await db.userDrips(req.conn, req.params.address);
-	res.set('Content-Type', 'application/json');
+	const payoutAddress = req.params.address;
+	const rows = await db.searchDrips(req.conn, payoutAddress, {payoutAddress});
 	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
@@ -67,8 +70,8 @@ app.get('/api/referral/:address', cache('15 seconds'), async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
 
 	// find the drips for the user and return
-	const rows = await db.referralDrips(req.conn, req.params.address);
-	res.set('Content-Type', 'application/json');
+	const referralAddress = req.params.address;
+	const rows = await db.searchDrips(req.conn, referralAddress, {referralAddress});
 	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
@@ -77,7 +80,6 @@ app.get('/api/balance/:address', async (req, res) => {
 
 	// check the balance from coinhive and return
 	const response = await coinhive.getBalance(req.params.address);
-	res.set('Content-Type', 'application/json');
 	res.end(JSON.stringify(response));
 });
 
