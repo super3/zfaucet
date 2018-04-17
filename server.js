@@ -7,10 +7,8 @@ const apicache = require('apicache');
 const app = express();
 const cache = apicache.middleware;
 
-// make the css folder viewable
-app.use(express.static('public/css'));
-app.use(express.static('public/js'));
-app.use(express.static('public/assets'));
+// make the public folder viewable
+app.use(express.static('public'));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
 
@@ -25,38 +23,53 @@ const coinhive = require('./lib/coinhive');
 
 // middleware
 app.use(async (req, res, next) => {
+	// create database connection to use in all routes
 	req.conn = await r.connect(config.connectionConfig);
 	const {end} = res;
 
+	// close the connection on res.end
 	res.end = function (...args) {
 		req.conn.close();
 		end.apply(this, args);
 	};
 
+	// set default content-type
+	res.set('Content-Type', 'application/json');
 	next();
 });
 
 app.get('/', async (req, res) => {
-	res.render('index', {withdrawThreshold: config.withdrawThreshold});
+	const referralAddress = utils.isAddress(req.query.referral) ?
+		req.query.referral : '';
+	res.set('Content-Type', 'text/html');
+	res.render('index', {withdrawThreshold: config.withdrawThreshold,
+		referralAddress});
 });
 
 app.get('/api/check/:address', (req, res) => {
-		res.set('Content-Type', 'application/json');
 		res.end(JSON.stringify(utils.isAddress(req.params.address)));
 });
 
 app.get('/api/recent', cache('30 seconds'), async (req, res) => {
-	const rows = await db.latestDrips(req.conn);
-	res.set('Content-Type', 'application/json');
+	const rows = await db.searchDrips(req.conn, {});
 	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
 app.get('/api/recent/:address', cache('15 seconds'), async (req, res) => {
-	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
+	const payoutAddress = req.params.address;
+	if (!utils.isAddress(payoutAddress)) return res.sendStatus(401);
 
 	// find the drips for the user and return
-	const rows = await db.userDrips(req.conn, req.params.address);
-	res.set('Content-Type', 'application/json');
+	const rows = await db.searchDrips(req.conn, payoutAddress, {payoutAddress});
+	res.end(JSON.stringify(utils.readableTime(rows)));
+});
+
+app.get('/api/referral/:address', cache('15 seconds'), async (req, res) => {
+	const referralAddress = req.params.address;
+	if (!utils.isAddress(referralAddress)) return res.sendStatus(401);
+
+	// find the drips for the user and return
+	const rows = await db.searchDrips(req.conn, {referralAddress});
 	res.end(JSON.stringify(utils.readableTime(rows)));
 });
 
@@ -65,12 +78,13 @@ app.get('/api/balance/:address', async (req, res) => {
 
 	// check the balance from coinhive and return
 	const response = await coinhive.getBalance(req.params.address);
-	res.set('Content-Type', 'application/json');
 	res.end(JSON.stringify(response));
 });
 
 app.get('/api/withdraw/:address', async (req, res) => {
 	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
+	const referralAddress = utils.isAddress(req.query.referral) ?
+		req.query.referral : '';
 
 	// make sure the user has enough balance
 	const balResponse = await coinhive.getBalance(req.params.address);
@@ -83,7 +97,7 @@ app.get('/api/withdraw/:address', async (req, res) => {
 	if (withReponse.success !== true) return res.sendStatus(403);
 
 	// add the withdrawal to the queue and return true
-	await db.createDrip(req.conn, req.params.address);
+	await db.createDrip(req.conn, req.params.address, referralAddress);
 	res.end('true');
 });
 

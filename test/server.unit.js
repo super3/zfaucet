@@ -23,6 +23,15 @@ describe('Server Routes', () => {
 		});
 	});
 
+	describe('Index with Referral', () => {
+		it('index with bad referral', done => {
+			api.get(`?referral=${helper.invalidAddr}`).expect(200, done);
+		});
+		it('index with good referral', done => {
+			api.get(`/?referral=${helper.validAddr}`).expect(200, done);
+		});
+	});
+
 	describe('Address Check Route', () => {
 		const route = '/api/check/';
 
@@ -48,6 +57,16 @@ describe('Server Routes', () => {
 
 		it('recent + bad address should return a 401 response', done => {
 			api.get('/api/recent/' + helper.invalidAddr).expect(401, done);
+		});
+	});
+
+	describe('Referral Routes', () => {
+		it('referral + address should return a 200 response', done => {
+			api.get('/api/referral/' + helper.validAddr).expect(200, done);
+		});
+
+		it('referral + bad address should return a 401 response', done => {
+			api.get('/api/referral/' + helper.invalidAddr).expect(401, done);
 		});
 	});
 
@@ -99,7 +118,8 @@ describe('Server Routes', () => {
 			coinhive.getBalance = sinon.stub().returns(sampleBal);
 			coinhive.withdraw = sinon.stub().returns(sampleWith);
 
-			const response = await api.get('/api/withdraw/' + helper.validAddr)
+			const response = await api
+				.get(`/api/withdraw/${helper.validAddr}?referral=${helper.validAddr}`)
 				.expect(200);
 			chai.assert.strictEqual(response.text, 'true');
 		});

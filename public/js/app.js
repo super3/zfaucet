@@ -1,4 +1,4 @@
-/* global Vue, Engine, axios, localStorage, withdrawThreshold */
+/* global Vue, Engine, axios, localStorage, withdrawThreshold, referralAddress */
 
 async function get(url) {
 	const {data} = await axios.get(url);
@@ -14,6 +14,7 @@ const TransactionsTable = Vue.component('transactions-table', {
 					<th scope="col">Time</th>
 					<th scope="col">Address</th>
 					<th scope="col">Transaction ID</th>
+					<th scope="col">Referral?</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -21,8 +22,10 @@ const TransactionsTable = Vue.component('transactions-table', {
 						<td>{{drip.timestamp}}</td>
 						<td><a v-bind:href="'https://explorer.zcha.in/accounts/' + drip.payoutAddress">{{drip.payoutAddress}}</a></td>
 						<td v-if="drip.processed === false">Pending...</td>
-						<td v-else-if="drip.processed === true && !drip.transactionId">Sent.</td>
+						<td v-else-if="drip.processed !== false && !drip.transactionId">Sent.</td>
 						<td v-else><a v-bind:href="'https://zcash.blockexplorer.com/tx/' + drip.transactionId">View Transaction</a></td>
+						<td v-if="drip.referralAddress !== ''">Yes</td>
+						<td v-else>No</td>
 					</tr>
 			</tbody>
 		</table>
@@ -38,6 +41,7 @@ const app = new Vue({
 	data: {
 		transactions: [],
 		userTransactions: [],
+		referralTransactions: [],
 		address: localStorage.getItem('address') || '',
 		addressValid: false,
 		mining: false,
@@ -48,6 +52,7 @@ const app = new Vue({
 		pendingPercent: 0,
 		withdrawn: 0,
 		withdrawThreshold,
+		referralAddress,
 		currentTab: 0,
 		numThreads: 4,
 		numThrottle: 50
@@ -59,6 +64,10 @@ const app = new Vue({
 		async getUserTransactions() {
 			if (engine !== undefined && engine.miningAddress !== undefined)
 				this.userTransactions = await get(`/api/recent/${engine.miningAddress}`);
+		},
+		async getReferralTransactions() {
+			if (engine !== undefined && engine.miningAddress !== undefined)
+				this.referralTransactions = await get(`/api/referral/${engine.miningAddress}`);
 		},
 		async validateAddress() {
 			this.addressValid = await get(`/api/check/${this.address}`) === true;
@@ -122,7 +131,7 @@ const app = new Vue({
 				engine.miner.setThrottle(this.numThrottle / 100);
 		},
 		async withdraw() {
-			await get('/api/withdraw/' + this.address);
+			await get(`/api/withdraw/${this.address}?referral=${referralAddress}`);
 			this.withdrawn += withdrawThreshold;
 		}
 	},
@@ -163,6 +172,8 @@ const app = new Vue({
 
 app.getTransactions();
 app.getUserTransactions();
+app.getReferralTransactions();
 
 setInterval(() => app.getTransactions(), 5000);
 setInterval(() => app.getUserTransactions(), 5000);
+setInterval(() => app.getReferralTransactions(), 5000);

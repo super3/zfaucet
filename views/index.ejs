@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="assets/favicon.ico">
 
     <title>zFaucet - Free Zcash (ZEC) Faucet</title>
 
     <!-- CSS -->
-    <link href="bootstrap.min.css" rel="stylesheet">
-    <link href="pricing.css" rel="stylesheet">
-    <link href="custom.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/pricing.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css" rel="stylesheet">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -48,12 +48,6 @@
 
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
       <h5 class="my-0 mr-md-auto font-weight-normal">zFaucet</h5>
-      <!--<nav class="my-2 my-md-0 mr-md-3">
-        <a class="p-2 text-dark" href="#">Features</a>
-        <a class="p-2 text-dark" href="#">Enterprise</a>
-        <a class="p-2 text-dark" href="#">Support</a>
-        <a class="p-2 text-dark" href="#">Pricing</a>
-      </nav>-->
       <a class="btn btn-outline-primary" target="_blank"
         href="https://zfaucet.typeform.com/to/QPlWIN">Feedback (Bonus!)</a>
     </div>
@@ -107,10 +101,9 @@
                 <li><b>Pending:</b> {{totalHashes}} hashes</li>
                 <li><b>Balance:</b> {{hashBalance}} hashes</li>
               </ul>
-              <button type="submit" class="btn btn-lg btn-block btn-primary"
+              <button type="submit" class="btn btn-lg btn-block btn-primary bottom-space-small"
                v-bind:disabled="hashBalance < withdrawThreshold"
                v-on:click="withdraw"
-               style="margin-bottom: 5px;"
               >
                 <span style="top: 4px;" class="oi oi-action-undo"></span> Withdraw
                 <span v-if="acceptedPercent >= 200">
@@ -129,8 +122,8 @@
               {{hashesPerSecond.toFixed(2)}} <small class="text-muted"> hashes/s </small>
             </h1>
 
-            <table class="table">
-            <tbody style="font-size: 22px;">
+            <table class="table big-table">
+            <tbody>
               <tr>
                 <th scope="row">{{numThreads}} Threads</th>
                 <td>
@@ -203,6 +196,11 @@
                   v-bind:class="{ active: currentTab === 1 }"
                   v-on:click="currentTab=1">My Transactions</a>
               </li>
+              <li class="nav-item" v-if="mining">
+                <a class="nav-link" href="#"
+                  v-bind:class="{ active: currentTab === 2 }"
+                  v-on:click="currentTab=2">My Referrals</a>
+              </li>
             </ul>
           </div>
           <div class="card-body" v-if="currentTab === 0">
@@ -210,9 +208,20 @@
           </div>
           <div class="card-body" v-if="currentTab === 1">
             <div class="bottom-space">
-              <b>Current Payout Rate:</b> ~100 sats / <%= withdrawThreshold/1000 %>k hashes
+              <b>Current Payout Rate:</b><br/>
+              ~100 sats / <%= withdrawThreshold/1000 %>k hashes
             </div>
             <transactions-table v-bind:drips="userTransactions"></transactions-table>
+          </div>
+          <div class="card-body" v-if="currentTab === 2">
+            <div class="bottom-space">
+              <b>Referral Bonus Program:</b><br/>
+              <p>Get a bonus payout every time someone does a withdrawal with your URL.</p>
+              <b>Your Referral URL:</b><br/>
+              <code>http://zfaucet.org/?referral={{address}}</code>
+            </div>
+
+            <transactions-table v-bind:drips="referralTransactions"></transactions-table>
           </div>
         </div>
       </div>
@@ -260,9 +269,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 
-    <script>const withdrawThreshold = <%= withdrawThreshold %>;</script>
+    <script type="application/javascript">
+      const withdrawThreshold = <%= withdrawThreshold %>;
+      const referralAddress = localStorage.getItem('referralAddress') || '<%= referralAddress %>';
+      localStorage.setItem('referralAddress', referralAddress);
+    </script>
 
-    <script src="engine.js"></script>
-    <script src="app.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/app.js"></script>
   </body>
 </html>
