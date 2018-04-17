@@ -31,13 +31,18 @@ async function sendDrip(conn, sendingAddress) {
 	const rows = await db.pendingDrips(conn);
 	if (rows.length === 0) return 0;
 
+	// make transaction list
+	const sendList = [];
+	sendList.push({address: rows[0].payoutAddress, amount: config.sendingAmount});
+
+	// add referral if needed
+	if (rows[0].referralAddress !== '')
+		sendList.push({address: rows[0].referralAddress,
+			amount: config.sendingAmount});
+
 	// send payment
-	const opid = await rpc.zSendmany(sendingAddress, [
-		{
-			address: rows[0].payoutAddress,
-			amount: config.sendingAmount
-		}
-	], 1, config.sendingFee);
+	const opid = await rpc.zSendmany(sendingAddress, sendList,
+		1, config.sendingFee);
 
 	// change drips to processed and return opid
 	await r.table('payouts').get(rows[0].id).update({processed: Date.now(),
