@@ -125,17 +125,29 @@
             <table class="table big-table">
             <tbody>
               <tr>
-                <th scope="row">{{numThreads}} Threads</th>
+                <th scope="row">{{numThreads}} Thread(s)</th>
                 <td>
-                  <button type="button" class="link" v-on:click="upThreads">+</button> /
-                  <button type="button" class="link" v-on:click="downThreads">-</button>
+                  <button type="button" class="link"
+                    v-on:click="upThreads"
+                    v-bind:class="{ linkt: numThreads === 16 }"
+                  >+</button> /
+                  <button type="button" class="link"
+                    v-on:click="downThreads"
+                    v-bind:class="{ linkt: numThreads === 1 }"
+                  >-</button>
                 </td>
               </tr>
               <tr>
                 <th scope="row">{{100-numThrottle}}% Speed</th>
                 <td>
-                  <button type="button" class="link" v-on:click="downThrottle">+</button> /
-                  <button type="button" class="link" v-on:click="upThrottle">-</button>
+                  <button type="button" class="link"
+                    v-on:click="downThrottle"
+                    v-bind:class="{ linkt: (100-numThrottle) === 100 }"
+                    >+</button> /
+                  <button type="button" class="link"
+                   v-on:click="upThrottle"
+                   v-bind:class="{ linkt: (100-numThrottle) === 10 }"
+                  >-</button>
                 </td>
               </tr>
             </tbody>

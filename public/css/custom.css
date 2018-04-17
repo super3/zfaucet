@@ -33,3 +33,8 @@ button.link:hover {
 .big-table tbody{
 	font-size: 22px;
 }
+
+.linkt.link {
+	color: #fff;
+	border-color: #fff;
+}

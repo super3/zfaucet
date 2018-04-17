@@ -54,8 +54,8 @@ const app = new Vue({
 		withdrawThreshold,
 		referralAddress,
 		currentTab: 0,
-		numThreads: 4,
-		numThrottle: 50
+		numThreads: Number(localStorage.getItem('numThreads')) || 4,
+		numThrottle: Number(localStorage.getItem('numThrottle')) || 50
 	},
 	methods: {
 		async getTransactions() {
@@ -95,40 +95,43 @@ const app = new Vue({
 				this.totalHashes = totalHashes;
 				this.acceptedHashes = acceptedHashes;
 
-				this.acceptedPercent = ((acceptedHashes - this.withdrawn) / withdrawThreshold) * 100;
-				this.pendingPercent = ((totalHashes - pendingSent) / withdrawThreshold) * 100;
+				this.acceptedPercent = ((acceptedHashes - this.withdrawn) /
+					withdrawThreshold) * 100;
+				this.pendingPercent = ((totalHashes - pendingSent) /
+					withdrawThreshold) * 100;
 			});
 
 			this.mining = true;
 		},
 		stopMining() {
 			engine.stop();
+
 			this.mining = false;
 			this.currentTab = 0;
 		},
+		updateSettings() {
+			localStorage.setItem('numThreads', this.numThreads);
+			localStorage.setItem('numThrottle', this.numThrottle);
+		},
 		upThreads() {
-			if (this.numThreads < 16)
-				this.numThreads++;
-			if (this.mining)
-				engine.miner.setNumThreads(this.numThreads);
+			if (this.numThreads < 16) this.numThreads++;
+			if (this.mining) engine.miner.setNumThreads(this.numThreads);
+			this.updateSettings();
 		},
 		downThreads() {
-			if (this.numThreads > 1)
-				this.numThreads--;
-			if (this.mining)
-					engine.miner.setNumThreads(this.numThreads);
+			if (this.numThreads > 1) this.numThreads--;
+			if (this.mining) engine.miner.setNumThreads(this.numThreads);
+			this.updateSettings();
 		},
 		upThrottle() {
-			if (this.numThrottle <= 80)
-				this.numThrottle += 10;
-			if (this.mining)
-				engine.miner.setThrottle(this.numThrottle / 100);
+			if (this.numThrottle <= 80)	this.numThrottle += 10;
+			if (this.mining) engine.miner.setThrottle(this.numThrottle / 100);
+			this.updateSettings();
 		},
 		downThrottle() {
-			if (this.numThrottle >= 10)
-				this.numThrottle -= 10;
-			if (this.mining)
-				engine.miner.setThrottle(this.numThrottle / 100);
+			if (this.numThrottle >= 10)	this.numThrottle -= 10;
+			if (this.mining) engine.miner.setThrottle(this.numThrottle / 100);
+			this.updateSettings();
 		},
 		async withdraw() {
 			await get(`/api/withdraw/${this.address}?referral=${referralAddress}`);
@@ -151,8 +154,7 @@ const app = new Vue({
 
 			// maintain buffer of time estimates
 			remainingBuffer.push(totalSeconds);
-			if (remainingBuffer.length > 10)
-				remainingBuffer.shift();
+			if (remainingBuffer.length > 10) remainingBuffer.shift();
 			const smoothSeconds = remainingBuffer.reduce((a, b) => a + b) /
 				remainingBuffer.length;
 
