@@ -65,3 +65,8 @@ We run this as a crontab ```*/5 * * * * ~/script.sh >> ~/zlog.log``` every 5 min
 cd ~/zfaucet
 git fetch && git reset --hard origin/master
 ```
+
+##  Contributors (:clap:)
+|  [![super3](https://avatars3.githubusercontent.com/u/60975?v=4&s=80)](https://github.com/super3) | [![montyanderson](https://avatars0.githubusercontent.com/u/3048503?v=4&s=80)](https://github.com/montyanderson) | [![marktellez](https://avatars0.githubusercontent.com/u/22487431?v=4&s=80)](https://github.com/marktellez)  |
+| :--:|:--:|:--: |
+|  [super3](https://github.com/super3) | [montyanderson](https://github.com/montyanderson) | [marktellez](https://github.com/marktellez)  |
