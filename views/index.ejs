@@ -153,7 +153,7 @@
             </tbody>
           </table>
 
-            <button type="submit" class="btn btn-lg btn-success"
+            <button type="submit" class="btn btn-lg btn-block btn-success"
                v-bind:class="{ hidden: mining }"
                v-bind:disabled="address == ''"
                v-on:click="startMining"
@@ -162,7 +162,7 @@
                 class="oi oi-play-circle center-icon"></span> Start Mining
             </button>
 
-            <button type="submit" class="btn btn-lg btn-danger"
+            <button type="submit" class="btn btn-lg btn-block btn-danger"
                v-bind:class="{ hidden: !mining }"
                v-on:click="stopMining"
                v-cloak
