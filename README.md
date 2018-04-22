@@ -59,7 +59,7 @@ pm2 start process.json
 ```
 
 #### Code Update Script
-We run this as a crontab ```*/5 * * * * ~/script.sh >> ~/zlog.log``` every 5 minutes.
+We run this as a crontab ```*/5 * * * * ~/script.sh``` every 5 minutes.
 ```bash
 #!/usr/bin/env sh
 cd ~/zfaucet
