@@ -24,13 +24,13 @@
   },
   "homepage": "https://github.com/super3/zfaucet#readme",
   "dependencies": {
-    "apicache": "^1.2.0",
+    "apicache": "^1.2.1",
     "base58check": "^2.0.0",
     "body-parser": "^1.18.2",
     "decamelize": "^2.0.0",
     "dotenv": "^5.0.1",
-    "ejs": "^2.5.7",
-    "express": "^4.16.2",
+    "ejs": "^2.5.9",
+    "express": "^4.16.3",
     "request-promise": "^4.2.2",
     "rethinkdb": "^2.3.3",
     "stdrpc": "0.0.3"
@@ -41,8 +41,8 @@
     "coveralls": "^3.0.0",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^4.1.0",
-    "nodemon": "^1.17.1",
-    "sinon": "^4.4.2",
+    "nodemon": "^1.17.3",
+    "sinon": "^4.5.0",
     "supertest": "^3.0.0",
     "xo": "^0.20.3"
   },
