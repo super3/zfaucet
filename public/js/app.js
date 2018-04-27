@@ -14,16 +14,28 @@ const OnlineTable = Vue.component('online-table', {
 	<table class="table">
 		<thead>
 			<tr>
+			  <th scrope="col">Mining</th>
 				<th scope="col">Address</th>
-				<th scope="col">Withdraw Progress</th>
+				<th scope="col">Withdrawal Progress</th>
 				<th scope="col">Hashes/s</th>
 			</tr>
 		</thead>
 		<tbody>
-				<tr v-for="user in online">
-					<td>{{user}}</td>
-					<td>{{user.withdrawPercent}}</td>
-					<td>{{user.hashesPerSecond}}</td>
+				<tr v-for="user in online.active">
+					<td v-if="user.isMining">Yes</td>
+					<td v-else>No</td>
+					<td><a v-bind:href="'https://explorer.zcha.in/accounts/' + user.address">{{user.address}}</a></td>
+					<td>
+						<div class="progress">
+							<div class="progress-bar bg-success" role="progressbar"
+								v-bind:style="{ width: Math.max(0, user.withdrawPercent) + '%' }">
+								<span class="progress-percent">
+									{{Math.max(0, user.withdrawPercent.toFixed(2))}}%
+								</span>
+							</div>
+						</div>
+					</td>
+					<td>{{user.hashRate.toFixed(2)}}</td>
 				</tr>
 		</tbody>
 	</table>`
@@ -213,6 +225,7 @@ socket.on('online', data => {
 function sendStatus() {
 	socket.emit('statusReport', {
 		address: app.address,
+		isMining: app.mining,
 		hashRate: app.hashesPerSecond,
 		withdrawPercent: app.totalPercent
 	});

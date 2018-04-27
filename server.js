@@ -34,10 +34,11 @@ io.on('connection', socket => {
 
 		const resp = {
 			active: await Promise.all(active.map(async address => {
-				const {hashRate, withdrawPercent, lastSeen} = await JSON.parse(
+				const {hashRate, isMining, withdrawPercent, lastSeen} = await JSON.parse(
 					await redis.lindex(`miner:${address}`, 0));
 				return {
 					address,
+					isMining,
 					hashRate,
 					withdrawPercent,
 					lastSeen
@@ -46,16 +47,19 @@ io.on('connection', socket => {
 		};
 		console.log(resp);
 
-		socket.emit('online', active);
+		socket.emit('online', resp);
 	}, 5000);
 });
 
 // report status via socket.io
 io.on('connection', socket => {
-	socket.on('statusReport', async ({address, hashRate, withdrawPercent}) => {
+	socket.on('statusReport', async ({address, isMining, hashRate, withdrawPercent}) => {
+		address = utils.isAddress(address) ? address : '';
+
 		await redis.zadd('miners-active', Date.now(), address);
 		await redis.lpush(`miner:${address}`, JSON.stringify({
 			hashRate,
+			isMining,
 			withdrawPercent,
 			lastSeen: Date.now()
 		}));
