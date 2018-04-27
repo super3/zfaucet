@@ -1,6 +1,8 @@
 /* global Vue, Engine, axios, localStorage, withdrawThreshold */
 /* global referralAddress, io */
 
+const socket = io.connect('http://localhost:3010');
+
 async function get(url) {
 	const {data} = await axios.get(url);
 	return data;
@@ -19,7 +21,7 @@ const OnlineTable = Vue.component('online-table', {
 		</thead>
 		<tbody>
 				<tr v-for="user in online">
-					<td>{{user.address}}</td>
+					<td>{{user}}</td>
 					<td>{{user.withdrawPercent}}</td>
 					<td>{{user.hashesPerSecond}}</td>
 				</tr>
@@ -62,6 +64,7 @@ const app = new Vue({
 	el: '#app',
 	data: {
 		transactions: [],
+		online: [],
 		userTransactions: [],
 		referralTransactions: [],
 		address: localStorage.getItem('address') || '',
@@ -202,9 +205,9 @@ const app = new Vue({
 	}
 });
 
-const socket = io.connect('http://localhost:3010');
 socket.on('online', data => {
-	console.log(data);
+	app.online = data;
+	console.log(app.online);
 });
 
 function sendStatus() {
