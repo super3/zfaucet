@@ -30,9 +30,11 @@ const coinhive = require('./lib/coinhive');
 // 	}, 1000);
 // });
 
+// report status via socket.io
 io.on('connection', socket => {
 	socket.on('statusReport', async ({address, hashRate, withdrawPercent}) => {
 		console.log(address, hashRate, withdrawPercent);
+		socket.emit('online', {address, hashRate, withdrawPercent});
 	});
 });
 
