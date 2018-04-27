@@ -5,6 +5,27 @@ async function get(url) {
 	return data;
 }
 
+const OnlineTable = Vue.component('online-table', {
+	props: ['online'],
+	template: `
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">Address</th>
+				<th scope="col">Withdraw Progress</th>
+				<th scope="col">Hashes/s</th>
+			</tr>
+		</thead>
+		<tbody>
+				<tr v-for="user in online">
+					<td>{{user.address}}</td>
+					<td>{{user.withdrawPercent}}</td>
+					<td>{{user.hashesPerSecond}}</td>
+				</tr>
+		</tbody>
+	</table>`
+});
+
 const TransactionsTable = Vue.component('transactions-table', {
 	props: ['drips'],
 	template: `
@@ -168,7 +189,7 @@ const app = new Vue({
 		await this.validateAddress();
 	},
 	components: {
-		TransactionsTable
+		TransactionsTable, OnlineTable
 	}
 });
 
