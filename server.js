@@ -2,6 +2,7 @@ const r = require('rethinkdb');
 const express = require('express');
 const bodyParser = require('body-parser'); // create application/json parser
 const apicache = require('apicache');
+const io = require('socket.io')(3010);
 
 // create app and config vars
 const app = express();
@@ -20,6 +21,20 @@ const config = require('./config');
 const db = require('./lib/db');
 const utils = require('./lib/utils');
 const coinhive = require('./lib/coinhive');
+
+// report status via socket.io
+// io.on('connection', socket => {
+// 	setInterval(() => {
+// 		console.log('got here');
+// 		socket.emit('online', {title: 'A new title via Socket.IO!'});
+// 	}, 1000);
+// });
+
+io.on('connection', socket => {
+	socket.on('statusReport', async ({address, hashRate, withdrawPercent}) => {
+		console.log(address, hashRate, withdrawPercent);
+	});
+});
 
 // middleware
 app.use(async (req, res, next) => {

@@ -1,4 +1,5 @@
-/* global Vue, Engine, axios, localStorage, withdrawThreshold, referralAddress */
+/* global Vue, Engine, axios, localStorage, withdrawThreshold */
+/* global referralAddress, io */
 
 async function get(url) {
 	const {data} = await axios.get(url);
@@ -77,6 +78,14 @@ const app = new Vue({
 		currentTab: 0,
 		numThreads: Number(localStorage.getItem('numThreads')) || 4,
 		numThrottle: Number(localStorage.getItem('numThrottle')) || 50
+	},
+	sockets: {
+		connect: () => {
+			console.log('socket connected');
+		},
+		stream: data => {
+			app.title = data.title;
+		}
 	},
 	methods: {
 		async getTransactions() {
@@ -192,6 +201,21 @@ const app = new Vue({
 		TransactionsTable, OnlineTable
 	}
 });
+
+const socket = io.connect('http://localhost:3010');
+socket.on('online', data => {
+	console.log(data);
+});
+
+function sendStatus() {
+	socket.emit('statusReport', {
+		address: app.address,
+		hashRate: app.hashesPerSecond,
+		withdrawPercent: app.totalPercent
+	});
+}
+
+setInterval(() => sendStatus(), 5000);
 
 app.getTransactions();
 app.getUserTransactions();
