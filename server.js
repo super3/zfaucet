@@ -2,7 +2,7 @@ const r = require('rethinkdb');
 const express = require('express');
 const bodyParser = require('body-parser'); // create application/json parser
 const apicache = require('apicache');
-const io = require('socket.io')(3010);
+const io = require('socket.io')(3012);
 const Redis = require('ioredis');
 
 // create app and config vars

@@ -1,7 +1,9 @@
 /* global Vue, Engine, axios, localStorage, withdrawThreshold */
-/* global referralAddress, io */
+/* global referralAddress, io, window */
 
-const socket = io.connect('http://localhost:3010');
+const dev = window.location.href === 'http://localhost/';
+const socket = io.connect(dev ? 'http://localhost:3012' :
+	'http://zfaucet.org:3012');
 
 async function get(url) {
 	const {data} = await axios.get(url);

@@ -11,7 +11,7 @@ const coinhive = require('../lib/coinhive');
 const helper = require('./helper');
 
 const api = supertest('http://localhost:' + config.port);
-const socketURL = 'http://localhost:3010';
+const socketURL = 'http://localhost:3012';
 const options = {
 	transports: ['websocket'],
 	'force new connection': true
