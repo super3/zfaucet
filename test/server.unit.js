@@ -3,14 +3,42 @@
 const supertest = require('supertest');
 const sinon = require('sinon');
 const chai = require('chai');
+const io = require('socket.io-client');
 
 const app = require('../server');
 const config = require('../config');
-
-const api = supertest('http://localhost:' + config.port);
-
 const coinhive = require('../lib/coinhive');
 const helper = require('./helper');
+
+const api = supertest('http://localhost:' + config.port);
+const socketURL = 'http://localhost:3012';
+const options = {
+	transports: ['websocket'],
+	'force new connection': true
+};
+
+// bad test
+describe('Socket.IO Tests', () => {
+	it('on connection', async () => {
+		const client1 = io.connect(socketURL, options);
+
+		client1.on('connect', () => {
+			client1.emit('statusReport', {
+				address: helper.validAddr,
+				isMining: true,
+				hashRate: 10,
+				withdrawPercent: 50
+			});
+
+			client1.emit('statusReport', {
+				address: '',
+				isMining: false,
+				hashRate: 0,
+				withdrawPercent: 0
+			});
+		});
+	});
+});
 
 describe('Server Routes', () => {
 	before(done => {

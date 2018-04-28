@@ -2,10 +2,13 @@ const r = require('rethinkdb');
 const express = require('express');
 const bodyParser = require('body-parser'); // create application/json parser
 const apicache = require('apicache');
+const io = require('socket.io')(3012);
+const Redis = require('ioredis');
 
 // create app and config vars
 const app = express();
 const cache = apicache.middleware;
+const redis = new Redis();
 
 // make the public folder viewable
 app.use(express.static('public'));
@@ -20,6 +23,54 @@ const config = require('./config');
 const db = require('./lib/db');
 const utils = require('./lib/utils');
 const coinhive = require('./lib/coinhive');
+
+async function onlineStatus() {
+	const timeSince = Date.now() - (60 * 1000);
+
+	const active = await redis.zrangebyscore('miners-active', timeSince,
+		Date.now());
+
+	return {
+		active: await Promise.all(active.map(async address => {
+			const {hashRate, isMining, withdrawPercent, lastSeen} = await JSON.parse(
+				await redis.lindex(`miner:${address}`, 0));
+			return {
+				address,
+				isMining,
+				hashRate,
+				withdrawPercent,
+				lastSeen
+			};
+		}))
+	};
+}
+
+// report status via socket.io
+io.on('connection', async socket => {
+	const resp = await onlineStatus();
+	socket.emit('online', resp);
+
+	/* istanbul ignore next */
+	setInterval(async () => {
+		const resp = await onlineStatus();
+		socket.emit('online', resp);
+	}, 5000);
+});
+
+// report status via socket.io
+io.on('connection', socket => {
+	socket.on('statusReport', async ({address, isMining, hashRate, withdrawPercent}) => {
+		address = utils.isAddress(address) ? address : '';
+
+		await redis.zadd('miners-active', Date.now(), address);
+		await redis.lpush(`miner:${address}`, JSON.stringify({
+			hashRate,
+			isMining,
+			withdrawPercent,
+			lastSeen: Date.now()
+		}));
+	});
+});
 
 // middleware
 app.use(async (req, res, next) => {

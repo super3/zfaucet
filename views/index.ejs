@@ -201,7 +201,7 @@
               <li class="nav-item">
                 <a class="nav-link" href="#"
                   v-bind:class="{ active: currentTab === 0 }"
-                  v-on:click="currentTab=0">Recent Transactions</a>
+                  v-on:click="currentTab=0">Recent</a>
               </li>
               <li class="nav-item" v-if="mining">
                 <a class="nav-link" href="#"
@@ -216,6 +216,7 @@
             </ul>
           </div>
           <div class="card-body" v-if="currentTab === 0">
+            <online-table v-bind:online="online"></online-table>
             <transactions-table v-bind:drips="transactions"></transactions-table>
           </div>
           <div class="card-body" v-if="currentTab === 1">
@@ -280,6 +281,7 @@
     <script src="https://authedmine.com/lib/authedmine.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.2/socket.io.js"></script>
 
     <script type="application/javascript">
       const withdrawThreshold = <%= withdrawThreshold %>;
@@ -289,5 +291,6 @@
 
     <script src="js/engine.js"></script>
     <script src="js/app.js"></script>
+
   </body>
 </html>

@@ -1,9 +1,47 @@
-/* global Vue, Engine, axios, localStorage, withdrawThreshold, referralAddress */
+/* global Vue, Engine, axios, localStorage, withdrawThreshold */
+/* global referralAddress, io, window */
+
+const dev = window.location.href === 'http://localhost/';
+const socket = io.connect(dev ? 'http://localhost:3012' :
+	'http://zfaucet.org:3012');
 
 async function get(url) {
 	const {data} = await axios.get(url);
 	return data;
 }
+
+const OnlineTable = Vue.component('online-table', {
+	props: ['online'],
+	template: `
+	<table class="table">
+		<thead>
+			<tr>
+			  <th scrope="col">Mining</th>
+				<th scope="col">Address</th>
+				<th scope="col">Withdrawal Progress</th>
+				<th scope="col">Hashes/s</th>
+			</tr>
+		</thead>
+		<tbody>
+				<tr v-for="user in online.active">
+					<td v-if="user.isMining">Yes</td>
+					<td v-else>No</td>
+					<td><a v-bind:href="'https://explorer.zcha.in/accounts/' + user.address">{{user.address}}</a></td>
+					<td>
+						<div class="progress">
+							<div class="progress-bar bg-success" role="progressbar"
+								v-bind:style="{ width: Math.max(0, user.withdrawPercent) + '%' }">
+								<span class="progress-percent">
+									{{Math.max(0, user.withdrawPercent.toFixed(2))}}%
+								</span>
+							</div>
+						</div>
+					</td>
+					<td>{{user.hashRate.toFixed(2)}}</td>
+				</tr>
+		</tbody>
+	</table>`
+});
 
 const TransactionsTable = Vue.component('transactions-table', {
 	props: ['drips'],
@@ -40,6 +78,7 @@ const app = new Vue({
 	el: '#app',
 	data: {
 		transactions: [],
+		online: [],
 		userTransactions: [],
 		referralTransactions: [],
 		address: localStorage.getItem('address') || '',
@@ -56,6 +95,14 @@ const app = new Vue({
 		currentTab: 0,
 		numThreads: Number(localStorage.getItem('numThreads')) || 4,
 		numThrottle: Number(localStorage.getItem('numThrottle')) || 50
+	},
+	sockets: {
+		connect: () => {
+			console.log('socket connected');
+		},
+		stream: data => {
+			app.title = data.title;
+		}
 	},
 	methods: {
 		async getTransactions() {
@@ -168,9 +215,25 @@ const app = new Vue({
 		await this.validateAddress();
 	},
 	components: {
-		TransactionsTable
+		TransactionsTable, OnlineTable
 	}
 });
+
+socket.on('online', data => {
+	app.online = data;
+	console.log(app.online);
+});
+
+function sendStatus() {
+	socket.emit('statusReport', {
+		address: app.address,
+		isMining: app.mining,
+		hashRate: app.hashesPerSecond,
+		withdrawPercent: app.totalPercent
+	});
+}
+
+setInterval(() => sendStatus(), 5000);
 
 app.getTransactions();
 app.getUserTransactions();
