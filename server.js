@@ -25,7 +25,7 @@ const utils = require('./lib/utils');
 const coinhive = require('./lib/coinhive');
 
 async function onlineStatus() {
-	const timeSince = Date.now() - (60 * 1000);
+	const timeSince = Date.now() - (5 * 60 * 1000);
 
 	const active = await redis.zrangebyscore('miners-active', timeSince,
 		Date.now());
