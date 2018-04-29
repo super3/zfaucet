@@ -221,7 +221,6 @@ const app = new Vue({
 
 socket.on('online', data => {
 	app.online = data;
-	console.log(app.online);
 });
 
 function sendStatus() {
