@@ -38,3 +38,7 @@ button.link:hover {
 	color: #fff;
 	border-color: #fff;
 }
+
+.bold {
+	font-weight: bold;
+}
