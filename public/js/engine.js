@@ -21,11 +21,14 @@ class Engine {
 	}
 
 	start(numThreads, numThrottle) {
+		// start miner
 		this.miner.start();
 
+		// set threads and throttle to user settings
 		this.miner.setNumThreads(numThreads);
 		this.miner.setThrottle(numThrottle);
 
+		// update stats every second
 		this.statsInterval = setInterval(() => {
 			const hashesPerSecond = this.miner.getHashesPerSecond() || 0;
 			const totalHashes = this.miner.getTotalHashes() || 0;
@@ -36,7 +39,10 @@ class Engine {
 	}
 
 	stop() {
+		// stop miner
 		this.miner.stop();
+
+		// clear stats
 		this.statsUpdate(0, 0, 0);
 		clearInterval(this.statsInterval);
 	}

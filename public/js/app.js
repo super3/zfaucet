@@ -24,8 +24,8 @@ const OnlineTable = Vue.component('online-table', {
 		</thead>
 		<tbody>
 				<tr v-for="user in online.active">
-					<td v-if="user.isMining">Yes</td>
-					<td v-else>No</td>
+					<td v-if="user.isMining"><span class="badge badge-success">Yes</span</td>
+					<td v-else><span class="badge badge-danger">Yes</span</td>
 					<td><a v-bind:href="'https://explorer.zcha.in/accounts/' + user.address">{{user.address}}</a></td>
 					<td>
 						<div class="progress">
@@ -220,6 +220,7 @@ const app = new Vue({
 });
 
 socket.on('online', data => {
+	// need to sort here
 	app.online = data;
 });
 
