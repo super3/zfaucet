@@ -27,22 +27,32 @@ const coinhive = require('./lib/coinhive');
 async function onlineStatus() {
 	const timeSince = Date.now() - (5 * 60 * 1000);
 
-	const active = await redis.zrangebyscore('miners-active', timeSince,
+	const miners = await redis.zrangebyscore('miners-active', timeSince,
 		Date.now());
 
-	return {
-		active: await Promise.all(active.map(async address => {
-			const {hashRate, isMining, withdrawPercent, lastSeen} = await JSON.parse(
-				await redis.lindex(`miner:${address}`, 0));
-			return {
-				address,
-				isMining,
-				hashRate,
-				withdrawPercent,
-				lastSeen
-			};
-		}))
-	};
+	const active = await Promise.all(miners.map(async address => {
+		const {hashRate, isMining, withdrawPercent, lastSeen} = await JSON.parse(
+			await redis.lindex(`miner:${address}`, 0));
+		return {
+			address,
+			isMining,
+			hashRate,
+			withdrawPercent,
+			lastSeen
+		};
+	}));
+
+	active.sort((a, b) => {
+		if (a.withdrawPercent < b.withdrawPercent)
+			return 1;
+
+		if (a.withdrawPercent > b.withdrawPercent)
+			return -1;
+
+		return 0;
+	});
+
+	return {active};
 }
 
 // report status via socket.io
