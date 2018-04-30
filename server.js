@@ -70,7 +70,9 @@ io.on('connection', async socket => {
 // report status via socket.io
 io.on('connection', socket => {
 	socket.on('statusReport', async ({address, isMining, hashRate, withdrawPercent}) => {
-		address = utils.isAddress(address) ? address : '';
+		if (!utils.isAddress(address) || typeof hashRate !== 'number' ||
+			typeof isMining !== 'boolean' || typeof withdrawPercent !== 'number')
+			return;
 
 		await redis.zadd('miners-active', Date.now(), address);
 		await redis.lpush(`miner:${address}`, JSON.stringify({
