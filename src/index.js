@@ -1,5 +1,9 @@
-/* global Vue, Engine, axios, localStorage, withdrawThreshold */
-/* global referralAddress, io, window */
+/* global localStorage, withdrawThreshold, referralAddress, window */
+
+const Vue = require('vue/dist/vue.common');
+const axios = require('axios');
+const io = require('socket.io-client');
+const Engine = require('./engine');
 
 const dev = window.location.href === 'http://localhost/';
 const socket = io.connect(dev ? 'http://localhost:3012' :
@@ -10,38 +14,7 @@ async function get(url) {
 	return data;
 }
 
-const OnlineTable = Vue.component('online-table', {
-	props: ['online'],
-	template: `
-	<table class="table">
-		<thead>
-			<tr>
-			  <th scrope="col">Mining</th>
-				<th scope="col">Address</th>
-				<th scope="col">Withdrawal Progress</th>
-				<th scope="col">Hashes/s</th>
-			</tr>
-		</thead>
-		<tbody>
-				<tr v-for="user in online.active">
-					<td v-if="user.isMining"><span class="badge badge-success">Yes</span</td>
-					<td v-else><span class="badge badge-danger">No</span</td>
-					<td><a v-bind:href="'https://explorer.zcha.in/accounts/' + user.address">{{user.address}}</a></td>
-					<td>
-						<div class="progress">
-							<div class="progress-bar bg-success" role="progressbar"
-								v-bind:style="{ width: Math.max(0, user.withdrawPercent) + '%' }">
-								<span class="progress-percent">
-									{{Math.max(0, user.withdrawPercent.toFixed(2))}}%
-								</span>
-							</div>
-						</div>
-					</td>
-					<td>{{user.hashRate.toFixed(2)}}</td>
-				</tr>
-		</tbody>
-	</table>`
-});
+const OnlineTable = require('./components/OnlineTable.vue');
 
 const TransactionsTable = Vue.component('transactions-table', {
 	props: ['drips'],
