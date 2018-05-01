@@ -11,7 +11,9 @@
     "testsuite": "./node_modules/.bin/mocha test/* --recursive --exit",
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec --exit",
     "linter": "xo",
-    "start": "node server.js"
+    "start": "node server.js",
+    "prepublish": "browserify -t vueify -e src/index.js | babel-minify > public/js/bundle.js",
+    "dev": "watchify -t vueify -e src/index.js -o public/js/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,7 @@
   "homepage": "https://github.com/super3/zfaucet#readme",
   "dependencies": {
     "apicache": "^1.2.1",
+    "axios": "^0.18.0",
     "base58check": "^2.0.0",
     "body-parser": "^1.18.2",
     "decamelize": "^2.0.0",
@@ -34,9 +37,12 @@
     "request-promise": "^4.2.2",
     "rethinkdb": "^2.3.3",
     "socket.io": "^2.1.0",
-    "stdrpc": "0.0.3"
+    "stdrpc": "0.0.3",
+    "vue": "^2.5.16"
   },
   "devDependencies": {
+    "babel-minify": "^0.4.0",
+    "browserify": "^16.2.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.0",
@@ -47,6 +53,8 @@
     "sinon": "^4.5.0",
     "socket.io-client": "^2.1.0",
     "supertest": "^3.0.0",
+    "vueify": "^9.4.1",
+    "watchify": "^3.11.0",
     "xo": "^0.20.3"
   },
   "xo": {
