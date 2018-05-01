@@ -180,41 +180,6 @@
 		</div>
 	  </div>
 	</div>
-
-	<footer class="pt-4 my-md-5 pt-md-5 border-top">
-	  <div class="row">
-		<div class="col-12 col-md">
-		  <p>Powered by <a href="https://github.com/super3/zfaucet">zFaucet</a>.</p>
-		</div>
-		<div class="col-6 col-md">
-		  <h5>More Wallets</h5>
-		  <ul class="list-unstyled text-small">
-			<li><a class="text-muted" href="http://bitpie.com">Bitpie</a></li>
-			<li><a class="text-muted" href="https://www.cryptonator.com/">Cryptonator</a></li>
-			<li><a class="text-muted" href="https://freewallet.org/">FreeWallet</a></li>
-			<li><a class="text-muted" href="https://holytransaction.com/">Holy Transaction</a></li>
-		  </ul>
-		</div>
-		<div class="col-6 col-md">
-		  <h5>Resources</h5>
-		  <ul class="list-unstyled text-small">
-			<li><a class="text-muted" href="https://z.cash/">Official Zcash Website</a></li>
-			<li><a class="text-muted" href="https://z.cash/support/getting-started.html">Zcash Getting Started</a></li>
-			<li><a class="text-muted" href="https://www.zcashcommunity.com/wallets/">Zcash Wallets</a></li>
-			<li><a class="text-muted" href="https://zcashblog.wordpress.com/zcash-exchanges/">Zcash Exchanges</a></li>
-		  </ul>
-		</div>
-		<div class="col-6 col-md">
-		  <h5>zFaucet</h5>
-		  <ul class="list-unstyled text-small">
-			<li><a class="text-muted" href="https://github.com/super3/zfaucet">Github</a></li>
-			<li><a class="text-muted" href="https://github.com/super3/zfaucet/issues">Roadmap and Issues</a></li>
-			<li><a class="text-muted" href="https://zfaucet.typeform.com/to/QPlWIN">Feedback Survey</a></li>
-			<li><a class="text-muted" href="https://github.com/super3/zfaucet/issues">Suggest a Feature</a></li>
-		  </ul>
-		</div>
-	  </div>
-	</footer>
 </div>
 </template>
 
