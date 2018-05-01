@@ -12,7 +12,7 @@
 			<label><b>Your Wallet Address:</b></label>
 			<input type="text" class="form-control bottom-space"
 			 placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)"
-			 v-model.trim="address" v-on:change="validateAddress"
+			 v-model.trim="address"
 			 v-bind:class="{ hidden: mining, 'is-valid': addressValid, 'is-invalid': !addressValid }">
 
 			<label><b>Suggested Wallets:</b></label>
@@ -71,11 +71,11 @@
 			  <th scope="row">{{numThreads}} Thread(s)</th>
 			  <td>
 				<button type="button" class="link"
-				  v-on:click="upThreads"
+				  v-on:click="numThreads = Math.min(16, numThreads + 1)"
 				  v-bind:class="{ linkt: numThreads === 16 }"
 				>+</button> /
 				<button type="button" class="link"
-				  v-on:click="downThreads"
+				  v-on:click="numThreads = Math.max(1, numThreads - 1)"
 				  v-bind:class="{ linkt: numThreads === 1 }"
 				>-</button>
 			  </td>
@@ -84,11 +84,11 @@
 			  <th scope="row">{{100-numThrottle}}% Speed</th>
 			  <td>
 				<button type="button" class="link"
-				  v-on:click="downThrottle"
+				  v-on:click="numThrottle = Math.max(0, numThrottle - 10)"
 				  v-bind:class="{ linkt: (100-numThrottle) === 100 }"
 				  >+</button> /
 				<button type="button" class="link"
-				 v-on:click="upThrottle"
+				 v-on:click="numThrottle = Math.min(90, numThrottle + 10)"
 				 v-bind:class="{ linkt: (100-numThrottle) === 10 }"
 				>-</button>
 			  </td>
@@ -116,75 +116,25 @@
 		</div>
 	  </div>
 		<ZMineCard></ZMineCard>
-	  <div class="card text-center box-shadow">
-		<div class="card-header">
-		  <ul class="nav nav-tabs card-header-tabs">
-			<li class="nav-item">
-			  <a class="nav-link" href="#"
-				v-bind:class="{ active: currentTab === 0 }"
-				v-on:click="currentTab=0">Recent</a>
-			</li>
-			<li class="nav-item" v-if="mining">
-			  <a class="nav-link" href="#"
-				v-bind:class="{ active: currentTab === 1 }"
-				v-on:click="currentTab=1">My Transactions</a>
-			</li>
-			<li class="nav-item" v-if="mining">
-			  <a class="nav-link" href="#"
-				v-bind:class="{ active: currentTab === 2 }"
-				v-on:click="currentTab=2">My Referrals</a>
-			</li>
-		  </ul>
-		</div>
-		<div class="card-body" v-if="currentTab === 0">
-		  <online-table v-bind:online="online"></online-table>
-		  <transactions-table v-bind:drips="transactions"></transactions-table>
-		</div>
-		<div class="card-body" v-if="currentTab === 1">
-		  <div class="bottom-space">
-			<div class="bold">Current Payout Rate:</div>
-			<p>~100 sats / <%= withdrawThreshold/1000 %>k hashes</p>
-		  </div>
-		  <transactions-table v-bind:drips="userTransactions"></transactions-table>
-		</div>
-		<div class="card-body" v-if="currentTab === 2">
-		  <div class="bottom-space">
-			<div class="bold">Referral Bonus Program:</div>
-			<p>Get a bonus payout every time someone does a withdrawal with your URL.</p>
-			<div class="bold">Your Referral URL:</div>
-			<code>http://zfaucet.org/?referral={{address}}</code>
-		  </div>
-
-		  <transactions-table v-bind:drips="referralTransactions"></transactions-table>
-		</div>
-	  </div>
-	</div>
+		<InfoCard v-bind:mining="mining" v-bind:address="address"></InfoCard>
+</div>
 </div>
 </template>
 
 <script>
 const Vue = require('vue/dist/vue.common');
-const axios = require('axios');
 const Engine = require('../engine');
 const socket = require('../socket');
+const get = require('../get');
+const utils = require('../../lib/utils');
 
 const remainingBuffer = [];
-
-async function get(url) {
-	const {data} = await axios.get(url);
-	return data;
-}
 
 let engine;
 
 module.exports = {
 	data: () => ({
-		transactions: [],
-		online: [],
-		userTransactions: [],
-		referralTransactions: [],
 		address: localStorage.getItem('address') || '',
-		addressValid: false,
 		mining: false,
 		hashesPerSecond: 0,
 		totalHashes: 0,
@@ -199,20 +149,6 @@ module.exports = {
 		numThrottle: Number(localStorage.getItem('numThrottle')) || 50
 	}),
 	methods: {
-		async getTransactions() {
-			this.transactions = await get('/api/recent');
-		},
-		async getUserTransactions() {
-			if (engine !== undefined && engine.miningAddress !== undefined)
-				this.userTransactions = await get(`/api/recent/${engine.miningAddress}`);
-		},
-		async getReferralTransactions() {
-			if (engine !== undefined && engine.miningAddress !== undefined)
-				this.referralTransactions = await get(`/api/referral/${engine.miningAddress}`);
-		},
-		async validateAddress() {
-			this.addressValid = await get(`/api/check/${this.address}`) === true;
-		},
 		async startMining() {
 			if (!this.addressValid)	return;
 
@@ -250,30 +186,6 @@ module.exports = {
 			this.mining = false;
 			this.currentTab = 0;
 		},
-		updateSettings() {
-			localStorage.setItem('numThreads', this.numThreads);
-			localStorage.setItem('numThrottle', this.numThrottle);
-		},
-		upThreads() {
-			if (this.numThreads < 16) this.numThreads++;
-			if (this.mining) engine.miner.setNumThreads(this.numThreads);
-			this.updateSettings();
-		},
-		downThreads() {
-			if (this.numThreads > 1) this.numThreads--;
-			if (this.mining) engine.miner.setNumThreads(this.numThreads);
-			this.updateSettings();
-		},
-		upThrottle() {
-			if (this.numThrottle <= 80)	this.numThrottle += 10;
-			if (this.mining) engine.miner.setThrottle(this.numThrottle / 100);
-			this.updateSettings();
-		},
-		downThrottle() {
-			if (this.numThrottle >= 10)	this.numThrottle -= 10;
-			if (this.mining) engine.miner.setThrottle(this.numThrottle / 100);
-			this.updateSettings();
-		},
 		async withdraw() {
 			await get(`/api/withdraw/${this.address}?referral=${referralAddress}`);
 			this.withdrawn += withdrawThreshold;
@@ -303,21 +215,22 @@ module.exports = {
 			const minutes = Math.floor(smoothSeconds / 60);
 			const seconds = Math.round(smoothSeconds % 60);
 			return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+		},
+		addressValid() {
+			return utils.isAddress(this.address);
+		}
+	},
+	watch: {
+		numThreads() {
+			if (this.mining) engine.miner.setNumThreads(this.numThreads);
+			localStorage.setItem('numThreads', this.numThreads);
+		},
+		numThrottle() {
+			if (this.mining) engine.miner.setThrottle(this.numThrottle / 100);
+			localStorage.setItem('numThrottle', this.numThrottle);
 		}
 	},
 	async created() {
-		this.getTransactions();
-		this.getUserTransactions();
-		this.getReferralTransactions();
-
-		setInterval(() => this.getTransactions(), 5000);
-		setInterval(() => this.getUserTransactions(), 5000);
-		setInterval(() => this.getReferralTransactions(), 5000);
-
-		socket.on('online', data => {
-			this.online = data;
-		});
-
 		const sendStatus = () => {
 			socket.emit('statusReport', {
 				address: this.address,
@@ -328,13 +241,10 @@ module.exports = {
 		}
 
 		setInterval(() => sendStatus(), 5000);
-
-		await this.validateAddress();
 	},
 	components: {
-		TransactionsTable: require('./TransactionsTable.vue'),
-		OnlineTable: require('./OnlineTable.vue'),
-		ZMineCard: require('./ZMineCard.vue')
+		ZMineCard: require('./ZMineCard.vue'),
+		InfoCard: require('./InfoCard.vue')
 	}
 };
 </script>

@@ -109,10 +109,6 @@ app.get('/', async (req, res) => {
 		referralAddress});
 });
 
-app.get('/api/check/:address', (req, res) => {
-		res.end(JSON.stringify(utils.isAddress(req.params.address)));
-});
-
 app.get('/api/recent', cache('30 seconds'), async (req, res) => {
 	const rows = await db.searchDrips(req.conn, {});
 	res.end(JSON.stringify(utils.readableTime(rows)));
