@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="container">
 	<div class="card-deck mb-3 text-center">
 	  <div class="card mb-4 box-shadow">
 		<div class="card-header">
@@ -239,7 +239,7 @@ let engine;
 
 module.exports = {
 	el: '#app',
-	data: {
+	data: () => ({
 		transactions: [],
 		online: [],
 		userTransactions: [],
@@ -258,7 +258,7 @@ module.exports = {
 		currentTab: 0,
 		numThreads: Number(localStorage.getItem('numThreads')) || 4,
 		numThrottle: Number(localStorage.getItem('numThrottle')) || 50
-	},
+	}),
 	sockets: {
 		connect: () => {
 			console.log('socket connected');
