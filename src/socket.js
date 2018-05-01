@@ -1,3 +1,4 @@
+/* global window */
 const io = require('socket.io-client');
 
 const dev = window.location.href === 'http://localhost/';
