@@ -49,3 +49,4 @@ class Engine {
 }
 
 window.Engine = Engine;
+module.exports = Engine;
