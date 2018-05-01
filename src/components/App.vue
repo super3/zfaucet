@@ -2,6 +2,7 @@
 	<div class="container">
 	<div class="card-deck mb-3 text-center">
 	  <div class="card mb-4 box-shadow">
+
 		<div class="card-header">
 		  <h4 class="my-0 font-weight-normal">1. Wallet</h4>
 		</div>
@@ -114,29 +115,7 @@
 		  </button>
 		</div>
 	  </div>
-	  <div class="card mb-4 box-shadow">
-		<div class="card-header">
-		  <h4 class="my-0 font-weight-normal">
-			3. Download GUI</h4>
-		</div>
-		<div class="card-body">
-		  <h1 class="card-title pricing-card-title">
-			zMine <small class="text-muted"> v0.2.3</small>
-		  </h1>
-		  <ul class="list-unstyled mt-3 mb-4">
-			<li>One click mining support</li>
-			<li>Open source / free software</li>
-			<li>CPU, NVIDIA, and AMD mining</li>
-			<li>Automatic miner downloads</li>
-		  </ul>
-
-		  <a href="https://github.com/super3/zmine/releases"
-			target="_blank" class="btn btn-lg btn-block btn-primary">
-			<span class="oi oi-cloud-download"
-			  style="top: 4px; margin-right: 3px;"></span> Download
-		  </a>
-		</div>
-	  </div>
+		<ZMineCard></ZMineCard>
 	  <div class="card text-center box-shadow">
 		<div class="card-header">
 		  <ul class="nav nav-tabs card-header-tabs">
@@ -186,12 +165,8 @@
 <script>
 const Vue = require('vue/dist/vue.common');
 const axios = require('axios');
-const io = require('socket.io-client');
 const Engine = require('../engine');
 const socket = require('../socket');
-
-const OnlineTable = require('../components/OnlineTable.vue');
-const TransactionsTable = require('../components/TransactionsTable.vue');
 
 const remainingBuffer = [];
 
@@ -203,7 +178,6 @@ async function get(url) {
 let engine;
 
 module.exports = {
-	el: '#app',
 	data: () => ({
 		transactions: [],
 		online: [],
@@ -224,14 +198,6 @@ module.exports = {
 		numThreads: Number(localStorage.getItem('numThreads')) || 4,
 		numThrottle: Number(localStorage.getItem('numThrottle')) || 50
 	}),
-	sockets: {
-		connect: () => {
-			console.log('socket connected');
-		},
-		stream: data => {
-			app.title = data.title;
-		}
-	},
 	methods: {
 		async getTransactions() {
 			this.transactions = await get('/api/recent');
@@ -349,11 +315,10 @@ module.exports = {
 		setInterval(() => this.getReferralTransactions(), 5000);
 
 		socket.on('online', data => {
-			// need to sort here
 			this.online = data;
 		});
 
-		function sendStatus() {
+		const sendStatus = () => {
 			socket.emit('statusReport', {
 				address: this.address,
 				isMining: this.mining,
@@ -367,7 +332,9 @@ module.exports = {
 		await this.validateAddress();
 	},
 	components: {
-		TransactionsTable, OnlineTable
+		TransactionsTable: require('./TransactionsTable.vue'),
+		OnlineTable: require('./OnlineTable.vue'),
+		ZMineCard: require('./ZMineCard.vue')
 	}
 };
 </script>
