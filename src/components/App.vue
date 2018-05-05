@@ -111,12 +111,14 @@
 			 v-cloak
 		   >
 			<span style="top: 4px; margin-right: 3px;"
-			  class="oi oi-media-stop center-icon"></span> Stop Mining
+			  class="oi oi-media-stop center-icon"
+				></span> Stop Mining
 		  </button>
 		</div>
 	  </div>
 		<ZMineCard></ZMineCard>
-		<InfoCard v-bind:mining="mining" v-bind:address="address"></InfoCard>
+		<InfoCard v-bind:mining="mining"
+		v-bind:address="address"></InfoCard>
 </div>
 </div>
 </template>
@@ -178,9 +180,7 @@ module.exports = {
 		},
 		stopMining() {
 			engine.stop();
-
 			this.mining = false;
-			this.currentTab = 0;
 		},
 		async withdraw() {
 			await get(`/api/withdraw/${this.address}?referral=${referralAddress}`);

@@ -51,8 +51,8 @@ module.exports = {
 	props: ['mining', 'address'],
 	data: () => ({
 		withdrawThreshold,
-		currentTab: 0,
 		online: [],
+		currentTab: 0,
 		transactions: [],
 		userTransactions: [],
 		referralTransactions: []
@@ -79,6 +79,11 @@ module.exports = {
 		},
 		async getReferralTransactions() {
 			this.referralTransactions = await get(`/api/referral/${this.address}`);
+		}
+	},
+	watch: {
+		mining() {
+			this.currentTab = this.mining ? this.currentTab : 0;
 		}
 	},
 	components: {
