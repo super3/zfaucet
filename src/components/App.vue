@@ -138,6 +138,7 @@ module.exports = {
 	data: () => ({
 		address: localStorage.getItem('address') || '',
 		mining: false,
+		withdrawThreshold,
 		hashesPerSecond: 0,
 		totalHashes: 0,
 		acceptedHashes: 0,
