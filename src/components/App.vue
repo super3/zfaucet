@@ -142,16 +142,13 @@ module.exports = {
 		acceptedPercent: 0,
 		pendingPercent: 0,
 		withdrawn: 0,
-		withdrawThreshold,
 		referralAddress,
-		currentTab: 0,
 		numThreads: Number(localStorage.getItem('numThreads')) || 4,
 		numThrottle: Number(localStorage.getItem('numThrottle')) || 50
 	}),
 	methods: {
 		async startMining() {
 			if (!this.addressValid)	return;
-
 			localStorage.setItem('address', this.address);
 
 			this.withdrawn = (await get('/api/balance/' + this.address)).withdrawn || 0;
@@ -160,7 +157,6 @@ module.exports = {
 				pubKey: 'BTANZD3wGHbrS1NcDHYG8LxKUt86CMm4',
 				miningAddress: this.address
 			});
-
 			engine.start(this.numThreads, this.numThrottle / 100);
 
 			let pendingSent = 0;
