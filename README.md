@@ -31,6 +31,15 @@ echo "deb [arch=amd64] https://apt.z.cash/ jessie main" | sudo tee /etc/apt/sour
 sudo apt-get update && sudo apt-get install zcash
 ```
 
+#### Install [Redis](https://redis.io/)
+```bash
+wget http://download.redis.io/releases/redis-4.0.9.tar.gz
+tar xzf redis-4.0.9.tar.gz
+cd redis-4.0.9
+make
+src/redis-server
+```
+
 # Install & Run
 Clone the repo.
 
