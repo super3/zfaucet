@@ -3,12 +3,10 @@ const express = require('express');
 const bodyParser = require('body-parser'); // create application/json parser
 const apicache = require('apicache');
 const io = require('socket.io')(3012);
-const Redis = require('ioredis');
 
 // create app and config vars
 const app = express();
 const cache = apicache.middleware;
-const redis = new Redis();
 
 // make the public folder viewable
 app.use(express.static('public'));
@@ -24,45 +22,14 @@ const db = require('./lib/db');
 const utils = require('./lib/utils');
 const coinhive = require('./lib/coinhive');
 
-async function onlineStatus() {
-	const timeSince = Date.now() - (5 * 60 * 1000);
-
-	const miners = await redis.zrangebyscore('miners-active', timeSince,
-		Date.now());
-
-	const active = await Promise.all(miners.map(async address => {
-		const {hashRate, isMining, withdrawPercent, lastSeen} = await JSON.parse(
-			await redis.lindex(`miner:${address}`, 0));
-		return {
-			address,
-			isMining,
-			hashRate,
-			withdrawPercent,
-			lastSeen
-		};
-	}));
-
-	active.sort((a, b) => {
-		if (a.withdrawPercent < b.withdrawPercent)
-			return 1;
-
-		if (a.withdrawPercent > b.withdrawPercent)
-			return -1;
-
-		return 0;
-	});
-
-	return {active};
-}
-
 // report status via socket.io
 io.on('connection', async socket => {
-	const resp = await onlineStatus();
+	const resp = await db.onlineStatus();
 	socket.emit('online', resp);
 
 	/* istanbul ignore next */
 	const interval = setInterval(async () => {
-		const resp = await onlineStatus();
+		const resp = await db.onlineStatus();
 		socket.emit('online', resp);
 	}, 5000);
 
@@ -74,17 +41,7 @@ io.on('connection', async socket => {
 // report status via socket.io
 io.on('connection', socket => {
 	socket.on('statusReport', async ({address, isMining, hashRate, withdrawPercent}) => {
-		if (!utils.isAddress(address) || typeof hashRate !== 'number' ||
-			typeof isMining !== 'boolean' || typeof withdrawPercent !== 'number')
-			return;
-
-		await redis.zadd('miners-active', Date.now(), address);
-		await redis.lpush(`miner:${address}`, JSON.stringify({
-			hashRate,
-			isMining,
-			withdrawPercent,
-			lastSeen: Date.now()
-		}));
+		db.submitReport({address, isMining, hashRate, withdrawPercent});
 	});
 });
 
