@@ -69,7 +69,7 @@ describe('Server Routes', () => {
 			api.get('/api/recent/' + helper.validAddr).expect(200, done);
 		});
 
-		it('recent + bad address should return a 401 response', done => {
+		it('recent + bad address should return a 500 response', done => {
 			api.get('/api/recent/' + helper.invalidAddr).expect(500, done);
 		});
 	});
@@ -79,7 +79,7 @@ describe('Server Routes', () => {
 			api.get('/api/referral/' + helper.validAddr).expect(200, done);
 		});
 
-		it('referral + bad address should return a 401 response', done => {
+		it('referral + bad address should return a 500 response', done => {
 			api.get('/api/referral/' + helper.invalidAddr).expect(500, done);
 		});
 	});

@@ -33,6 +33,31 @@ app.use(_static('public'));
 app.use(bodyParser());
 app.use(json());
 
+const cache = time => async (ctx, next) => {
+	await next();
+	/*
+	const {url} = ctx.request.url;
+	const key = `cache:${url}`;
+
+	try {
+		console.log('getting from cache')
+		const value = await redis.get(key);
+
+		console.log('value.length', value, value.length);
+
+		if (value.length === 0)
+			throw new Error('hg');
+
+		ctx.body = JSON.parse(value);
+	} catch (err) {
+		await next();
+
+		await redis.set(key, JSON.stringify(ctx.body));
+		await redis.expire(key, time);
+	}
+	*/
+};
+
 // set the view engine to ejs
 // app.set('view engine', 'ejs');
 
@@ -123,13 +148,13 @@ router.get('/', async ctx => {
 	});
 });
 
-router.get('/api/recent', /* cache('30 seconds'), */ async ctx => {
+router.get('/api/recent', cache(30), async ctx => {
 	const rows = await db.searchDrips(ctx.conn, {});
 
 	ctx.body = utils.readableTime(rows);
 });
 
-router.get('/api/recent/:address', /* cache('15 seconds'), */ async ctx => {
+router.get('/api/recent/:address', cache(15), async ctx => {
 	const payoutAddress = ctx.params.address;
 
 	if (!utils.isAddress(payoutAddress))
@@ -141,7 +166,7 @@ router.get('/api/recent/:address', /* cache('15 seconds'), */ async ctx => {
 	ctx.body = utils.readableTime(rows);
 });
 
-router.get('/api/referral/:address', /* cache('15 seconds'), */ async ctx => {
+router.get('/api/referral/:address', cache(15), async ctx => {
 	const referralAddress = ctx.params.address;
 
 	if (!utils.isAddress(referralAddress))
