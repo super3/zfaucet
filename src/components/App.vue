@@ -116,13 +116,12 @@
 		  </button>
 		</div>
 	  </div>
-		<ZMineCard></ZMineCard>
 		<Chat></Chat>
+
+		<InfoCard v-bind:mining="mining"
+		v-bind:address="address"></InfoCard>
+
 </div>
-
-
-<InfoCard v-bind:mining="mining"
-v-bind:address="address"></InfoCard>
 
 </div>
 </template>

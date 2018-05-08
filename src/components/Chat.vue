@@ -1,11 +1,7 @@
 <template>
-	<div class="card text-center box-shadow">
+	<div class="card mb-4 box-shadow">
 		<div class="card-header">
-			<ul class="nav nav-tabs card-header-tabs">
-				<li class="nav-item">
-					<a href="#" class="nav-link active">Chat</a>
-				</li>
-			</ul>
+		  <h4 class="my-0 font-weight-normal">3. Chat</h4>
 		</div>
 		<div class="card-body">
 			<ul class="list-group bottom-space" style="text-align: left;">
@@ -45,7 +41,7 @@
 		created() {
 			socket.on('message', message => {
 				this.chatMsgs.push(message);
-				if (this.chatMsgs.length > 5) this.chatMsgs.shift();
+				if (this.chatMsgs.length > 4) this.chatMsgs.shift();
 			})
 		}
 	}
