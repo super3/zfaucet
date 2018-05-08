@@ -1,22 +1,41 @@
+const fs = require('fs');
+const ejs = require('ejs');
 const r = require('rethinkdb');
-const express = require('express');
-const bodyParser = require('body-parser'); // create application/json parser
+const Koa = require('koa');
+const bodyParser = require('koa-bodyparser');
+const Router = require('koa-router');
+const _static = require('koa-static');
+const json = require('koa-json');
 const apicache = require('apicache');
 const io = require('socket.io')(3012);
 const Redis = require('ioredis');
 
 // create app and config vars
-const app = express();
-const cache = apicache.middleware;
+const app = new Koa();
+const router = new Router();
 const redis = new Redis();
 
+const cache = apicache.middleware;
+
 // make the public folder viewable
-app.use(express.static('public'));
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
+app.use(async (ctx, next) => {
+	try {
+		await next();
+	} catch (error) {
+		ctx.response.status = 500;
+
+		ctx.body = process.env.NODE_ENV === 'production' ?
+			'Internal Server Error' :
+			error.toString();
+	}
+});
+
+app.use(_static('public'));
+app.use(bodyParser());
+app.use(json());
 
 // set the view engine to ejs
-app.set('view engine', 'ejs');
+// app.set('view engine', 'ejs');
 
 // internal libs
 const config = require('./config');
@@ -85,80 +104,93 @@ io.on('connection', socket => {
 });
 
 // middleware
-app.use(async (req, res, next) => {
+router.use(async (ctx, next) => {
 	// create database connection to use in all routes
-	req.conn = await r.connect(config.connectionConfig);
-	const {end} = res;
-
-	// close the connection on res.end
-	res.end = function (...args) {
-		req.conn.close();
-		end.apply(this, args);
-	};
-
-	// set default content-type
-	res.set('Content-Type', 'application/json');
-	next();
+	// res.set('Content-Type', 'application/json');
+	ctx.conn = await r.connect(config.connectionConfig);
+	await next();
+	ctx.conn.close();
 });
 
-app.get('/', async (req, res) => {
-	const referralAddress = utils.isAddress(req.query.referral) ?
-		req.query.referral : '';
-	res.set('Content-Type', 'text/html');
-	res.render('index', {withdrawThreshold: config.withdrawThreshold,
-		referralAddress});
+const indexTemplate = ejs.compile(fs.readFileSync(`${__dirname}/views/index.ejs`, 'utf8'));
+
+router.get('/', async ctx => {
+	const referralAddress = utils.isAddress(ctx.query.referral) ?
+		ctx.query.referral : '';
+
+	ctx.body = indexTemplate({
+		withdrawThreshold: config.withdrawThreshold,
+		referralAddress
+	});
 });
 
-app.get('/api/recent', cache('30 seconds'), async (req, res) => {
-	const rows = await db.searchDrips(req.conn, {});
-	res.end(JSON.stringify(utils.readableTime(rows)));
+router.get('/api/recent', /* cache('30 seconds'), */ async ctx => {
+	const rows = await db.searchDrips(ctx.conn, {});
+
+	ctx.body = utils.readableTime(rows);
 });
 
-app.get('/api/recent/:address', cache('15 seconds'), async (req, res) => {
-	const payoutAddress = req.params.address;
-	if (!utils.isAddress(payoutAddress)) return res.sendStatus(401);
+router.get('/api/recent/:address', /* cache('15 seconds'), */ async ctx => {
+	const payoutAddress = ctx.params.address;
+
+	if (!utils.isAddress(payoutAddress))
+		throw new Error('Please enter a valid address');
 
 	// find the drips for the user and return
-	const rows = await db.searchDrips(req.conn, payoutAddress, {payoutAddress});
-	res.end(JSON.stringify(utils.readableTime(rows)));
+	const rows = await db.searchDrips(ctx.conn, payoutAddress, {payoutAddress});
+
+	ctx.body = utils.readableTime(rows);
 });
 
-app.get('/api/referral/:address', cache('15 seconds'), async (req, res) => {
-	const referralAddress = req.params.address;
-	if (!utils.isAddress(referralAddress)) return res.sendStatus(401);
+router.get('/api/referral/:address', /* cache('15 seconds'), */ async ctx => {
+	const referralAddress = ctx.params.address;
+
+	if (!utils.isAddress(referralAddress))
+		throw new Error('Please enter a valid address');
 
 	// find the drips for the user and return
-	const rows = await db.searchDrips(req.conn, {referralAddress});
-	res.end(JSON.stringify(utils.readableTime(rows)));
+	const rows = await db.searchDrips(ctx.conn, {referralAddress});
+
+	ctx.body = utils.readableTime(rows);
 });
 
-app.get('/api/balance/:address', async (req, res) => {
-	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
+router.get('/api/balance/:address', async ctx => {
+	if (!utils.isAddress(ctx.params.address))
+		throw new Error('Please enter a valid address');
 
 	// check the balance from coinhive and return
-	const response = await coinhive.getBalance(req.params.address);
-	res.end(JSON.stringify(response));
+	ctx.body = await coinhive.getBalance(ctx.params.address);
 });
 
-app.get('/api/withdraw/:address', async (req, res) => {
-	if (!utils.isAddress(req.params.address)) return res.sendStatus(401);
-	const referralAddress = utils.isAddress(req.query.referral) ?
-		req.query.referral : '';
+router.get('/api/withdraw/:address', async ctx => {
+	if (!utils.isAddress(ctx.params.address))
+		throw new Error('Please enter a valid address');
+
+	const referralAddress = utils.isAddress(ctx.query.referral) ?
+		ctx.query.referral : '';
 
 	// make sure the user has enough balance
-	const balResponse = await coinhive.getBalance(req.params.address);
+	const balResponse = await coinhive.getBalance(ctx.params.address);
+
 	if (balResponse.balance < config.withdrawThreshold)
-		return res.sendStatus(402);
+		throw new Error('Not enough coins');
 
 	// make sure the withdrawal was successful
-	const withReponse = await coinhive.withdraw(req.params.address,
+	const withReponse = await coinhive.withdraw(ctx.params.address,
 		config.withdrawThreshold);
-	if (withReponse.success !== true) return res.sendStatus(403);
+
+	if (withReponse.success !== true)
+		throw new Error('Withdraw Failed');
 
 	// add the withdrawal to the queue and return true
-	await db.createDrip(req.conn, req.params.address, referralAddress);
-	res.end('true');
+	await db.createDrip(ctx.conn, ctx.params.address, referralAddress);
+
+	ctx.body = true;
 });
+
+app
+	.use(router.routes())
+	.use(router.allowedMethods());
 
 /* istanbul ignore next */
 // start the server, if running this script alone
