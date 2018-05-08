@@ -61,10 +61,14 @@ io.on('connection', async socket => {
 	socket.emit('online', resp);
 
 	/* istanbul ignore next */
-	setInterval(async () => {
+	const interval = setInterval(async () => {
 		const resp = await onlineStatus();
 		socket.emit('online', resp);
 	}, 5000);
+
+	socket.on('disconnect', () => {
+		clearInterval(interval);
+	});
 });
 
 // report status via socket.io
