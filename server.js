@@ -24,6 +24,7 @@ app.use(async (ctx, next) => {
 	} catch (error) {
 		ctx.response.status = 500;
 
+		/* istanbul ignore next */
 		ctx.body = process.env.NODE_ENV === 'production' ?
 			'Internal Server Error' :
 			error.toString();
