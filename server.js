@@ -91,6 +91,22 @@ io.on('connection', socket => {
 	});
 });
 
+// const pub = new Redis();
+// const sub = new Redis();
+
+io.on('connection', socket => {
+	socket.on('message', text => {
+		socket.emit('message', {
+			name: 'bob',
+			text
+		});
+		socket.broadcast.emit('message', {
+			name: 'bob',
+			text
+		});
+	});
+});
+
 // middleware
 router.use(async (ctx, next) => {
 	// create database connection to use in all routes
