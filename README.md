@@ -5,6 +5,8 @@ Simple Zcash(ZEC) faucet built with Node.
 [![Coverage Status](https://coveralls.io/repos/github/super3/zfaucet/badge.svg?branch=master)](https://coveralls.io/github/super3/zfaucet?branch=master)
 [![License](https://img.shields.io/badge/license-AGPLv3-blue.svg?label=license)](https://github.com/Storj/super3/zfaucet/blob/master/LICENSE)
 [![GitHub contributors](https://img.shields.io/github/contributors/super3/zfaucet.svg)](https://gitHub.com/super3/zfaucet/graphs/contributors)
+[![dependencies Status](https://david-dm.org/super3/zfaucet/status.svg)](https://david-dm.org/super3/zfaucet)
+[![devDependencies Status](https://david-dm.org/super3/zfaucet/dev-status.svg)](https://david-dm.org/super3/zfaucet?type=dev)
 
 ## DB and Zcash Setup
 #### Download and Install [RethinkDB](https://www.rethinkdb.com/)

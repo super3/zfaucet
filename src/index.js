@@ -1,4 +1,4 @@
-const Vue = require('vue/dist/vue.common');
+const Vue = require('vue');
 const App = require('./components/App.vue');
 
 new Vue({
