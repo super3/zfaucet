@@ -6,13 +6,15 @@ const bodyParser = require('koa-bodyparser');
 const Router = require('koa-router');
 const _static = require('koa-static');
 const json = require('koa-json');
+// const Redis = require('ioredis');
+
 // const apicache = require('apicache');
 const io = require('socket.io')(3012);
 
 // create app and config vars
 const app = new Koa();
 const router = new Router();
-const redis = new Redis();
+// const redis = new Redis();
 
 // make the public folder viewable
 app.use(async (ctx, next) => {
@@ -32,7 +34,7 @@ app.use(_static('public'));
 app.use(bodyParser());
 app.use(json());
 
-const cache = time => async (ctx, next) => {
+const cache = () /* time */ => async (ctx, next) => {
 	await next();
 	/*
 	const {url} = ctx.request.url;
