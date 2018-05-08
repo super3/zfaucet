@@ -1,16 +1,23 @@
 <template>
-	<ul class="pages">
-    <li class="chat page">
-      <div class="chatArea">
-        <ul class="messages">
-					<li v-for="message in chatMsgs">
-						<strong>{{message.name}}</strong>: {{message.text}}
-					</li>
-				</ul>
-      </div>
-      <input v-on:keyup.enter="send" v-model="message" class="inputMessage" placeholder="Type here..."/>
-    </li>
-  </ul>
+	<div class="bottom-space">
+    <tbody>
+			<tr>
+				<td v-for="message in chatMsgs">
+					<strong>{{message.name}}</strong>: {{message.text}}
+				</td>
+			</tr>
+		</tbody>
+		<div class="input-group">
+			<div class="input-group-prepend">
+				<span class="input-group-text">Bob</span>
+			</div>
+			<input type="text"
+				class="form-control inputMessage"
+				v-on:keyup.enter="send"
+				v-model="message"
+				placeholder="Type message here...">
+		</div>
+	</div>
 </template>
 
 <script>
@@ -23,7 +30,7 @@
 		}),
 		methods: {
 			send() {
-				console.log('got here');
+				if (this.message === '') return
 				socket.emit('message', this.message);
 				this.message = '';
 			}
