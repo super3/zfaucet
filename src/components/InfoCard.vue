@@ -20,7 +20,6 @@
 		</ul>
 	</div>
 	<div class="card-body" v-if="currentTab === 0">
-		<chat></chat>
 		<online-table v-bind:online="online"></online-table>
 		<transactions-table v-bind:drips="transactions"></transactions-table>
 	</div>
@@ -89,8 +88,7 @@ module.exports = {
 	},
 	components: {
 		TransactionsTable: require('./TransactionsTable.vue'),
-		OnlineTable: require('./OnlineTable.vue'),
-		Chat: require('./Chat.vue')
+		OnlineTable: require('./OnlineTable.vue')
 	}
 }
 </script>

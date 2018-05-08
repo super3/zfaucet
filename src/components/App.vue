@@ -117,9 +117,13 @@
 		</div>
 	  </div>
 		<ZMineCard></ZMineCard>
-		<InfoCard v-bind:mining="mining"
-		v-bind:address="address"></InfoCard>
+		<Chat></Chat>
 </div>
+
+
+<InfoCard v-bind:mining="mining"
+v-bind:address="address"></InfoCard>
+
 </div>
 </template>
 
@@ -241,6 +245,7 @@ module.exports = {
 	},
 	components: {
 		ZMineCard: require('./ZMineCard.vue'),
+		Chat: require('./Chat.vue'),
 		InfoCard: require('./InfoCard.vue')
 	}
 };
