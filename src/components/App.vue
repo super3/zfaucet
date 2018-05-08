@@ -124,7 +124,7 @@
 </template>
 
 <script>
-const Vue = require('vue/dist/vue.common');
+const Vue = require('vue');
 const Engine = require('../engine');
 const socket = require('../socket');
 const get = require('../get');
