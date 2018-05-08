@@ -69,8 +69,8 @@ describe('Server Routes', () => {
 			api.get('/api/recent/' + helper.validAddr).expect(200, done);
 		});
 
-		it('recent + bad address should return a 401 response', done => {
-			api.get('/api/recent/' + helper.invalidAddr).expect(401, done);
+		it('recent + bad address should return a 500 response', done => {
+			api.get('/api/recent/' + helper.invalidAddr).expect(500, done);
 		});
 	});
 
@@ -79,8 +79,8 @@ describe('Server Routes', () => {
 			api.get('/api/referral/' + helper.validAddr).expect(200, done);
 		});
 
-		it('referral + bad address should return a 401 response', done => {
-			api.get('/api/referral/' + helper.invalidAddr).expect(401, done);
+		it('referral + bad address should return a 500 response', done => {
+			api.get('/api/referral/' + helper.invalidAddr).expect(500, done);
 		});
 	});
 
@@ -100,13 +100,13 @@ describe('Server Routes', () => {
 		});
 
 		it('invalid address', async () => {
-			await api.get('/api/balance/' + helper.invalidAddr).expect(401);
+			await api.get('/api/balance/' + helper.invalidAddr).expect(500);
 		});
 	});
 
 	describe('Withdraw Route', () => {
 		it('invalid address', async () => {
-			await api.get('/api/withdraw/' + helper.invalidAddr).expect(401);
+			await api.get('/api/withdraw/' + helper.invalidAddr).expect(500);
 		});
 
 		it('empty balance', async () => {
@@ -117,7 +117,7 @@ describe('Server Routes', () => {
 				balance: 0};
 
 			coinhive.getBalance = sinon.stub().returns(sampleBal);
-			await api.get('/api/withdraw/' + helper.validAddr).expect(402);
+			await api.get('/api/withdraw/' + helper.validAddr).expect(500);
 		});
 
 		it('withdraw success', async () => {
@@ -149,7 +149,7 @@ describe('Server Routes', () => {
 			coinhive.getBalance = sinon.stub().returns(sampleBal);
 			coinhive.withdraw = sinon.stub().returns(sampleWith);
 
-			await api.get('/api/withdraw/' + helper.validAddr).expect(403);
+			await api.get('/api/withdraw/' + helper.validAddr).expect(500);
 		});
 	});
 });
