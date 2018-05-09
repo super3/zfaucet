@@ -79,6 +79,7 @@ io.on('connection', async socket => {
 		socket.emit('online', resp);
 	}, 5000);
 
+	/* istanbul ignore next */
 	socket.on('disconnect', () => {
 		clearInterval(interval);
 	});
@@ -94,6 +95,7 @@ io.on('connection', socket => {
 // const pub = new Redis();
 // const sub = new Redis();
 
+/* istanbul ignore next */
 io.on('connection', socket => {
 	socket.on('message', text => {
 		socket.emit('message', {
