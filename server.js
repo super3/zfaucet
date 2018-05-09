@@ -6,7 +6,7 @@ const bodyParser = require('koa-bodyparser');
 const Router = require('koa-router');
 const _static = require('koa-static');
 const json = require('koa-json');
-// const Redis = require('ioredis');
+const Redis = require('ioredis');
 
 // const apicache = require('apicache');
 const io = require('socket.io')(3012);
@@ -14,7 +14,7 @@ const io = require('socket.io')(3012);
 // create app and config vars
 const app = new Koa();
 const router = new Router();
-// const redis = new Redis();
+const redis = new Redis();
 
 // make the public folder viewable
 app.use(async (ctx, next) => {
@@ -34,29 +34,21 @@ app.use(_static('public'));
 app.use(bodyParser());
 app.use(json());
 
-const cache = () /* time */ => async (ctx, next) => {
-	await next();
-	/*
-	const {url} = ctx.request.url;
-	const key = `cache:${url}`;
+const cache = time => async (ctx, next) => {
+	const key = `cache:${ctx.request.url}`;
 
-	try {
-		console.log('getting from cache')
-		const value = await redis.get(key);
+	const value = await redis.get(key);
 
-		console.log('value.length', value, value.length);
-
-		if (value.length === 0)
-			throw new Error('hg');
-
+	if (value !== null) {
 		ctx.body = JSON.parse(value);
-	} catch (err) {
-		await next();
 
-		await redis.set(key, JSON.stringify(ctx.body));
-		await redis.expire(key, time);
+		return;
 	}
-	*/
+
+	await next();
+
+	await redis.set(key, JSON.stringify(ctx.body));
+	await redis.expire(key, time);
 };
 
 // set the view engine to ejs
