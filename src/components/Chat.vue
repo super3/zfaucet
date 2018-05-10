@@ -3,22 +3,22 @@
 		<div class="card-header">
 		  <h4 class="my-0 font-weight-normal">3. Chat</h4>
 		</div>
-		<div class="card-body">
-			<ul class="list-group bottom-space" style="text-align: left;">
-				<li class="list-group-item" v-for="message in chatMsgs">
+		<div class="card-body" style="overflow-y: scroll; height: 200px;" ref="messageBox">
+				<div v-for="message in chatMsgs" style="text-align: left;">
 					<strong>{{message.name}}</strong>: {{message.text}}
-				</li>
-			</ul>
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text">{{name}}</span>
 				</div>
-				<input type="text"
-					class="form-control inputMessage"
-					v-on:keyup.enter="send"
-					v-model="message"
-					placeholder="Type message here...">
+		</div>
+		<div class="card-footer">
+		<div class="input-group">
+			<div class="input-group-prepend">
+				<span class="input-group-text">{{name}}</span>
 			</div>
+			<input type="text"
+				class="form-control inputMessage"
+				v-on:keyup.enter="send"
+				v-model="message"
+				placeholder="Type message here...">
+		</div>
 		</div>
 	</div>
 </template>
@@ -38,7 +38,7 @@
 					return;
 
 				socket.emit('message', this.message);
-	
+
 				this.message = '';
 			}
 		},
@@ -49,12 +49,12 @@
 
 			socket.on('message', message => {
 				this.chatMsgs.push(message);
-
-				if (this.chatMsgs.length === 4)
-					this.chatMsgs.shift();
 			});
 
 			socket.emit('chat-init');
+		},
+		updated() {
+			this.$refs.messageBox.scrollTop = this.$refs.messageBox.scrollHeight;
 		}
 	}
 </script>
