@@ -11,7 +11,7 @@
 			</ul>
 			<div class="input-group">
 				<div class="input-group-prepend">
-					<span class="input-group-text">Bob</span>
+					<span class="input-group-text">{{name}}</span>
 				</div>
 				<input type="text"
 					class="form-control inputMessage"
@@ -28,21 +28,33 @@
 
 	module.exports = {
 		data: () => ({
+			name: '',
 			message: '',
 			chatMsgs: []
 		}),
 		methods: {
 			send() {
-				if (this.message === '') return
+				if (this.message === '')
+					return;
+
 				socket.emit('message', this.message);
+	
 				this.message = '';
 			}
 		},
 		created() {
+			socket.on('name', name => {
+				this.name = name;
+			});
+
 			socket.on('message', message => {
 				this.chatMsgs.push(message);
-				if (this.chatMsgs.length > 4) this.chatMsgs.shift();
-			})
+
+				if (this.chatMsgs.length === 4)
+					this.chatMsgs.shift();
+			});
+
+			socket.emit('chat-init');
 		}
 	}
 </script>

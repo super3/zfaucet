@@ -6,7 +6,8 @@ const bodyParser = require('koa-bodyparser');
 const Router = require('koa-router');
 const _static = require('koa-static');
 const json = require('koa-json');
-// const Redis = require('ioredis');
+const Redis = require('ioredis');
+const dogNames = require('dog-names');
 
 // const apicache = require('apicache');
 const io = require('socket.io')(3012);
@@ -14,7 +15,6 @@ const io = require('socket.io')(3012);
 // create app and config vars
 const app = new Koa();
 const router = new Router();
-// const redis = new Redis();
 
 // make the public folder viewable
 app.use(async (ctx, next) => {
@@ -92,19 +92,28 @@ io.on('connection', socket => {
 	});
 });
 
-// const pub = new Redis();
-// const sub = new Redis();
+const pub = new Redis();
+const sub = new Redis();
+
+sub.subscribe('messages');
+
+sub.on('message', (channel, message) => {
+	console.log(message);
+	io.emit('message', JSON.parse(message));
+});
 
 /* istanbul ignore next */
 io.on('connection', socket => {
-	socket.on('message', text => {
-		socket.emit('message', {
-			name: 'bob',
-			text
-		});
-		socket.broadcast.emit('message', {
-			name: 'bob',
-			text
+	socket.on('chat-init', () => {
+		const name = dogNames.allRandom();
+
+		socket.emit('name', name);
+
+		socket.on('message', text => {
+			pub.publish('messages', JSON.stringify({
+				name,
+				text
+			}));
 		});
 	});
 });
