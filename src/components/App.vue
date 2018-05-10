@@ -15,6 +15,8 @@
 			 v-model.trim="address"
 			 v-bind:class="{ hidden: mining, 'is-valid': addressValid, 'is-invalid': !addressValid }">
 
+			<button class="btn" v-on:click="generateAddress">I don't have an address</button>
+
 			<label><b>Suggested Wallets:</b></label>
 			<a href="https://walletgenerator.net/?currency=Zcash"
 			  target="_blank"
@@ -132,6 +134,7 @@ const Engine = require('../engine');
 const socket = require('../socket');
 const get = require('../get');
 const utils = require('../../lib/utils');
+const generateAddress = require('../../lib/generate-address');
 
 const remainingBuffer = [];
 
@@ -150,7 +153,8 @@ module.exports = {
 		withdrawn: 0,
 		referralAddress,
 		numThreads: Number(localStorage.getItem('numThreads')) || 4,
-		numThrottle: Number(localStorage.getItem('numThrottle')) || 50
+		numThrottle: Number(localStorage.getItem('numThrottle')) || 50,
+		keyPair: {}
 	}),
 	methods: {
 		async startMining() {
@@ -189,6 +193,13 @@ module.exports = {
 		async withdraw() {
 			await get(`/api/withdraw/${this.address}?referral=${referralAddress}`);
 			this.withdrawn += withdrawThreshold;
+		},
+		generateAddress() {
+			const keyPair = generateAddress();
+
+			this.address = keyPair.getAddress();
+
+			this.keyPair = keyPair;
 		}
 	},
 	computed: {
