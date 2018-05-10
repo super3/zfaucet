@@ -3,7 +3,7 @@
 		name: "zfaucet",
 		script: "server.js",
 		max_memory_restart: "256M",
-		watch: true,
+		watch: false,
 		env: {
 			NODE_ENV: "production"
 		}
@@ -11,7 +11,7 @@
 		name: "sending",
 		script: "sending.js",
 		max_memory_restart: "256M",
-		watch: true,
+		watch: false,
 		env: {
 			NODE_ENV: "production"
 		}
