@@ -34,29 +34,21 @@ app.use(_static('public'));
 app.use(bodyParser());
 app.use(json());
 
-const cache = () /* time */ => async (ctx, next) => {
-	await next();
-	/*
-	const {url} = ctx.request.url;
-	const key = `cache:${url}`;
+const cache = time => async (ctx, next) => {
+	const key = `cache:${ctx.request.url}`;
 
-	try {
-		console.log('getting from cache')
-		const value = await redis.get(key);
+	const value = await redis.get(key);
 
-		console.log('value.length', value, value.length);
-
-		if (value.length === 0)
-			throw new Error('hg');
-
+	if (value !== null) {
 		ctx.body = JSON.parse(value);
-	} catch (err) {
-		await next();
 
-		await redis.set(key, JSON.stringify(ctx.body));
-		await redis.expire(key, time);
+		return;
 	}
-	*/
+
+	await next();
+
+	await redis.set(key, JSON.stringify(ctx.body));
+	await redis.expire(key, time);
 };
 
 // set the view engine to ejs
