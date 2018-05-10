@@ -104,16 +104,29 @@ sub.on('message', (channel, message) => {
 
 /* istanbul ignore next */
 io.on('connection', socket => {
-	socket.on('chat-init', () => {
+	socket.on('chat-init', async () => {
 		const name = dogNames.allRandom();
 
 		socket.emit('name', name);
 
-		socket.on('message', text => {
-			pub.publish('messages', JSON.stringify({
+		const messages = await pub.lrange('messages', 0, -1);
+
+		messages.reverse();
+
+		for (const message of messages) {
+			socket.emit('message', JSON.parse(message));
+		}
+
+		socket.on('message', async text => {
+			const message = JSON.stringify({
 				name,
 				text
-			}));
+			});
+
+			await pub.lpush('messages', message);
+			await pub.ltrim('messages', 0, 10);
+
+			pub.publish('messages', message);
 		});
 	});
 });
