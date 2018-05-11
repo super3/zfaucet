@@ -223,9 +223,11 @@ module.exports = {
 				remainingBuffer.length;
 
 			// turn into human readable time
-			const minutes = Math.floor(smoothSeconds / 60);
+			const hours = Math.floor(smoothSeconds / 3600)
+			const minutes = Math.floor((smoothSeconds % 3600) / 60);
 			const seconds = Math.round(smoothSeconds % 60);
-			return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+			return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 		},
 		addressValid() {
 			return utils.isAddress(this.address);
