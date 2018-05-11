@@ -199,7 +199,9 @@ module.exports = {
 
 			this.address = keyPair.getAddress();
 
-			this.keyPair = keyPair;
+			console.log(keyPair);
+
+			//this.keyPair = keyPair;
 		}
 	},
 	computed: {
