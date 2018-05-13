@@ -92,11 +92,12 @@ io.on('connection', socket => {
 	});
 });
 
+// pub/sub with Redis
 const pub = new Redis();
 const sub = new Redis();
-
 sub.subscribe('messages');
 
+/* istanbul ignore next */
 sub.on('message', (channel, message) => {
 	console.log(message);
 	io.emit('message', JSON.parse(message));
