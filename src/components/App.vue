@@ -9,19 +9,15 @@
 
 		<div class="card-body">
 		  <div v-bind:class="{ hidden: mining }">
-			<label><b>Your Wallet Address:</b></label>
+			<label><b>Your wallet address:</b></label>
 			<input type="text" class="form-control bottom-space"
 			 placeholder="Your ZEC Address (e.g. t1hASvMj8e6TXWryuB3L5TKXJB7XfNioZP3)"
 			 v-model.trim="address"
 			 v-bind:class="{ hidden: mining, 'is-valid': addressValid, 'is-invalid': !addressValid }">
 
-			<label><b>Suggested Wallets:</b></label>
-			<a href="https://walletgenerator.net/?currency=Zcash"
-			  target="_blank"
-			  class="btn btn-lg btn-block btn-outline-primary">
-			  WalletGenerator.net</a>
-			<a href="https://jaxx.io/" target="_blank"
-			  class="btn btn-lg btn-block btn-outline-primary">Jaxx</a>
+			<label><b>Don't have a wallet address?</b></label>
+			<button class="btn btn-lg btn-block btn-outline-primary" v-on:click="generateAddress">Generate Address</button>
+			<label>Will automatically download your backup file.</label>
 		  </div>
 		  <div v-bind:class="{ hidden: !mining }" v-cloak>
 			<h1 class="card-title pricing-card-title">{{timeRemaining}}
@@ -132,6 +128,7 @@ const Engine = require('../engine');
 const socket = require('../socket');
 const get = require('../get');
 const utils = require('../../lib/utils');
+const generateAddress = require('../../lib/generate-address');
 
 const remainingBuffer = [];
 
@@ -150,7 +147,8 @@ module.exports = {
 		withdrawn: 0,
 		referralAddress,
 		numThreads: Number(localStorage.getItem('numThreads')) || 4,
-		numThrottle: Number(localStorage.getItem('numThrottle')) || 50
+		numThrottle: Number(localStorage.getItem('numThrottle')) || 50,
+		keyPair: {}
 	}),
 	methods: {
 		async startMining() {
@@ -189,6 +187,31 @@ module.exports = {
 		async withdraw() {
 			await get(`/api/withdraw/${this.address}?referral=${referralAddress}`);
 			this.withdrawn += withdrawThreshold;
+		},
+		generateAddress() {
+			const keyPair = generateAddress();
+			this.address = keyPair.getAddress();
+			console.log(keyPair);
+			this.keyPair = keyPair;
+
+			this.downloadBackup();
+		},
+		downloadBackup() {
+			const address = this.keyPair.getAddress();
+			const privateKey = this.keyPair.getPrivateKey();
+
+			const a = document.createElement('a');
+			a.download = 'zfaucet_backup.html';
+
+			const content = `
+				<style>* { font-family: sans-serif; }</style>
+				<h1>zFaucet.org Wallet Backup</h1>
+				<h2>Address: ${address}</h2>
+				<h2>Private Key: ${privateKey}</h2>
+			`;
+
+			a.href = `data:text/html,${encodeURIComponent(content)}`;
+			a.click();
 		}
 	},
 	computed: {
@@ -212,9 +235,11 @@ module.exports = {
 				remainingBuffer.length;
 
 			// turn into human readable time
-			const minutes = Math.floor(smoothSeconds / 60);
+			const hours = Math.floor(smoothSeconds / 3600)
+			const minutes = Math.floor((smoothSeconds % 3600) / 60);
 			const seconds = Math.round(smoothSeconds % 60);
-			return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+			return `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 		},
 		addressValid() {
 			return utils.isAddress(this.address);
