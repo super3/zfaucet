@@ -12,7 +12,7 @@
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec --exit",
     "linter": "xo",
     "start": "node server.js",
-    "prepublish": "browserify -t vueify -e src/index.js | babel-minify > public/js/bundle.js",
+    "prepare": "browserify -t vueify -e src/index.js > public/js/bundle.js",
     "dev": "watchify -t vueify -e src/index.js -o public/js/bundle.js"
   },
   "repository": {
