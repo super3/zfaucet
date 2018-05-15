@@ -3,6 +3,7 @@ const chai = require('chai');
 const r = require('rethinkdb');
 
 const db = require('../lib/db');
+const redis = require('../lib/redis');
 const config = require('../config');
 const helper = require('./helper');
 
@@ -51,6 +52,7 @@ describe('Database Testing', () => {
 			chai.assert.isFalse(result);
 		});
 		it('online status', async () => {
+			await redis.del('miners-active');
 			await db.submitReport(
 				{
 					address: helper.validAddr,

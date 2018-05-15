@@ -7,11 +7,9 @@ const bodyParser = require('koa-bodyparser');
 const Router = require('koa-router');
 const _static = require('koa-static');
 const json = require('koa-json');
-const Redis = require('ioredis');
-const dogNames = require('dog-names');
 const socketIo = require('socket.io');
 
-// const apicache = require('apicache');
+const cache = require('./lib/middleware/cache');
 
 // create app and config vars
 const app = new Koa();
@@ -34,31 +32,6 @@ app.use(async (ctx, next) => {
 app.use(_static('public'));
 app.use(bodyParser());
 app.use(json());
-
-const cache = () /* time */ => async (ctx, next) => {
-	await next();
-	/*
-	const {url} = ctx.request.url;
-	const key = `cache:${url}`;
-
-	try {
-		console.log('getting from cache')
-		const value = await redis.get(key);
-
-		console.log('value.length', value, value.length);
-
-		if (value.length === 0)
-			throw new Error('hg');
-
-		ctx.body = JSON.parse(value);
-	} catch (err) {
-		await next();
-
-		await redis.set(key, JSON.stringify(ctx.body));
-		await redis.expire(key, time);
-	}
-	*/
-};
 
 // set the view engine to ejs
 // app.set('view engine', 'ejs');
@@ -161,69 +134,8 @@ app
 const server = http.createServer(app.callback());
 const io = socketIo(server);
 
-// report status via socket.io
-io.on('connection', async socket => {
-	const resp = await db.onlineStatus();
-	socket.emit('online', resp);
-
-	/* istanbul ignore next */
-	const interval = setInterval(async () => {
-		const resp = await db.onlineStatus();
-		socket.emit('online', resp);
-	}, 5000);
-
-	/* istanbul ignore next */
-	socket.on('disconnect', () => {
-		clearInterval(interval);
-	});
-});
-
-// report status via socket.io
-io.on('connection', socket => {
-	socket.on('statusReport', async ({address, isMining, hashRate, withdrawPercent}) => {
-		db.submitReport({address, isMining, hashRate, withdrawPercent});
-	});
-});
-
-// pub/sub with Redis
-const pub = new Redis();
-const sub = new Redis();
-sub.subscribe('messages');
-
-/* istanbul ignore next */
-sub.on('message', (channel, message) => {
-	console.log(message);
-	io.emit('message', JSON.parse(message));
-});
-
-/* istanbul ignore next */
-io.on('connection', socket => {
-	socket.on('chat-init', async () => {
-		const name = dogNames.allRandom();
-
-		socket.emit('name', name);
-
-		const messages = await pub.lrange('messages', 0, -1);
-
-		messages.reverse();
-
-		for (const message of messages) {
-			socket.emit('message', JSON.parse(message));
-		}
-
-		socket.on('message', async text => {
-			const message = JSON.stringify({
-				name,
-				text
-			});
-
-			await pub.lpush('messages', message);
-			await pub.ltrim('messages', 0, 10);
-
-			pub.publish('messages', message);
-		});
-	});
-});
+io.on('connection', require('./lib/io/report'));
+io.on('connection', require('./lib/io/chat'));
 
 /* istanbul ignore next */
 // start the server, if running this script alone
