@@ -14,5 +14,6 @@ module.exports = {
 	coinhivePrivKey: process.env.COINHIVEPRIVKEY,
 	withdrawThreshold: process.env.WITHDRAWTHRESHOLD || 10000,
 	sendingIntervalMin: 5,
-	socketPort: 3012
+	socketPort: 3012,
+	chatAdmin: process.env.CHATADMIN
 };
