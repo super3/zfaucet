@@ -9,4 +9,12 @@ describe('generate-address', () => {
 
 		assert(utils.isAddress(keyPair.getAddress()));
 	});
+
+	it('should generate an address from a WIF', () => {
+		const keyPair = generateAddress();
+
+		keyPair.setPrivateKey('L4kRn8dYD5T7kGhkGAiAoNpb71cnT66im2suQmfHB8xuhSdR5ktm');
+
+		assert.equal(keyPair.getAddress(), 't1ZWC29ZTAMsYdQydbagcs9RsiGBzNCCLuf');
+	});
 });

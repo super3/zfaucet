@@ -1,4 +1,4 @@
-/* global CoinHive, window */
+/* global CoinHive */
 
 class Engine {
 	constructor(config) {
