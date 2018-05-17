@@ -17,4 +17,10 @@ describe('generate-address', () => {
 
 		assert.equal(keyPair.getAddress(), 't1ZWC29ZTAMsYdQydbagcs9RsiGBzNCCLuf');
 	});
+
+	it('should return a valid private key WIF', () => {
+		const keyPair = generateAddress();
+
+		assert.equal(typeof keyPair.getPrivateKey(), 'string');
+	});
 });
