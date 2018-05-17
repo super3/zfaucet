@@ -1,4 +1,4 @@
-/* global CoinHive, window */
+/* global CoinHive */
 
 class Engine {
 	constructor(config) {
@@ -48,5 +48,4 @@ class Engine {
 	}
 }
 
-window.Engine = Engine;
 module.exports = Engine;
