@@ -76,7 +76,7 @@ router.get('/api/recent/:address', cache(15), async ctx => {
 		throw new Error('Please enter a valid address');
 
 	// find the drips for the user and return
-	const rows = await db.searchDrips(ctx.conn, payoutAddress, {payoutAddress});
+	const rows = await db.searchDrips(ctx.conn, {payoutAddress});
 
 	ctx.body = utils.readableTime(rows);
 });
