@@ -1,4 +1,3 @@
-/* global it, describe */
 const chai = require('chai');
 const r = require('rethinkdb');
 

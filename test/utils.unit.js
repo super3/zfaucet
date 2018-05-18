@@ -1,5 +1,3 @@
-/* global it, describe */
-
 const chai = require('chai');
 
 const utils = require('../lib/utils');

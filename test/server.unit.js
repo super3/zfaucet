@@ -1,5 +1,3 @@
-/* global it, describe, before */
-
 const supertest = require('supertest');
 const sinon = require('sinon');
 const chai = require('chai');

@@ -65,6 +65,12 @@
     "xo": "^0.20.3"
   },
   "xo": {
+    "globals": [
+      "window",
+      "describe",
+      "it",
+      "before"
+    ],
     "rules": {
       "no-await-in-loop": "off",
       "curly": "off",
