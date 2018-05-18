@@ -20,6 +20,37 @@ describe('filterable-list', async () => {
 		});
 	});
 
+	describe('constructor', () => {
+		it('should throw on bad redis object', () => {
+			assert.throws(() => new FilterableList({
+				name: 'test',
+				filters: ['name', 'age']
+			}));
+		});
+
+		it('should throw on bad name', () => {
+			assert.throws(() => new FilterableList({
+				redis,
+				filters: ['name', 'age']
+			}));
+		});
+
+		it('should throw on bad filters', () => {
+			assert.throws(() => new FilterableList({
+				redis,
+				name: 'test'
+			}));
+		});
+
+		it('should throw on bad filters values', () => {
+			assert.throws(() => new FilterableList({
+				redis,
+				name: 'test',
+				filters: ['name', undefined]
+			}));
+		});
+	});
+
 	it('should store documents', async () => {
 		await list.insert({
 			name: 'John',
