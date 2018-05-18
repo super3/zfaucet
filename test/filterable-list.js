@@ -16,7 +16,8 @@ describe('filterable-list', async () => {
 		list = new FilterableList({
 			redis,
 			name: 'test',
-			filters: ['name', 'age']
+			filters: ['name', 'age'],
+			length: 4
 		});
 	});
 
@@ -24,13 +25,23 @@ describe('filterable-list', async () => {
 		it('should throw on bad redis object', () => {
 			assert.throws(() => new FilterableList({
 				name: 'test',
-				filters: ['name', 'age']
+				filters: ['name', 'age'],
+				length: 3
 			}));
 		});
 
 		it('should throw on bad name', () => {
 			assert.throws(() => new FilterableList({
 				redis,
+				filters: ['name', 'age'],
+				length: 3
+			}));
+		});
+
+		it('should throw on bad length', () => {
+			assert.throws(() => new FilterableList({
+				redis,
+				name: 'test',
 				filters: ['name', 'age']
 			}));
 		});
@@ -38,7 +49,8 @@ describe('filterable-list', async () => {
 		it('should throw on bad filters', () => {
 			assert.throws(() => new FilterableList({
 				redis,
-				name: 'test'
+				name: 'test',
+				length: 3
 			}));
 		});
 
@@ -46,7 +58,8 @@ describe('filterable-list', async () => {
 			assert.throws(() => new FilterableList({
 				redis,
 				name: 'test',
-				filters: ['name', undefined]
+				filters: ['name', undefined],
+				length: 3
 			}));
 		});
 	});
@@ -96,5 +109,22 @@ describe('filterable-list', async () => {
 		assert.deepEqual(await list.find(100, {
 			age: 20
 		}), expected);
+	});
+
+	it('should automatically trim based on length', async () => {
+		await list.insert({
+			name: 'Sam',
+			age: 58
+		});
+
+		await list.trim();
+
+		const expected = [
+			{name: 'Sam', age: 58},
+			{name: 'Josh', age: 20},
+			{name: 'Lisa', age: 35}
+		];
+
+		assert.deepEqual(await list.find(100), expected);
 	});
 });
