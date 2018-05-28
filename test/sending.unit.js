@@ -59,7 +59,7 @@ describe('Sending Script', () => {
 		}
 	];
 
-  describe('Balance Testing', () => {
+	describe('Balance Testing', () => {
 		it('error when balance is 0', async () => {
 			rpc.getbalance = sinon.stub().returns(0);
 			await chai.assert.isRejected(sending.findInputs());
@@ -69,9 +69,9 @@ describe('Sending Script', () => {
 			rpc.getbalance = sinon.stub().returns(config.sendingAmount);
 			await chai.assert.isRejected(sending.findInputs());
 		});
-  });
+	});
 
-  describe('Inputs Testing', () => {
+	describe('Inputs Testing', () => {
 		it('error with empty inputs', async () => {
 			rpc.getbalance = sinon.stub().returns(1);
 			rpc.listunspent = sinon.stub().returns([]);
@@ -84,9 +84,9 @@ describe('Sending Script', () => {
 			await chai.assert.eventually.equal(sending.findInputs(),
 				't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX');
 		});
-  });
+	});
 
-  describe('Send Testing', () => {
+	describe('Send Testing', () => {
 		it('send sample drip without referral', async () => {
 			const rows = [{id: '3f5f6846-0d59-40d3-8cda-2b5b54be2e9f',
 				operationId: '',
@@ -102,7 +102,7 @@ describe('Sending Script', () => {
 			const conn = await r.connect(config.connectionConfig);
 			await chai.assert.eventually.equal(sending
 				.sendDrip(conn, 't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX'),
-				'opid-f746c8ac-116d-476b-8b44-bb098a354dad');
+			'opid-f746c8ac-116d-476b-8b44-bb098a354dad');
 		});
 
 		it('send sample drip with referral', async () => {
@@ -120,7 +120,7 @@ describe('Sending Script', () => {
 			const conn = await r.connect(config.connectionConfig);
 			await chai.assert.eventually.equal(sending
 				.sendDrip(conn, 't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX'),
-				'opid-f746c8ac-116d-476b-8b44-bb098a354dad');
+			'opid-f746c8ac-116d-476b-8b44-bb098a354dad');
 		});
 
 		it('empty drips', async () => {
@@ -131,9 +131,9 @@ describe('Sending Script', () => {
 			await chai.assert.eventually.equal(sending
 				.sendDrip(conn, 't1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX'), 0);
 		});
-  });
+	});
 
-  describe('Update Testing', () => {
+	describe('Update Testing', () => {
 		it('update transaction', async () => {
 			// relying on other tests...
 			rpc.zGetoperationresult = sinon.stub().returns(ops);
@@ -141,7 +141,7 @@ describe('Sending Script', () => {
 			const conn = await r.connect(config.connectionConfig);
 			await chai.assert.eventually.equal(sending.updateDrips(conn), 1);
 		});
-  });
+	});
 
 	describe('Main Testing', () => {
 		it('make sure it exits properly', async () => {
