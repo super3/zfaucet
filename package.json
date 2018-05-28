@@ -55,7 +55,7 @@
     "coveralls": "^3.0.1",
     "ioredis": "^3.2.2",
     "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^4.1.0",
+    "mocha": "^5.2.0",
     "nodemon": "^1.17.5",
     "sinon": "^5.0.10",
     "socket.io-client": "^2.1.1",
