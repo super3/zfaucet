@@ -127,4 +127,28 @@ describe('filterable-list', async () => {
 
 		assert.deepEqual(await list.find(100), expected);
 	});
+
+	it('should update documents', async () => {
+		const results = await list.find(1, {
+			age: 20
+		});
+
+		assert.deepEqual(results, [
+			{name: 'Josh', age: 20}
+		]);
+
+		results[0].age = 30;
+
+		await list.update(results[0]);
+
+		assert.deepEqual(await list.find(1, {
+			age: 20
+		}), []);
+
+		assert.deepEqual(await list.find(1, {
+			age: 30
+		}), [
+			{name: 'Josh', age: 20}
+		]);
+	});
 });
