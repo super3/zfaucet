@@ -1,15 +1,13 @@
 const fs = require('fs');
 const http = require('http');
 const ejs = require('ejs');
-const r = require('rethinkdb');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const Router = require('koa-router');
 const _static = require('koa-static');
 const json = require('koa-json');
 const socketIo = require('socket.io');
-
-const cache = require('./lib/middleware/cache');
+const log = require('debug')('zfaucet:server');
 
 // create app and config vars
 const app = new Koa();
@@ -21,6 +19,8 @@ app.use(async (ctx, next) => {
 		await next();
 	} catch (error) {
 		ctx.response.status = 500;
+
+		log(`error: ${error.message}`);
 
 		/* istanbul ignore next */
 		ctx.body = process.env.NODE_ENV === 'production' ?
@@ -46,9 +46,7 @@ const coinhive = require('./lib/coinhive');
 router.use(async (ctx, next) => {
 	// create database connection to use in all routes
 	// res.set('Content-Type', 'application/json');
-	ctx.conn = await r.connect(config.connectionConfig);
 	await next();
-	ctx.conn.close();
 });
 
 const indexTemplate = ejs.compile(fs.readFileSync(`${__dirname}/views/index.ejs`, 'utf8'));
@@ -63,32 +61,32 @@ router.get('/', async ctx => {
 	});
 });
 
-router.get('/api/recent', cache(30), async ctx => {
-	const rows = await db.searchDrips(ctx.conn, {});
+router.get('/api/recent', async ctx => {
+	const rows = await db.searchDrips({});
 
 	ctx.body = utils.readableTime(rows);
 });
 
-router.get('/api/recent/:address', cache(15), async ctx => {
+router.get('/api/recent/:address', async ctx => {
 	const payoutAddress = ctx.params.address;
 
 	if (!utils.isAddress(payoutAddress))
 		throw new Error('Please enter a valid address');
 
 	// find the drips for the user and return
-	const rows = await db.searchDrips(ctx.conn, payoutAddress, {payoutAddress});
+	const rows = await db.searchDrips({payoutAddress});
 
 	ctx.body = utils.readableTime(rows);
 });
 
-router.get('/api/referral/:address', cache(15), async ctx => {
+router.get('/api/referral/:address', async ctx => {
 	const referralAddress = ctx.params.address;
 
 	if (!utils.isAddress(referralAddress))
 		throw new Error('Please enter a valid address');
 
 	// find the drips for the user and return
-	const rows = await db.searchDrips(ctx.conn, {referralAddress});
+	const rows = await db.searchDrips({referralAddress});
 
 	ctx.body = utils.readableTime(rows);
 });
@@ -122,7 +120,7 @@ router.get('/api/withdraw/:address', async ctx => {
 		throw new Error('Withdraw Failed');
 
 	// add the withdrawal to the queue and return true
-	await db.createDrip(ctx.conn, ctx.params.address, referralAddress);
+	await db.createDrip(ctx.params.address, referralAddress);
 
 	ctx.body = true;
 });

@@ -1,4 +1,3 @@
-/* global it, describe */
 const assert = require('assert');
 const utils = require('../lib/utils');
 const generateAddress = require('../lib/generate-address');
