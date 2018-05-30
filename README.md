@@ -8,7 +8,7 @@ Simple Zcash(ZEC) faucet built with Node.
 [![dependencies Status](https://david-dm.org/super3/zfaucet/status.svg)](https://david-dm.org/super3/zfaucet)
 [![devDependencies Status](https://david-dm.org/super3/zfaucet/dev-status.svg)](https://david-dm.org/super3/zfaucet?type=dev)
 
-# DB and Zcash Setup
+## DB and Zcash Setup
 
 #### Install [Zcash](https://z.cash/)
 Use the [Zcash Debian binary packages](https://github.com/zcash/zcash/wiki/Debian-binary-packages) install guide. The [Zcash 1.0 User Guide](https://github.com/zcash/zcash/wiki/1.0-User-Guide) has additional information if needed. You will have to fully sync the node before you can send any payments.
@@ -28,7 +28,7 @@ make
 src/redis-server
 ```
 
-# Install & Run
+## Install & Run
 Clone the repo.
 
 ```bash
