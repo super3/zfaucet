@@ -5,7 +5,8 @@
 		max_memory_restart: "256M",
 		watch: false,
 		env: {
-			NODE_ENV: "production"
+			NODE_ENV: "production",
+			DEBUG: "zfaucet:*"
 		}
 	}, {
 		name: "sending",
@@ -13,7 +14,8 @@
 		max_memory_restart: "256M",
 		watch: false,
 		env: {
-			NODE_ENV: "production"
+			NODE_ENV: "production",
+			DEBUG: "zfaucet:*"
 		}
 	}]
 }
