@@ -42,13 +42,6 @@ const db = require('./lib/db');
 const utils = require('./lib/utils');
 const coinhive = require('./lib/coinhive');
 
-// middleware
-router.use(async (ctx, next) => {
-	// create database connection to use in all routes
-	// res.set('Content-Type', 'application/json');
-	await next();
-});
-
 const indexTemplate = ejs.compile(fs.readFileSync(`${__dirname}/views/index.ejs`, 'utf8'));
 
 router.get('/', async ctx => {

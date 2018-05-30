@@ -37,25 +37,37 @@ async function sendDrip(sendingAddress) {
 	}
 
 	// make transaction list
-	const sendList = [];
-	sendList.push({address: rows[0].payoutAddress, amount: config.sendingAmount});
+	const sendList = [
+		{
+			address: rows[0].payoutAddress,
+			amount: config.sendingAmount
+		}
+	];
 
 	sending('sendList: %o', sendList);
 
 	// add referral if needed
 	if (rows[0].referralAddress !== '')
-		sendList.push({address: rows[0].referralAddress,
-			amount: config.sendingAmount});
+		sendList.push({
+			address: rows[0].referralAddress,
+			amount: config.sendingAmount
+		});
 
 	// send payment
-	const opid = await rpc.zSendmany(sendingAddress, sendList,
-		1, config.sendingFee);
+	const opid = await rpc.zSendmany(
+		sendingAddress,
+		sendList,
+		1,
+		config.sendingFee
+	);
 
 	// change drips to processed and return opid
-	rows[0].processed = Date.now();
-	rows[0].operationId = opid;
+	for (const row of rows) {
+		row.processed = Date.now();
+		row.operationId = opid;
 
-	await db.payouts.update(rows[0]);
+		await db.payouts.update(row);
+	}
 
 	return opid;
 }
@@ -88,15 +100,15 @@ async function main() {
 		const sendingAddress = await findInputs();
 		await sendDrip(sendingAddress);
 		await updateDrips();
+
+		sending('sending script done');
+
+		return 1;
 	} catch (err) {
 		sending(`error: %s`, err.message);
 
 		return 0;
 	}
-
-	sending('sending script done');
-
-	return 1;
 }
 
 module.exports.main = main;
