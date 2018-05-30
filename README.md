@@ -10,8 +10,6 @@ Simple Zcash(ZEC) faucet built with Node.
 
 ## DB and Zcash Setup
 
-```
-
 #### Install [Zcash](https://z.cash/)
 Use the [Zcash Debian binary packages](https://github.com/zcash/zcash/wiki/Debian-binary-packages) install guide. The [Zcash 1.0 User Guide](https://github.com/zcash/zcash/wiki/1.0-User-Guide) has additional information if needed. You will have to fully sync the node before you can send any payments.
 ```bash
