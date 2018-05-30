@@ -3,8 +3,8 @@ node_js:
     "8"
 services:
       - redis-server
-addons:
-  rethinkdb: '2.3.6'
+# addons:
+  # rethinkdb: '2.3.6'
 before_install:
   - npm install -g recli
   - recli 'r.db("test").tableCreate("payouts")'
