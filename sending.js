@@ -105,5 +105,5 @@ module.exports.main = main;
 // send the drips, if running this script alone
 if (require.main === module) {
 	main();
-	setInterval(main, config.sendingIntervalMin * 2 * 1000);
+	setInterval(main, config.sendingIntervalMin * 60 * 1000);
 }
