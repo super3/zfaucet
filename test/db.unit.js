@@ -58,7 +58,7 @@ describe('Database Testing', () => {
 					address: 't1fUTVEY1nFVVvSzb6q4AC6uMiugg729q9k',
 					isMining: true,
 					hashRate: 50,
-					withdrawPercent: 45
+					withdrawPercent: 55
 				}
 			);
 			await db.submitReport(
@@ -66,18 +66,18 @@ describe('Database Testing', () => {
 					address: 't1ReNX1Vb9oVXAPsrbcUZaHDVNW89whJwGB',
 					isMining: true,
 					hashRate: 50,
-					withdrawPercent: 45
+					withdrawPercent: 70
 				});
 			await db.submitReport(
 				{
 					address: 't1fnAYvhHkzrLVQvT6bJueLamfTyyZLPnin',
 					isMining: true,
 					hashRate: 50,
-					withdrawPercent: 70
+					withdrawPercent: 55
 				});
 
 			const result = await db.onlineStatus();
-			chai.assert.strictEqual(result.active[1].address, helper.validAddr);
+			chai.assert.strictEqual(result.active[0].address, helper.validAddr);
 		});
 	});
 });

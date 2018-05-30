@@ -19,7 +19,6 @@ app.use(async (ctx, next) => {
 		await next();
 	} catch (error) {
 		ctx.response.status = 500;
-
 		log(`error: ${error.message}`);
 
 		/* istanbul ignore next */
