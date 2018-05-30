@@ -42,7 +42,7 @@ make
 src/redis-server
 ```
 
-# Install & Run
+## Install & Run
 Clone the repo.
 
 ```bash
