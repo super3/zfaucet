@@ -1,4 +1,3 @@
-const r = require('rethinkdb');
 const sending = require('debug')('zfaucet:sending');
 
 // internal libs
@@ -28,9 +27,9 @@ async function findInputs() {
 
 module.exports.findInputs = findInputs;
 
-async function sendDrip(conn, sendingAddress) {
+async function sendDrip(sendingAddress) {
 	// get pending drips and make sure its not empty
-	const rows = await db.pendingDrips(conn);
+	const rows = await db.pendingDrips();
 
 	if (rows.length === 0) {
 		sending('sending list empty');
@@ -83,26 +82,20 @@ async function updateDrips() {
 module.exports.updateDrips = updateDrips;
 
 async function main() {
-	let conn;
-
 	sending('running sending script');
 
 	try {
-		conn = await r.connect(config.connectionConfig);
-
-		const sendingAddress = await findInputs(conn);
-		await sendDrip(conn, sendingAddress);
-		await updateDrips(conn);
+		const sendingAddress = await findInputs();
+		await sendDrip(sendingAddress);
+		await updateDrips();
 	} catch (err) {
 		sending(`error: %s`, err.message);
 
-		conn.close();
 		return 0;
 	}
 
 	sending('sending script done');
 
-	conn.close();
 	return 1;
 }
 
