@@ -3,12 +3,6 @@ node_js:
     "8"
 services:
       - redis-server
-# addons:
-  # rethinkdb: '2.3.6'
-before_install:
-  - npm install -g recli
-  - recli 'r.db("test").tableCreate("payouts")'
-  - recli 'r.table("payouts").indexCreate("timestamp")'
 after_script:
   - npm run coverage
   - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
