@@ -31,11 +31,17 @@ module.exports.findInputs = findInputs;
 async function sendDrip(conn, sendingAddress) {
 	// get pending drips and make sure its not empty
 	const rows = await db.pendingDrips(conn);
-	if (rows.length === 0) return 0;
+
+	if (rows.length === 0) {
+		sending('sending list empty');
+		return 0;
+	}
 
 	// make transaction list
 	const sendList = [];
 	sendList.push({address: rows[0].payoutAddress, amount: config.sendingAmount});
+
+	sending('sendList: %o', sendList);
 
 	// add referral if needed
 	if (rows[0].referralAddress !== '')
@@ -47,20 +53,28 @@ async function sendDrip(conn, sendingAddress) {
 		1, config.sendingFee);
 
 	// change drips to processed and return opid
-	await r.table('payouts').get(rows[0].id).update({processed: Date.now(),
-		operationId: opid}).run(conn);
+	rows[0].processed = Date.now();
+	rows[0].operationId = opid;
+
+	await db.payouts.update(rows[0]);
+
 	return opid;
 }
 
 module.exports.sendDrip = sendDrip;
 
-async function updateDrips(conn) {
+async function updateDrips() {
 	const operations = await rpc.zGetoperationresult();
 
 	// update drips
 	await Promise.all(operations.map(async transaction => {
-		await r.table('payouts').filter({operationId: transaction.id})
-			.update({transactionId: transaction.result.txid}).run(conn);
+		const results = await db.payouts.find(1000, {operationId: transaction.id});
+
+		for (const result of results) {
+			result.transactionId = transaction.result.txid;
+
+			await db.payouts.update(result);
+		}
 	}));
 
 	return 1; // signal finished without error
@@ -80,7 +94,7 @@ async function main() {
 		await sendDrip(conn, sendingAddress);
 		await updateDrips(conn);
 	} catch (err) {
-		sending(`error: ${err.message}`);
+		sending(`error: %s`, err.message);
 
 		conn.close();
 		return 0;
