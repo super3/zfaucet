@@ -1,4 +1,5 @@
 const r = require('rethinkdb');
+const sending = require('debug')('zfaucet:sending');
 
 // internal libs
 const db = require('./lib/db');
@@ -9,6 +10,7 @@ const rpc = require('./lib/rpc');
 async function findInputs() {
 	// get balance from rpc daemon
 	const balance = await rpc.getbalance();
+	sending(`balance: ${balance}`);
 
 	// check if we have enought money to send
 	const balMinusSend = balance -
@@ -69,6 +71,8 @@ module.exports.updateDrips = updateDrips;
 async function main() {
 	let conn;
 
+	sending('running sending script');
+
 	try {
 		conn = await r.connect(config.connectionConfig);
 
@@ -76,9 +80,13 @@ async function main() {
 		await sendDrip(conn, sendingAddress);
 		await updateDrips(conn);
 	} catch (err) {
+		sending(`error: ${err.message}`);
+
 		conn.close();
 		return 0;
 	}
+
+	sending('sending script done');
 
 	conn.close();
 	return 1;
@@ -90,5 +98,5 @@ module.exports.main = main;
 // send the drips, if running this script alone
 if (require.main === module) {
 	main();
-	setInterval(main, config.sendingIntervalMin * 60 * 1000);
+	setInterval(main, config.sendingIntervalMin * 2 * 1000);
 }

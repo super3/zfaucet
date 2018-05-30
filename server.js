@@ -8,6 +8,7 @@ const Router = require('koa-router');
 const _static = require('koa-static');
 const json = require('koa-json');
 const socketIo = require('socket.io');
+const log = require('debug')('zfaucet:server');
 
 const cache = require('./lib/middleware/cache');
 
@@ -21,6 +22,8 @@ app.use(async (ctx, next) => {
 		await next();
 	} catch (error) {
 		ctx.response.status = 500;
+
+		log(`error: ${error.message}`);
 
 		/* istanbul ignore next */
 		ctx.body = process.env.NODE_ENV === 'production' ?
