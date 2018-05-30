@@ -1,6 +1,15 @@
 <template>
 	<div class="container">
+
+		<div class="alert alert-success" role="alert">
+			<b>Help us decide!</b>
+			We are getting a new design.
+			Please vote and provide your feedback
+			<a href="https://en.99designs.nl/web-design/contests/design-awesome-cryptocurrency-faucet-site-zcash-822047/poll/4d0dbdceb1/vote?utm_source=voting_app&utm_medium=web&utm_campaign=voting">here</a>.
+		</div>
+
 	<div class="card-deck mb-3 text-center">
+
 	  <div class="card mb-4 box-shadow">
 
 		<div class="card-header">
