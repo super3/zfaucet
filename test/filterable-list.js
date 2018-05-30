@@ -148,7 +148,16 @@ describe('filterable-list', async () => {
 		assert.deepEqual(await list.find(1, {
 			age: 30
 		}), [
-			{name: 'Josh', age: 20}
+			{name: 'Josh', age: 30}
 		]);
+	});
+
+	it('should delete all extraneous keys', async () => {
+		const results = await list.find(100);
+
+		for (const result of results)
+			await list.delete(result);
+
+		assert.deepEqual(await redis.keys('*'), ['test:i']);
 	});
 });
