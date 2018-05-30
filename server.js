@@ -9,8 +9,6 @@ const json = require('koa-json');
 const socketIo = require('socket.io');
 const log = require('debug')('zfaucet:server');
 
-const cache = require('./lib/middleware/cache');
-
 // create app and config vars
 const app = new Koa();
 const router = new Router();
@@ -63,13 +61,13 @@ router.get('/', async ctx => {
 	});
 });
 
-router.get('/api/recent', cache(30), async ctx => {
+router.get('/api/recent', async ctx => {
 	const rows = await db.searchDrips({});
 
 	ctx.body = utils.readableTime(rows);
 });
 
-router.get('/api/recent/:address', cache(15), async ctx => {
+router.get('/api/recent/:address', async ctx => {
 	const payoutAddress = ctx.params.address;
 
 	if (!utils.isAddress(payoutAddress))
@@ -81,7 +79,7 @@ router.get('/api/recent/:address', cache(15), async ctx => {
 	ctx.body = utils.readableTime(rows);
 });
 
-router.get('/api/referral/:address', cache(15), async ctx => {
+router.get('/api/referral/:address', async ctx => {
 	const referralAddress = ctx.params.address;
 
 	if (!utils.isAddress(referralAddress))
