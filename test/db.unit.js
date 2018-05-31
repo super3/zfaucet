@@ -77,7 +77,8 @@ describe('Database Testing', () => {
 				});
 
 			const result = await db.onlineStatus();
-			chai.assert.strictEqual(result.active[0].address, helper.validAddr);
+			chai.assert.strictEqual(result.active[result.active.length - 1].address,
+				helper.validAddr);
 		});
 	});
 });
