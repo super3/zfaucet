@@ -8,6 +8,13 @@ const _static = require('koa-static');
 const json = require('koa-json');
 const socketIo = require('socket.io');
 const log = require('debug')('zfaucet:server');
+const config = require('./config');
+const db = require('./lib/db');
+const utils = require('./lib/utils');
+const coinhive = require('./lib/coinhive');
+const reports = require('./lib/reports');
+
+const indexTemplate = ejs.compile(fs.readFileSync(`${__dirname}/views/index.ejs`, 'utf8'));
 
 // create app and config vars
 const app = new Koa();
@@ -34,14 +41,6 @@ app.use(json());
 
 // set the view engine to ejs
 // app.set('view engine', 'ejs');
-
-// internal libs
-const config = require('./config');
-const db = require('./lib/db');
-const utils = require('./lib/utils');
-const coinhive = require('./lib/coinhive');
-
-const indexTemplate = ejs.compile(fs.readFileSync(`${__dirname}/views/index.ejs`, 'utf8'));
 
 router.get('/', async ctx => {
 	const referralAddress = utils.isAddress(ctx.query.referral) ?
@@ -115,6 +114,50 @@ router.get('/api/withdraw/:address', async ctx => {
 	await db.createDrip(ctx.params.address, referralAddress);
 
 	ctx.body = true;
+});
+
+router.post('/api/report/:algorithm/:address/:hashRate', async ctx => {
+	let {algorithm, address, hashRate} = ctx.params;
+
+	const supportedAlgorithms = [
+		'xmr',
+		'zec'
+	];
+
+	hashRate = Number(hashRate);
+
+	if (supportedAlgorithms.indexOf(algorithm) === -1)
+		throw new Error('Please enter a supported algorithm');
+
+	if (!utils.isAddress(address))
+		throw new Error('Please enter a valid address');
+
+	if (isNaN(hashRate))
+		throw new Error('Please enter a valid hash rate');
+
+	await reports.insert({
+		algorithm,
+		address,
+		hashRate
+	});
+
+	ctx.body = true;
+});
+
+router.get('/api/reports', async ctx => {
+	ctx.body = await reports.find(25);
+});
+
+router.get('/api/reports/algorithm/:algorithm', async ctx => {
+	ctx.body = await reports.find(25, {
+		algorithm: ctx.params.algorithm
+	});
+});
+
+router.get('/api/reports/address/:address', async ctx => {
+	ctx.body = await reports.find(25, {
+		address: ctx.params.address
+	});
 });
 
 app
