@@ -143,6 +143,10 @@ describe('Sending Script', () => {
 			// relying on other tests...
 			rpc.zGetoperationresult = sinon.stub().returns(ops);
 
+			await db.payouts.insert({
+				operationId: 'opid-65f531ba-3fde-4b78-a8e0-bdad702627e4'
+			});
+
 			await chai.assert.eventually.equal(sending.updateDrips(), 1);
 		});
 	});
