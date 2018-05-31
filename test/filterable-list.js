@@ -1,4 +1,5 @@
 const assert = require('assert');
+const chai = require('chai');
 const Redis = require('ioredis');
 const FilterableList = require('../lib/filterable-list');
 
@@ -21,7 +22,7 @@ describe('filterable-list', async () => {
 		});
 	});
 
-	describe('constructor', () => {
+	describe('constructor()', () => {
 		it('should throw on bad redis object', () => {
 			assert.throws(() => new FilterableList({
 				name: 'test',
@@ -61,6 +62,45 @@ describe('filterable-list', async () => {
 				filters: ['name', undefined],
 				length: 3
 			}));
+		});
+	});
+
+	describe('#insert()', () => {
+		it('should throw on bad document value', async () => {
+			await chai.assert.isRejected(list.insert(100));
+		});
+	});
+
+	describe('#update()', () => {
+		it('should throw on bad document value', async () => {
+			await chai.assert.isRejected(list.update(100));
+		});
+
+		it('should throw on unrecognised document value', async () => {
+			await chai.assert.isRejected(list.update({}));
+		});
+	});
+
+	describe('#find()', () => {
+		it('should throw on bad amount value', async () => {
+			await chai.assert.isRejected(list.find(true));
+		});
+
+		it('should throw on bad fields value', async () => {
+			await chai.assert.isRejected(list.find(100, 100));
+		});
+
+		it('should throw on multiple fields', async () => {
+			await chai.assert.isRejected(list.find(100, {
+				a: 1,
+				b: 2
+			}));
+		});
+	});
+
+	describe('#delete()', () => {
+		it('should throw on unrecognised document value', async () => {
+			await chai.assert.isRejected(list.delete({}));
 		});
 	});
 
