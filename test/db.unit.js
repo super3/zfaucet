@@ -44,7 +44,7 @@ describe('Database Testing', () => {
 			await redis.del('miners-active');
 			await db.submitReport(
 				{
-					address: helper.validAddr,
+					address: 't1fnAYvhHkzrLVQvT6bJueLamfTyyZLPnin',
 					isMining: true,
 					hashRate: 50,
 					withdrawPercent: 50
@@ -54,7 +54,7 @@ describe('Database Testing', () => {
 					address: 't1fUTVEY1nFVVvSzb6q4AC6uMiugg729q9k',
 					isMining: true,
 					hashRate: 50,
-					withdrawPercent: 55
+					withdrawPercent: 50
 				}
 			);
 			await db.submitReport(
@@ -66,10 +66,10 @@ describe('Database Testing', () => {
 				});
 			await db.submitReport(
 				{
-					address: 't1fnAYvhHkzrLVQvT6bJueLamfTyyZLPnin',
+					address: helper.validAddr,
 					isMining: true,
 					hashRate: 50,
-					withdrawPercent: 55
+					withdrawPercent: 45
 				});
 
 			const result = await db.onlineStatus();
