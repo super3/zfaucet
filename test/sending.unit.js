@@ -87,7 +87,7 @@ describe('Sending Script', () => {
 	});
 
 	describe('Send Testing', () => {
-		it('send sample drip without referral', async () => {
+		it('send sample drip', async () => {
 			rpc.zSendmany = sinon.stub()
 				.returns('opid-f746c8ac-116d-476b-8b44-bb098a354dad');
 
@@ -100,29 +100,7 @@ describe('Sending Script', () => {
 				payoutAddress: 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa',
 				processed: false,
 				timestamp: '2018-03-03T14:41:18.333Z',
-				transactionId: '',
-				referralAddress: ''});
-
-			await chai.assert.eventually.equal(sending
-				.sendDrip('t1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX'),
-			'opid-f746c8ac-116d-476b-8b44-bb098a354dad');
-		});
-
-		it('send sample drip with referral', async () => {
-			rpc.zSendmany = sinon.stub()
-				.returns('opid-f746c8ac-116d-476b-8b44-bb098a354dad');
-
-			Object.assign(db, realdb);
-
-			await db.payouts.trim(0);
-
-			await db.payouts.insert({id: '3f5f6846-0d59-40d3-8cda-2b5b54be2e9f',
-				operationId: '',
-				payoutAddress: 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa',
-				processed: false,
-				timestamp: '2018-03-03T14:41:18.333Z',
-				transactionId: '',
-				referralAddress: 't1KjU2TUgNuWmbyEmYh19AJL5niF5XdUsoa'});
+				transactionId: ''});
 
 			await chai.assert.eventually.equal(sending
 				.sendDrip('t1R5WEPSsvHowVUAtbQFo4bAFVgaAfh9ySX'),

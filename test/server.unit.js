@@ -112,7 +112,7 @@ describe('Server Routes', () => {
 			coinhive.withdraw = sinon.stub().returns(sampleWith);
 
 			const response = await api
-				.get(`/api/withdraw/${helper.validAddr}?referral=${helper.validAddr}`)
+				.get(`/api/withdraw/${helper.validAddr}`)
 				.expect(200);
 			chai.assert.strictEqual(response.text, 'true');
 		});
