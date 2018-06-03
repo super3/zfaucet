@@ -8,6 +8,7 @@ const _static = require('koa-static');
 const json = require('koa-json');
 const socketIo = require('socket.io');
 const log = require('debug')('zfaucet:server');
+
 const config = require('./config');
 const db = require('./lib/db');
 const utils = require('./lib/utils');
@@ -43,18 +44,11 @@ app.use(json());
 // app.set('view engine', 'ejs');
 
 router.get('/', async ctx => {
-	const referralAddress = utils.isAddress(ctx.query.referral) ?
-		ctx.query.referral : '';
-
-	ctx.body = indexTemplate({
-		withdrawThreshold: config.withdrawThreshold,
-		referralAddress
-	});
+	ctx.body = indexTemplate({withdrawThreshold: config.withdrawThreshold});
 });
 
 router.get('/api/recent', async ctx => {
 	const rows = await db.searchDrips({});
-
 	ctx.body = utils.readableTime(rows);
 });
 
@@ -66,18 +60,6 @@ router.get('/api/recent/:address', async ctx => {
 
 	// find the drips for the user and return
 	const rows = await db.searchDrips({payoutAddress});
-
-	ctx.body = utils.readableTime(rows);
-});
-
-router.get('/api/referral/:address', async ctx => {
-	const referralAddress = ctx.params.address;
-
-	if (!utils.isAddress(referralAddress))
-		throw new Error('Please enter a valid address');
-
-	// find the drips for the user and return
-	const rows = await db.searchDrips({referralAddress});
 
 	ctx.body = utils.readableTime(rows);
 });
@@ -94,9 +76,6 @@ router.get('/api/withdraw/:address', async ctx => {
 	if (!utils.isAddress(ctx.params.address))
 		throw new Error('Please enter a valid address');
 
-	const referralAddress = utils.isAddress(ctx.query.referral) ?
-		ctx.query.referral : '';
-
 	// make sure the user has enough balance
 	const balResponse = await coinhive.getBalance(ctx.params.address);
 
@@ -111,7 +90,7 @@ router.get('/api/withdraw/:address', async ctx => {
 		throw new Error('Withdraw Failed');
 
 	// add the withdrawal to the queue and return true
-	await db.createDrip(ctx.params.address, referralAddress);
+	await db.createDrip(ctx.params.address);
 
 	ctx.body = true;
 });

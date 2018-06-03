@@ -7,11 +7,7 @@ const helper = require('./helper');
 describe('Database Testing', () => {
 	describe('RethinkDB', () => {
 		it('create drip', async () => {
-			await db.createDrip(helper.validAddr, '');
-		});
-
-		it('referral drip', async () => {
-			await db.createDrip(helper.validAddr, helper.validAddr);
+			await db.createDrip(helper.validAddr);
 		});
 
 		it('pending drips', async () => {

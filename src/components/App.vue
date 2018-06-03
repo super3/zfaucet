@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-	
+
 	<div class="card-deck mb-3 text-center">
 
 	  <div class="card mb-4 box-shadow">
@@ -147,7 +147,6 @@ module.exports = {
 		acceptedPercent: 0,
 		pendingPercent: 0,
 		withdrawn: 0,
-		referralAddress,
 		numThreads: Number(localStorage.getItem('numThreads')) || 4,
 		numThrottle: Number(localStorage.getItem('numThrottle')) || 50,
 		keyPair: {}
@@ -187,7 +186,7 @@ module.exports = {
 			this.mining = false;
 		},
 		async withdraw() {
-			await get(`/api/withdraw/${this.address}?referral=${referralAddress}`);
+			await get(`/api/withdraw/${this.address}`);
 			this.withdrawn += withdrawThreshold;
 		},
 		generateAddress() {
