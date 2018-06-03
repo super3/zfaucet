@@ -5,7 +5,6 @@
 				<th scope="col">Time</th>
 				<th scope="col">Address</th>
 				<th scope="col">Transaction ID</th>
-				<th scope="col">Referral?</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -15,8 +14,6 @@
 					<td v-if="drip.processed === false">Pending...</td>
 					<td v-else-if="drip.processed !== false && !drip.transactionId">Sent.</td>
 					<td v-else><a v-bind:href="'https://zcash.blockexplorer.com/tx/' + drip.transactionId">View Transaction</a></td>
-					<td v-if="drip.referralAddress !== ''">Yes</td>
-					<td v-else>No</td>
 				</tr>
 		</tbody>
 	</table>

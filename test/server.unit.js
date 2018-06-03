@@ -49,15 +49,6 @@ describe('Server Routes', () => {
 		});
 	});
 
-	describe('Index with Referral', () => {
-		it('index with bad referral', done => {
-			api.get(`?referral=${helper.invalidAddr}`).expect(200, done);
-		});
-		it('index with good referral', done => {
-			api.get(`/?referral=${helper.validAddr}`).expect(200, done);
-		});
-	});
-
 	describe('Recent Routes', () => {
 		it('recent should return a 200 response', done => {
 			api.get('/api/recent').expect(200, done);
@@ -69,16 +60,6 @@ describe('Server Routes', () => {
 
 		it('recent + bad address should return a 500 response', done => {
 			api.get('/api/recent/' + helper.invalidAddr).expect(500, done);
-		});
-	});
-
-	describe('Referral Routes', () => {
-		it('referral + address should return a 200 response', done => {
-			api.get('/api/referral/' + helper.validAddr).expect(200, done);
-		});
-
-		it('referral + bad address should return a 500 response', done => {
-			api.get('/api/referral/' + helper.invalidAddr).expect(500, done);
 		});
 	});
 

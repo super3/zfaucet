@@ -46,13 +46,6 @@ async function sendDrip(sendingAddress) {
 
 	sending('sendList: %o', sendList);
 
-	// add referral if needed
-	if (rows[0].referralAddress !== '')
-		sendList.push({
-			address: rows[0].referralAddress,
-			amount: config.sendingAmount
-		});
-
 	// send payment
 	const opid = await rpc.zSendmany(
 		sendingAddress,
