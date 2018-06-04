@@ -46,7 +46,7 @@
     "request-promise": "^4.2.2",
     "rethinkdb": "^2.3.3",
     "socket.io": "^2.1.1",
-    "stdrpc": "0.0.3",
+    "stdrpc": "^1.0.0",
     "vue": "^2.5.16"
   },
   "devDependencies": {
