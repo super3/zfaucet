@@ -126,6 +126,7 @@
 
 <script>
 const Vue = require('vue');
+const axios = require('axios');
 const Engine = require('../engine');
 const socket = require('../socket');
 const get = require('../get');
@@ -186,7 +187,7 @@ module.exports = {
 			this.mining = false;
 		},
 		async withdraw() {
-			await get(`/api/withdraw/${this.address}`);
+			await axios.get(`/api/withdraw/${this.address}`);
 			this.withdrawn += withdrawThreshold;
 		},
 		generateAddress() {

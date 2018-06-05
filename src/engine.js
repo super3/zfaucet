@@ -1,5 +1,4 @@
 /* global CoinHive */
-
 class Engine {
 	constructor(config) {
 		Object.assign(this, config);
