@@ -1,5 +1,5 @@
 const net = require('net');
-const BN = require('bn.js');
+const BN = require('bignumber.js');
 const rpc = require('./lib/rpc');
 
 const poolHost = 'us1-zcash.flypool.org';
@@ -13,6 +13,8 @@ net.createServer(client => {
 
 	let target;
 
+	const submits = [];
+
 	client.on('data', data => {
 		sendBuffer += data;
 
@@ -23,6 +25,9 @@ net.createServer(client => {
 			const message = JSON.parse(rawMessage);
 
 			console.log('->', message);
+
+			if (message.method === 'mining.submit')
+				submits.push(message.id);
 		}
 
 		socket.write(data);
@@ -39,18 +44,28 @@ net.createServer(client => {
 
 			console.log('<-', message);
 
-			if (message.method === 'mining.set_target') {
+			if (message.method === 'mining.set_target')
 				target = new BN(message.params[0], 16);
 
-				const maxTarget = (new BN(2)).pow(new BN(256));
-				const difficulty = maxTarget.div(target);
+			if (message.id in submits || message.method === 'mining.set_target') {
+				// if (message.error) return;
 
-				const networkDifficulty = await rpc.getdifficulty();
+				const maxTarget = (new BN(2)).pow(new BN(256));
+				const shareDifficulty = maxTarget.dividedBy(target);
+
+				const networkDifficulty = new BN((await rpc.getdifficulty()).toString(), 10);
 
 				console.log('new target', target.toString(10));
 				console.log('maxTarget', maxTarget.toString(10));
-				console.log('new difficulty', difficulty.toString(10));
-				console.log('network difficulty', networkDifficulty);
+				console.log('new difficulty', shareDifficulty.toString(10));
+				console.log(await rpc.getdifficulty());
+				console.log('network difficulty', networkDifficulty.toString(10));
+
+				const blockReward = new BN('12.5', 10);
+
+				const payout = shareDifficulty.dividedBy(networkDifficulty).multipliedBy(blockReward);
+
+				console.log('payout', payout.toString(10));
 			}
 		}
 
