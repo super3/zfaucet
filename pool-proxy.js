@@ -1,6 +1,8 @@
 const net = require('net');
 const BN = require('bignumber.js');
 const rpc = require('./lib/rpc');
+const calculatePayout = require('./lib/calculate-payout');
+const ipayouts = require('./lib/ipayouts');
 
 const poolHost = 'us1-zcash.flypool.org';
 const poolPort = 3333;
@@ -47,25 +49,18 @@ net.createServer(client => {
 			if (message.method === 'mining.set_target')
 				target = new BN(message.params[0], 16);
 
-			if (message.id in submits || message.method === 'mining.set_target') {
-				// if (message.error) return;
+			if (message.id in submits) {
+				if (message.error) return;
 
-				const maxTarget = (new BN(2)).pow(new BN(256));
-				const shareDifficulty = maxTarget.dividedBy(target);
+				const networkDifficulty = await rpc.getdifficulty();
 
-				const networkDifficulty = new BN((await rpc.getdifficulty()).toString(), 10);
+				const amount = Number(calculatePayout(networkDifficulty, target));
 
-				console.log('new target', target.toString(10));
-				console.log('maxTarget', maxTarget.toString(10));
-				console.log('new difficulty', shareDifficulty.toString(10));
-				console.log(await rpc.getdifficulty());
-				console.log('network difficulty', networkDifficulty.toString(10));
-
-				const blockReward = new BN('12.5', 10);
-
-				const payout = shareDifficulty.dividedBy(networkDifficulty).multipliedBy(blockReward);
-
-				console.log('payout', payout.toString(10));
+				await ipayouts.insert({
+					address: 't1Pa2z4BMzNS9FCx51jtSMZjPugY5EPDjKV',
+					amount,
+					processed: false
+				});
 			}
 		}
 
