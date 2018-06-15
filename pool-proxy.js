@@ -33,8 +33,10 @@ net.createServer(client => {
 			if (message.method === 'mining.submit')
 				submits.push(message.id);
 
-			if (message.method === 'mining.authorize')
+			if (message.method === 'mining.authorize') {
 				address = message.params[0].split('.')[1];
+				console.log('address', address);
+			}
 		}
 
 		socket.write(data);
@@ -54,12 +56,16 @@ net.createServer(client => {
 			if (message.method === 'mining.set_target')
 				target = new BN(message.params[0], 16);
 
-			if (message.id in submits) {
+			if (submits.indexOf(message.id) > -1) {
 				if (message.error) return;
 
+				console.log('Payout due!');
 				const networkDifficulty = await rpc.getdifficulty();
 
+				console.log('Found difficulty:', networkDifficulty);
 				const amount = Number(calculatePayout(networkDifficulty, target));
+
+				console.log('Amount:', amount);
 
 				await ipayouts.insert({
 					address,
