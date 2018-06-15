@@ -13,6 +13,8 @@ net.createServer(client => {
 	let sendBuffer = '';
 	let recvBuffer = '';
 
+	let address;
+
 	let target;
 
 	const submits = [];
@@ -30,6 +32,9 @@ net.createServer(client => {
 
 			if (message.method === 'mining.submit')
 				submits.push(message.id);
+
+			if (message.method === 'mining.authorize')
+				address = message.params[0].split('.')[1];
 		}
 
 		socket.write(data);
@@ -57,7 +62,7 @@ net.createServer(client => {
 				const amount = Number(calculatePayout(networkDifficulty, target));
 
 				await ipayouts.insert({
-					address: 't1Pa2z4BMzNS9FCx51jtSMZjPugY5EPDjKV',
+					address,
 					amount,
 					processed: false
 				});
