@@ -25,5 +25,18 @@
 			NODE_ENV: "production",
 			DEBUG: "zfaucet:*"
 		}
+	}, {
+		name: "pool-proxy",
+		script: "pool-proxy.js",
+		max_memory_restart: "512M",
+		watch: false,
+		env: {
+			NODE_ENV: "production",
+			DEBUG: "zfaucet:*"
+		},
+		env_production: {
+			NODE_ENV: "production",
+			DEBUG: "zfaucet:*"
+		}
 	}]
 }
