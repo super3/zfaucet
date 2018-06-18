@@ -38,11 +38,50 @@ function buildSendList(payouts) {
 async function sendPayouts() {
 	// const inputAddress = await findInput();
 	const payouts = await ipayouts.getUnpaid();
-
 	const sendList = buildSendList(payouts);
 
-	console.log(sendList);
+	const operationId = 0; // z_sendMany
+
+	await Promise.all(payouts.map(async payout => {
+		payout.processed = Date.now();
+		payout.operationId = operationId;
+
+		await ipayouts.update(payout);
+	}));
 }
 
-sendPayouts();
-setInterval(sendPayouts, 2.5 * 60 * 1000);
+async function updatePayouts() {
+	const operations = await rpc.zGetoperationresult();
+
+	// update drips
+	await Promise.all(operations.map(async transaction => {
+		const results = await ipayouts.find(1000, {operationId: transaction.id});
+
+		await Promise.all(results.map(async result => {
+			result.transactionId = transaction.result.txid;
+
+			await ipayouts.update(result);
+		}));
+	}));
+}
+
+(async () => {
+	async function job() {
+		await sendPayouts();
+		await updatePayouts();
+	}
+
+	const interval = 2.5 * 60 * 1000;
+
+	for (;;) {
+		const startTime = Date.now();
+
+		await job();
+
+		const delta = Date.now() - startTime;
+
+		await new Promise(resolve => {
+			setTimeout(resolve, Math.min(0, interval - delta));
+		});
+	}
+})();
