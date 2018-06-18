@@ -1,6 +1,7 @@
 const utils = require('./lib/utils');
 const rpc = require('./lib/rpc');
 const ipayouts = require('./lib/ipayouts');
+const config = require('./config');
 
 async function findInput() {
 	const inputs = await rpc.listunspent();
@@ -36,11 +37,16 @@ function buildSendList(payouts) {
 }
 
 async function sendPayouts() {
-	// const inputAddress = await findInput();
+	const inputAddress = await findInput();
 	const payouts = await ipayouts.getUnpaid();
 	const sendList = buildSendList(payouts);
 
-	const operationId = 0; // z_sendMany
+	const operationId = await rpc.zSendmany(
+		inputAddress,
+		sendList,
+		1,
+		config.sendingFee
+	);
 
 	await Promise.all(payouts.map(async payout => {
 		payout.processed = Date.now();
