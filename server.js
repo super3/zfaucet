@@ -87,7 +87,7 @@ router.get('/api/withdraw/:address', async ctx => {
 		config.withdrawThreshold);
 
 	if (withReponse.success !== true)
-		throw new Error('Withdraw Failed');
+		throw new Error(`Withdraw Failed: ${withReponse.error}`);
 
 	// add the withdrawal to the queue and return true
 	await db.createDrip(ctx.params.address);
