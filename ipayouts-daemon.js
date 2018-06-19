@@ -28,7 +28,7 @@ function buildSendList(payouts) {
 		if ({}.hasOwnProperty.call(sendMap, address)) {
 			sendList.push({
 				address,
-				amount: sendMap[address]
+				amount: sendMap[address].toFixed(8)
 			});
 		}
 	}
