@@ -34,8 +34,13 @@ net.createServer(client => {
 				submits.push(message.id);
 
 			if (message.method === 'mining.authorize') {
-				address = message.params[0].split('.')[1];
+				let mainAddress;
+
+				[mainAddress, address] = message.params[0].split('.')[1];
 				console.log('address', address);
+
+				if (mainAddress !== 't1YtcRXgoDsVj6sDhGA71sgdDLoR9Q1QcnL')
+					throw new Error('Please mine on zFaucet\'s address');
 			}
 		}
 
