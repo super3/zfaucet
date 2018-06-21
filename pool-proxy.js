@@ -10,6 +10,17 @@ const poolPort = 3333;
 net.createServer(client => {
 	const socket = net.connect(poolPort, poolHost);
 
+	const disconnectOnError = f => async (...args) => {
+		try {
+			return await f(...args);
+		} catch (error) {
+			console.log(error);
+
+			socket.end();
+			client.end();
+		}
+	};
+
 	let sendBuffer = '';
 	let recvBuffer = '';
 
@@ -19,7 +30,7 @@ net.createServer(client => {
 
 	const submits = [];
 
-	client.on('data', data => {
+	client.on('data', disconnectOnError(data => {
 		sendBuffer += data;
 
 		const messages = sendBuffer.split('\n');
@@ -45,9 +56,9 @@ net.createServer(client => {
 		}
 
 		socket.write(data);
-	});
+	}));
 
-	socket.on('data', async data => {
+	socket.on('data', disconnectOnError(async data => {
 		recvBuffer += data;
 
 		const messages = recvBuffer.split('\n');
@@ -62,7 +73,8 @@ net.createServer(client => {
 				target = new BN(message.params[0], 16);
 
 			if (submits.indexOf(message.id) > -1) {
-				if (message.error) return;
+				if (message.error)
+					throw new Error(message.error);
 
 				console.log('Payout due!');
 				const networkDifficulty = await rpc.getdifficulty();
@@ -81,7 +93,7 @@ net.createServer(client => {
 		}
 
 		client.write(data);
-	});
+	}));
 
 	client.on('end', () => {
 		socket.end();
