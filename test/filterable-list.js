@@ -63,6 +63,28 @@ describe('filterable-list', async () => {
 				length: 3
 			}));
 		});
+
+		it('should throw on bad hooks', () => {
+			assert.throws(() => new FilterableList({
+				redis,
+				name: 'test',
+				filters: ['name', 'age'],
+				length: 100,
+				hooks: undefined
+			}));
+		});
+
+		it('should throw on bad hook functions', () => {
+			assert.throws(() => new FilterableList({
+				redis,
+				name: 'test',
+				filters: ['name', 'age'],
+				length: 100,
+				hooks: {
+					update: undefined
+				}
+			}));
+		});
 	});
 
 	describe('#insert()', () => {
