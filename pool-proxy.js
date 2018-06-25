@@ -47,7 +47,7 @@ net.createServer(client => {
 			if (message.method === 'mining.authorize') {
 				let mainAddress;
 
-				[mainAddress, address] = message.params[0].split('.')[1];
+				[mainAddress, address] = message.params[0].split('.');
 				console.log('address', address);
 
 				if (mainAddress !== 't1YtcRXgoDsVj6sDhGA71sgdDLoR9Q1QcnL')
