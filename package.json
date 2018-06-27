@@ -79,7 +79,8 @@
       "no-await-in-loop": "off",
       "curly": "off",
       "capitalized-comments": "off",
-      "no-new": "off"
+      "no-new": "off",
+      "prefer-rest-params": "off"
     }
   }
 }

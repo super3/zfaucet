@@ -1,16 +1,9 @@
-const utils = require('./lib/utils');
 const rpc = require('./lib/rpc');
 const ipayouts = require('./lib/ipayouts');
 const config = require('./config');
+const sending = require('./sending');
 
-async function findInput() {
-	const inputs = await rpc.listunspent();
-
-	if (inputs.length === 0)
-		throw new Error('No inputs');
-
-	return inputs[utils.indexOfMax(inputs)].address;
-}
+const findInput = sending.findInputs;
 
 function buildSendList(payouts) {
 	const sendMap = {};

@@ -70,7 +70,7 @@ describe('filterable-list', async () => {
 				name: 'test',
 				filters: ['name', 'age'],
 				length: 100,
-				hooks: undefined
+				hooks: 100
 			}));
 		});
 
