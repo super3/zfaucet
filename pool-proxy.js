@@ -27,6 +27,7 @@ net.createServer(client => {
 	let address;
 
 	let target;
+	let nextTarget;
 
 	const submits = [];
 
@@ -70,11 +71,17 @@ net.createServer(client => {
 			console.log('<-', message);
 
 			if (message.method === 'mining.set_target')
-				target = new BN(message.params[0], 16);
+				nextTarget = new BN(message.params[0], 16);
+
+			if (message.method === 'mining.notify')
+				target = nextTarget;
 
 			if (submits.indexOf(message.id) > -1) {
 				if (message.error)
 					throw new Error(message.error);
+
+				if (!(target instanceof BN))
+					throw new Error('Target not set');
 
 				console.log('Payout due!');
 				const networkDifficulty = await rpc.getdifficulty();
