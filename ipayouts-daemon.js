@@ -71,23 +71,33 @@ async function updatePayouts() {
 	}));
 }
 
-(async () => {
-	async function job() {
-		await sendPayouts();
-		await updatePayouts();
-	}
+module.exports = {
+	findInput,
+	buildSendList,
+	sendPayouts,
+	updatePayouts
+};
 
-	const interval = 2.5 * 60 * 1000;
+/* istanbul ignore next */
+if (require.main === module) {
+	(async () => {
+		async function job() {
+			await sendPayouts();
+			await updatePayouts();
+		}
 
-	for (;;) {
-		const startTime = Date.now();
+		const interval = 2.5 * 60 * 1000;
 
-		await job();
+		for (;;) {
+			const startTime = Date.now();
 
-		const delta = Date.now() - startTime;
+			await job();
 
-		await new Promise(resolve => {
-			setTimeout(resolve, Math.min(0, interval - delta));
-		});
-	}
-})();
+			const delta = Date.now() - startTime;
+
+			await new Promise(resolve => {
+				setTimeout(resolve, Math.min(0, interval - delta));
+			});
+		}
+	})();
+}
