@@ -27,7 +27,8 @@ describe('filterable-list', async () => {
 			assert.throws(() => new FilterableList({
 				name: 'test',
 				filters: ['name', 'age'],
-				length: 3
+				length: 3,
+				hooks: {a: () => {}}
 			}));
 		});
 
@@ -35,7 +36,8 @@ describe('filterable-list', async () => {
 			assert.throws(() => new FilterableList({
 				redis,
 				filters: ['name', 'age'],
-				length: 3
+				length: 3,
+				hooks: {a: () => {}}
 			}));
 		});
 
@@ -43,7 +45,8 @@ describe('filterable-list', async () => {
 			assert.throws(() => new FilterableList({
 				redis,
 				name: 'test',
-				filters: ['name', 'age']
+				filters: ['name', 'age'],
+				hooks: {a: () => {}}
 			}));
 		});
 
@@ -51,7 +54,8 @@ describe('filterable-list', async () => {
 			assert.throws(() => new FilterableList({
 				redis,
 				name: 'test',
-				length: 3
+				length: 3,
+				hooks: {a: () => {}}
 			}));
 		});
 

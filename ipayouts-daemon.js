@@ -34,6 +34,9 @@ async function sendPayouts() {
 	const payouts = await ipayouts.getUnpaid();
 	const sendList = buildSendList(payouts);
 
+	for (const send of sendList)
+		send.amount -= config.sendingFee / sendList.length;
+
 	const operationId = await rpc.zSendmany(
 		inputAddress,
 		sendList,
