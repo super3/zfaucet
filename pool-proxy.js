@@ -1,5 +1,6 @@
 const net = require('net');
 const BN = require('bignumber.js');
+const config = require('./config');
 const rpc = require('./lib/rpc');
 const calculatePayout = require('./lib/calculate-payout');
 const ipayouts = require('./lib/ipayouts');
@@ -87,7 +88,11 @@ net.createServer(client => {
 				const networkDifficulty = await rpc.getdifficulty();
 
 				console.log('Found difficulty:', networkDifficulty);
-				const amount = Number(calculatePayout(networkDifficulty, target));
+				const total = Number(calculatePayout(networkDifficulty, target));
+
+				console.log('Total:', total);
+
+				const amount = total * (1 - config.ipayoutFee);
 
 				console.log('Amount:', amount);
 

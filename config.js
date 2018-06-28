@@ -15,5 +15,6 @@ module.exports = {
 	withdrawThreshold: process.env.WITHDRAWTHRESHOLD || 10000,
 	sendingIntervalMin: 5,
 	socketPort: 3012,
-	chatAdmin: process.env.CHATADMIN
+	chatAdmin: process.env.CHATADMIN,
+	ipayoutFee: 0.15
 };
