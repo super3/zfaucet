@@ -1,5 +1,6 @@
 const fs = require('fs');
 const http = require('http');
+const crypto = require('crypto');
 const ejs = require('ejs');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
@@ -137,6 +138,26 @@ router.get('/api/reports/address/:address', async ctx => {
 	ctx.body = await reports.find(25, {
 		address: ctx.params.address
 	});
+});
+
+router.get('/api/external/withdraw', async ctx => {
+	const privateKey = ctx.request.query.key;
+	const amount = ctx.request.query.amount;
+
+	const hash = crypto.createHash('sha256');
+	hash.update(privateKey);
+
+	const publicKey = hash.digest();
+
+	if((await redis.sismember('external-keys', publicKey.toString('hex'))) !== true) {
+		throw new Error('Bad key');
+	}
+
+	if(typeof amount !== 'number') {
+		throw new Error('Bad amount');
+	}
+
+	
 });
 
 app
