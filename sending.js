@@ -40,7 +40,7 @@ async function sendDrip(sendingAddress) {
 	const sendList = [
 		{
 			address: rows[0].payoutAddress,
-			amount: config.sendingAmount
+			amount: typeof rows[0].amount === 'number' ? rows[0].amount : config.sendingAmount
 		}
 	];
 
