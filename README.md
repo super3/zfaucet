@@ -63,6 +63,20 @@ cd ~/zfaucet
 git fetch && git reset --hard origin/master
 ```
 
+### External API Admin tool
+
+#### Create a new key
+
+```
+node admin external new-key
+```
+
+#### List keys
+
+```
+node admin external list-keys
+```
+
 ##  Contributors (:clap:)
 |  [![super3](https://avatars3.githubusercontent.com/u/60975?v=4&s=80)](https://github.com/super3) | [![montyanderson](https://avatars0.githubusercontent.com/u/3048503?v=4&s=80)](https://github.com/montyanderson) | [![marktellez](https://avatars0.githubusercontent.com/u/22487431?v=4&s=80)](https://github.com/marktellez)  |
 | :--:|:--:|:--: |
