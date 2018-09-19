@@ -142,6 +142,7 @@ router.get('/api/reports/address/:address', async ctx => {
 
 router.get('/api/external/withdraw', async ctx => {
 	const privateKey = ctx.request.query.key;
+	const address = ctx.request.query.address;
 	const amount = ctx.request.query.amount;
 
 	const hash = crypto.createHash('sha256');
@@ -149,15 +150,16 @@ router.get('/api/external/withdraw', async ctx => {
 
 	const publicKey = hash.digest();
 
-	if((await redis.sismember('external-keys', publicKey.toString('hex'))) !== true) {
+	if ((await redis.sismember('external-keys', publicKey.toString('hex'))) !== true)
 		throw new Error('Bad key');
-	}
 
-	if(typeof amount !== 'number') {
+	if (typeof amount !== 'number')
 		throw new Error('Bad amount');
-	}
 
-	
+	if (!utils.isAddress(address))
+		throw new Error('Please enter a valid address');
+
+	await db.createDrip(address, amount);
 });
 
 app
