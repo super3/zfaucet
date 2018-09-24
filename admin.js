@@ -15,7 +15,7 @@ console.log(...[ ...process.argv ].slice(2));
 
 				const publicKey = hash.digest();
 
-				redis.sadd('external-keys', publicKey.toString('hex'));
+				await redis.sadd('external-keys', publicKey.toString('hex'));
 
 				console.log(`Private Key: ${privateKey.toString('hex')}`);
 				console.log(`Public Key: ${publicKey.toString('hex')}`);

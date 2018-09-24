@@ -11,6 +11,7 @@ const socketIo = require('socket.io');
 const log = require('debug')('zfaucet:server');
 
 const config = require('./config');
+const redis = require('./lib/redis');
 const db = require('./lib/db');
 const utils = require('./lib/utils');
 const coinhive = require('./lib/coinhive');
@@ -143,23 +144,31 @@ router.get('/api/reports/address/:address', async ctx => {
 router.get('/api/external/withdraw', async ctx => {
 	const privateKey = ctx.request.query.key;
 	const address = ctx.request.query.address;
-	const amount = ctx.request.query.amount;
+	const amount = Number(ctx.request.query.amount);
+
+	log('privateKey', privateKey);
+	log('address', address);
+	log('amount', amount);
 
 	const hash = crypto.createHash('sha256');
-	hash.update(privateKey);
+	hash.update(privateKey, 'hex');
 
-	const publicKey = hash.digest();
+	const publicKey = hash.digest().toString('hex');
 
-	if ((await redis.sismember('external-keys', publicKey.toString('hex'))) !== true)
+	log('publicKey', publicKey);
+
+	if ((await redis.sismember('external-keys', publicKey)) !== 1)
 		throw new Error('Bad key');
 
-	if (typeof amount !== 'number')
+	if (typeof amount !== 'number' || !isFinite(amount))
 		throw new Error('Bad amount');
 
 	if (!utils.isAddress(address))
 		throw new Error('Please enter a valid address');
 
 	await db.createDrip(address, amount);
+
+	ctx.body = "";
 });
 
 app
