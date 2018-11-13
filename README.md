@@ -1,12 +1,12 @@
 # zfaucet
 Simple Zcash(ZEC) faucet built with Node.
 
-[![Build Status](https://travis-ci.org/super3/zfaucet.svg?branch=master)](https://travis-ci.org/super3/zfaucet)
-[![Coverage Status](https://coveralls.io/repos/github/super3/zfaucet/badge.svg?branch=master)](https://coveralls.io/github/super3/zfaucet?branch=master)
-[![License](https://img.shields.io/badge/license-AGPLv3-blue.svg?label=license)](https://github.com/Storj/super3/zfaucet/blob/master/LICENSE)
-[![GitHub contributors](https://img.shields.io/github/contributors/super3/zfaucet.svg)](https://gitHub.com/super3/zfaucet/graphs/contributors)
-[![dependencies Status](https://david-dm.org/super3/zfaucet/status.svg)](https://david-dm.org/super3/zfaucet)
-[![devDependencies Status](https://david-dm.org/super3/zfaucet/dev-status.svg)](https://david-dm.org/super3/zfaucet?type=dev)
+[![Build Status](https://travis-ci.org/ovsoinc/zfaucet.svg?branch=master)](https://travis-ci.org/ovsoinc/zfaucet)
+[![Coverage Status](https://coveralls.io/repos/github/ovsoinc/zfaucet/badge.svg?branch=master)](https://coveralls.io/github/ovsoinc/zfaucet?branch=master)
+[![License](https://img.shields.io/badge/license-AGPLv3-blue.svg?label=license)](https://github.com/Storj/ovsoinc/zfaucet/blob/master/LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/ovsoinc/zfaucet.svg)](https://github.com/ovsoinc/zfaucet/graphs/contributors)
+[![dependencies Status](https://david-dm.org/ovsoinc/zfaucet/status.svg)](https://david-dm.org/ovsoinc/zfaucet)
+[![devDependencies Status](https://david-dm.org/ovsoinc/zfaucet/dev-status.svg)](https://david-dm.org/ovsoinc/zfaucet?type=dev)
 
 ## DB and Zcash Setup
 
@@ -32,7 +32,7 @@ src/redis-server
 Clone the repo.
 
 ```bash
-git clone https://github.com/super3/zfaucet
+git clone https://github.com/ovsoinc/zfaucet
 cd ~/zfaucet
 npm install
 ```
