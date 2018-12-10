@@ -49,7 +49,7 @@
     "rethinkdb": "^2.3.3",
     "socket.io": "^2.2.0",
     "stdrpc": "^1.0.0",
-    "vue": "^2.5.17"
+    "vue": "^2.5.19"
   },
   "devDependencies": {
     "babel-minify": "^0.5.0",
