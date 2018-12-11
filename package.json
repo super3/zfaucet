@@ -60,7 +60,7 @@
     "ioredis": "^4.2.0",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^5.2.0",
-    "nodemon": "^1.18.7",
+    "nodemon": "^1.18.8",
     "sinon": "^7.1.1",
     "socket.io-client": "^2.1.1",
     "supertest": "^3.3.0",
