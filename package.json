@@ -33,7 +33,7 @@
     "bitcoinjs-lib": "^4.0.2",
     "bn.js": "^4.11.8",
     "body-parser": "^1.18.3",
-    "debug": "^4.1.0",
+    "debug": "^4.1.1",
     "decamelize": "^2.0.0",
     "dog-names": "^1.0.2",
     "dotenv": "^6.2.0",
