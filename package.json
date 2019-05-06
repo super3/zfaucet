@@ -12,8 +12,9 @@
     "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec --exit",
     "linter": "xo",
     "start": "node server.js",
-    "prepare": "browserify -t vueify -e src/index.js | babel-minify --mangle false > public/js/bundle.js",
-    "dev": "watchify -t vueify -e src/index.js -o public/js/bundle.js"
+    "prepare": "npm run snyk-protect; browserify -t vueify -e src/index.js | babel-minify --mangle false > public/js/bundle.js",
+    "dev": "watchify -t vueify -e src/index.js -o public/js/bundle.js",
+    "snyk-protect": "snyk protect"
   },
   "repository": {
     "type": "git",
@@ -49,7 +50,8 @@
     "rethinkdb": "^2.3.3",
     "socket.io": "^2.2.0",
     "stdrpc": "^1.0.0",
-    "vue": "^2.5.21"
+    "vue": "^2.5.21",
+    "snyk": "^1.161.1"
   },
   "devDependencies": {
     "babel-minify": "^0.5.0",
@@ -82,5 +84,6 @@
       "no-new": "off",
       "prefer-rest-params": "off"
     }
-  }
+  },
+  "snyk": true
 }
