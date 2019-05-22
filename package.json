@@ -30,7 +30,7 @@
     "axios": "^0.18.0",
     "base58check": "^2.0.0",
     "bignumber.js": "^8.1.1",
-    "bitcoinjs-lib": "^4.0.2",
+    "bitcoinjs-lib": "^5.0.4",
     "bn.js": "^4.11.8",
     "body-parser": "^1.18.3",
     "debug": "^4.1.1",
