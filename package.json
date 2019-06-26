@@ -45,7 +45,7 @@
     "koa-json": "^2.0.2",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
-    "request-promise": "^4.2.2",
+    "request-promise": "^4.2.4",
     "rethinkdb": "^2.3.3",
     "socket.io": "^2.2.0",
     "stdrpc": "^1.0.0",
