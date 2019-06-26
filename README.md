@@ -1,3 +1,6 @@
+| NOTE: The service we used for cryptocurrency mining (Coinhive) for this website shut down, so this no longer works. |
+| --- |
+
 # zfaucet
 Simple Zcash(ZEC) faucet built with Node.
 
